@@ -1,1 +1,1 @@
-# Shopify-Badging-App
+# Shopify-Badging-App [dev machine]

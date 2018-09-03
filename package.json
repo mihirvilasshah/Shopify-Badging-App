@@ -1,12 +1,13 @@
 {
-  "name": "shopify-express-application",
+  "name": "shopify-badger",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
   },
-  "author": "",
+  "author": "Shopify-Tricon Badger",
   "license": "ISC",
   "dependencies": {
     "cookie": "^0.3.1",
@@ -16,5 +17,8 @@
     "nonce": "^1.0.4",
     "request": "^2.88.0",
     "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.4"
   }
 }
