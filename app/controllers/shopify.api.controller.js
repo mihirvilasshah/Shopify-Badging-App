@@ -8,7 +8,7 @@ const request = require('request-promise');
 const scopes = 'read_products';
 
 // Replace this with your HTTPS Forwarding address
-const forwardingAddress = "https://c6ab7d89.ngrok.io";
+const forwardingAddress = "https://7f57f481.ngrok.io";
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
@@ -109,7 +109,7 @@ exports.auth = (req, res) => {
                         // copyDB(); //using func
                         // TODO: Make sure that DB copying is only done once
                         // API call to copy Shopify DB ton our DB
-                        request.get('https://c0a63639.ngrok.io/copyDB');
+                        request.get('https://7f57f481.ngrok.io/copyDB');
                         // console.log("Started copying DB");
 
                         //deleteProd(1451088838726);
@@ -123,6 +123,73 @@ exports.auth = (req, res) => {
             .catch((error) => {
                 res.status(error.statusCode).send(error.error.error_description);
             });
+
+        // Webhook products/create      
+        const Webhookjson = {
+            webhook: {
+                topic: "products/create",
+                address: "https://7f57f481.ngrok.io/createProduct",
+                format: "json",
+            }
+        };
+
+        const webhookheaders = {
+            'X-Shopify-Access-Token': process.env.TOKEN,
+            // 'X-Shopify-Topic': "products/create",
+            // 'X-Shopify-Shop-Domain': globalShop,
+            'Content-Type': "application/json"
+        };
+
+        const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
+
+        request.post(webhookUrl, { headers: webhookheaders , json: Webhookjson })
+            .then((webresponse) => {
+                console.log(webresponse);
+            })
+            .catch((error) => {
+                if (error) throw error;
+            });
+
+        // // Webhook products/update      
+        // const Webhookjson2 = {
+        //     webhook: {
+        //         topic: "products/update",
+        //         address: "https://7f57f481.ngrok.io/update",
+        //         format: "json",
+        //     }
+        // };
+
+        // const webhookheaders2 = {
+        //     'X-Shopify-Access-Token': process.env.TOKEN,
+        //     // 'X-Shopify-Topic': "products/create",
+        //     // 'X-Shopify-Shop-Domain': globalShop,
+        //     'Content-Type': "application/json"
+        // };
+
+        // // const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
+
+        // request.post(webhookUrl, { headers: webhookheaders2, json: Webhookjson2 })
+        //     .then((webresponse) => {
+        //         console.log(webresponse);
+        //         console.log("inside webhook call");
+
+
+        //         request.get("https://7f57f481.ngrok.io/update", { headers: shopRequestHeaders })
+        //         .then((updatewebhook) => {
+
+        //               console.log(updatewebhook);
+        //             })
+        //             .catch((error) => {
+        //                 res.status(error.statusCode).send(error.error.error_description);
+        //             });
+        //     })
+        //     .catch((error) => {
+        //         if (error) throw error;
+        //     });
+
+            
+    
+
     } else {
         res.status(400).send('Required parameters missing');
     }
@@ -149,7 +216,7 @@ var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
 // var url = "mongodb://localhost:27017/";
 // mLab DaaS URI
-var url = "mongodb://"+process.env.DB_USER+":"+process.env.DB_PASSWORD+"@ds141972.mlab.com:41972/shopifydbclone";
+var url = "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@ds239682.mlab.com:39682/shopifydbclone";
 // DO NOT USE @ or other special characters IN DB_PASSWORD
 
 // Copy Shopify DB to our DB
@@ -205,7 +272,7 @@ exports.updateProduct = (req, res) => {
         console.log("inside updateProd");
         // var myquery = { _id: ObjectId(req.params.id) };
         var myquery = { id: parseInt(req.params.id) };
-        console.log("id: "+req.params.id);
+        console.log("id: " + req.params.id);
         var newvalues = { $set: req.body };
         dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
             if (err) throw err;
@@ -221,7 +288,7 @@ exports.createProduct = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
-        var dbo = db.db("shopify");
+        var dbo = db.db("shopifydbclone");
 
         console.log("inside createProd");
         var myquery = req.body;
@@ -245,7 +312,7 @@ exports.getProduct = (req, res) => {
         // var myquery = { _id: ObjectId(req.params.id) };
         var myquery = { id: parseInt(req.params.id) };
         // var myquery = { id: 1466289291362 };
-        console.log("id: "+req.params.id);
+        console.log("id: " + req.params.id);
         dbo.collection("shopify_collection").findOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product found: " + obj);
