@@ -8,7 +8,7 @@ const request = require('request-promise');
 const scopes = 'read_products';
 
 // Replace this with your HTTPS Forwarding address
-const forwardingAddress = "https://7f57f481.ngrok.io";
+const forwardingAddress = process.env.FORWARDING_ADDRESS;
 
 const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
@@ -89,7 +89,6 @@ exports.auth = (req, res) => {
                 globalShop = shop;
                 console.log("Shop: " + shop);
 
-                // TODO
                 // Use access token to make API call to 'shop' endpoint
                 const shopRequestUrl = 'https://' + shop + '/admin/products.json';
                 const shopRequestHeaders = {
@@ -109,7 +108,7 @@ exports.auth = (req, res) => {
                         // copyDB(); //using func
                         // TODO: Make sure that DB copying is only done once
                         // API call to copy Shopify DB ton our DB
-                        request.get('https://7f57f481.ngrok.io/copyDB');
+                        request.get(forwardingAddress + '/copyDB');
                         // console.log("Started copying DB");
 
                         //deleteProd(1451088838726);
@@ -128,7 +127,7 @@ exports.auth = (req, res) => {
         const Webhookjson = {
             webhook: {
                 topic: "products/create",
-                address: "https://7f57f481.ngrok.io/createProduct",
+                address: forwardingAddress + "/createProduct",
                 format: "json",
             }
         };
@@ -142,7 +141,7 @@ exports.auth = (req, res) => {
 
         const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
 
-        request.post(webhookUrl, { headers: webhookheaders , json: Webhookjson })
+        request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson })
             .then((webresponse) => {
                 console.log(webresponse);
             })
@@ -150,45 +149,57 @@ exports.auth = (req, res) => {
                 if (error) throw error;
             });
 
-        // // Webhook products/update      
-        // const Webhookjson2 = {
-        //     webhook: {
-        //         topic: "products/update",
-        //         address: "https://7f57f481.ngrok.io/update",
-        //         format: "json",
-        //     }
-        // };
+        // Webhook products/update      
+        const Webhookjson2 = {
+            webhook: {
+                topic: "products/update",
+                address: forwardingAddress + "/updateProduct",
+                format: "json",
+            }
+        };
 
-        // const webhookheaders2 = {
-        //     'X-Shopify-Access-Token': process.env.TOKEN,
-        //     // 'X-Shopify-Topic': "products/create",
-        //     // 'X-Shopify-Shop-Domain': globalShop,
-        //     'Content-Type': "application/json"
-        // };
+        const webhookheaders2 = {
+            'X-Shopify-Access-Token': process.env.TOKEN,
+            'Content-Type': "application/json"
+        };
 
-        // // const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
+        // const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
 
-        // request.post(webhookUrl, { headers: webhookheaders2, json: Webhookjson2 })
-        //     .then((webresponse) => {
-        //         console.log(webresponse);
-        //         console.log("inside webhook call");
+        request.post(webhookUrl, { headers: webhookheaders2, json: Webhookjson2 })
+            .then((webresponse) => {
+                console.log(webresponse);
+                console.log("inside webhook call");
+            })
+            .catch((error) => {
+                if (error) throw error;
+            });
+
+        // Webhook products/delete      
+        const Webhookjson3 = {
+            webhook: {
+                topic: "products/delete",
+                address: forwardingAddress + "/deleteProduct",
+                format: "json",
+            }
+        };
+
+        const webhookheaders3 = {
+            'X-Shopify-Access-Token': process.env.TOKEN,
+            'Content-Type': "application/json"
+        };
+
+        // const webhookUrl = 'https://' + shop + '/admin/webhooks.json';
+
+        request.post(webhookUrl, { headers: webhookheaders3, json: Webhookjson3 })
+            .then((webresponse) => {
+                console.log(webresponse);
+                console.log("inside webhook call products/delete");
+            })
+            .catch((error) => {
+                if (error) throw error;
+            });    
 
 
-        //         request.get("https://7f57f481.ngrok.io/update", { headers: shopRequestHeaders })
-        //         .then((updatewebhook) => {
-
-        //               console.log(updatewebhook);
-        //             })
-        //             .catch((error) => {
-        //                 res.status(error.statusCode).send(error.error.error_description);
-        //             });
-        //     })
-        //     .catch((error) => {
-        //         if (error) throw error;
-        //     });
-
-            
-    
 
     } else {
         res.status(400).send('Required parameters missing');
@@ -249,10 +260,13 @@ exports.deleteProduct = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
-        var dbo = db.db("shopify");
+        var dbo = db.db("shopifydbclone");
 
         console.log("inside deleteProd");
-        var myquery = { _id: ObjectId(req.params.id) };
+        var prod_id = parseInt(req.body.id);
+        // var myquery = { _id: ObjectId(req.params.id) };
+        var myquery = { id: prod_id };
+
         dbo.collection("shopify_collection").deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product deleted:" + obj.deletedCount);
@@ -267,13 +281,20 @@ exports.updateProduct = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
-        var dbo = db.db("shopify");
+        var dbo = db.db("shopifydbclone");
 
         console.log("inside updateProd");
         // var myquery = { _id: ObjectId(req.params.id) };
-        var myquery = { id: parseInt(req.params.id) };
-        console.log("id: " + req.params.id);
+        // var prod_id = parseInt(JSON.parse(req).id);
+        var prod_id = parseInt(req.body.id);
+
+        // var myquery = { id: parseInt(req.params.id) };
+        var myquery = { id: prod_id };
+        // console.log("id: " + req.params.id);
+        console.log("id: " + prod_id);
+
         var newvalues = { $set: req.body };
+        
         dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
             if (err) throw err;
             console.log("product updated:" + obj);
@@ -306,7 +327,7 @@ exports.getProduct = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
-        var dbo = db.db("shopify");
+        var dbo = db.db("shopifydbclone");
 
         console.log("inside getProd");
         // var myquery = { _id: ObjectId(req.params.id) };

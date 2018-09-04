@@ -17,10 +17,10 @@ module.exports = (app) => {
 
     // APIs to be triggered by webhook 
     // Delete product from our DB when triggered by webhook
-    app.delete('/deleteProduct/:id', controller.deleteProduct);
+    app.post('/deleteProduct', controller.deleteProduct);
 
     // Update product from our DB when triggered by webhook
-    app.put('/updateProduct/:id', controller.updateProduct);
+    app.post('/updateProduct', controller.updateProduct);
 
     // Create product in our DB when triggered by webhook
     app.post('/createProduct', controller.createProduct);

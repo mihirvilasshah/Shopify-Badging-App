@@ -1,3 +1,6 @@
+// const dotenv = require('dotenv').config();
+// const forwardingAddress = process.env.FORWARDING_ADDRESS;
+
 function onLoad() {
     var productHolder = document.getElementById('productHolder');
 
@@ -41,7 +44,7 @@ function onLoad() {
         }
     };
 
-    xhttp.open("GET", "https://c6ab7d89.ngrok.io/product", true);
+    xhttp.open("GET", "https://88b5d5b7.ngrok.io/product", true);
     xhttp.send();
 
 
