@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+	<script type="text/javascript">
+	ShopifyApp.init({
+		apiKey: '4f6e3264b2a593f63adf085d4cecf87e',
+		shopOrigin: 'https://tricontryer.myshopify.com'
+	});
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel='stylesheet' href='/stylesheets/foundation.min.css' />
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<title>hi</title>
+</head>
+<body>
+	<script type="text/javascript">
+	ShopifyApp.ready(function(){
+		ShopifyApp.Bar.initialize({
+			title: 'hi',
+			icon: '/images/logo.png',
+			buttons: {
+				primary: {
+					label: "Save",
+					message: 'bar_save'
+				},
+				secondary: [
+					// Dropdown example
+					{ 
+						label: "More",
+						type: "dropdown",
+						links: [
+							// Link Button that opens in the app
+							{ label: "Update", href: "/product", target: "app" },
+							// Button with a callback function
+							{ label: "Delete", callback: function(){ alert("destroy") } }
+						]
+					},
+					{ 
+						// Link Button that opens in a new window
+						label: "Preview", href: 'http://tricontryer.myshopify.com', 
+						target: "new" 
+					},
+					{ 
+						label: "Upload Image", 
+						callback: function() {
+							ShopifyApp.Modal.open({
+							  src: 'https://a7461e57.ngrok.io/modal_content',
+							  title: 'A new modal',
+							  width: 'small',
+							  height: 300,
+							  buttons: {
+							    primary: { label: "OK" },
+							    secondary: [
+							      { label: "Cancel", callback: function (label) { ShopifyApp.Modal.close(); } }
+							    ]
+							  }
+							});
+						}
+					}
+				]
+			}
+		});
+		ShopifyApp.Bar.loadingOff();
+
+	});
+	</script>
+	  <div class="row">
+	    <div class="large-6 columns">
+	    	<h1>hi</h1>
+	      <div class="row collapse">
+	        <div class="small-12 columns">
+	          <a href="/product">See All Products</a>
+	        </div>
+	        <div class="small-12 columns">
+	          <a href="/product">Add A Product</a>
+	        </div>
+	      </div>
+	    </div>
+	  </div>
+</body>
+</html>
