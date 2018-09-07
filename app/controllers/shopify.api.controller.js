@@ -6,6 +6,7 @@ const querystring = require('querystring');
 const request = require('request-promise');
 
 const scopes = 'read_products';
+// const scopes = 'read_products,read_themes,write_themes';
 
 // Replace this with your HTTPS Forwarding address
 const forwardingAddress = process.env.FORWARDING_ADDRESS;
@@ -105,7 +106,12 @@ exports.auth = (req, res) => {
                         console.log("Token: " + globalToken);
 
                         // res.redirect('/static/welcome.html');
-                        res.render('index');
+                        res.render('index', {
+                            apiKey: process.env.SHOPIFY_API_KEY,
+                            shopOrigin: 'https://'+ globalShop,
+                            forwardingAddress: process.env.FORWARDING_ADDRESS
+
+                        });
                         // console.log("Shop Response: "+shopResponse);
                         globalShopResponse = shopResponse;
                         // console.log("Global Shop Response: "+globalShopResponse);
@@ -114,7 +120,7 @@ exports.auth = (req, res) => {
                         // TODO: Make sure that DB copying is only done once
                         // API call to copy Shopify DB ton our DB
 
-                        // request.get(forwardingAddress + '/copyDB');
+                        request.get(forwardingAddress + '/copyDB');
                         request.get(forwardingAddress + '/createWebhooks');
                         // console.log("Started copying DB");
 
@@ -237,9 +243,9 @@ exports.productPage = (req, res) => {
 // MongoDB
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
-// var url = "mongodb://localhost:27017/";
+var url = "mongodb://localhost:27017/";
 // mLab DaaS URI
-var url = "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@ds239682.mlab.com:39682/shopifydbclone";
+// var url = "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@ds239682.mlab.com:39682/shopifydbclone";
 // DO NOT USE @ or other special characters IN DB_PASSWORD
 
 // var flag = 0;
@@ -397,7 +403,7 @@ exports.uploadPic = (req, res) => {
                     var newoid = new ObjectId(result.ops[0]._id);
                     fs.remove(req.file.path, function (err) {
                         if (err) { console.log(err) };
-                        
+
                         // var img = document.createElement("IMG");
                         // img.setAttribute("src", forwardingAddress + '/picture/' + newoid);
                         res.render('picture', { src: forwardingAddress + '/picture/' + newoid });
@@ -444,8 +450,7 @@ exports.getPicture = (req, res) => {
         var dbo = db.db("shopifydbclone");
         dbo.collection('shopify_collection')
             // perform a mongodb search and return only one result.
-            // convert the variabvle called filename into a valid
-            // objectId.
+            // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
                 // set the http response header so the browser knows this
                 // is an 'image/jpeg' or 'image/png'
