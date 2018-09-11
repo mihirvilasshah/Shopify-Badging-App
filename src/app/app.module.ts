@@ -9,6 +9,9 @@ import { CustomizeComponent } from './customize/customize.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
 import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './material.module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -16,11 +19,14 @@ import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
     SelectBadgeComponent,
     CustomizeComponent,
     SelectProductsComponent,
-    RemoveBadgesComponent
+    RemoveBadgesComponent,
+
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]

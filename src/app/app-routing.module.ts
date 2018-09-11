@@ -8,20 +8,25 @@ import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
 
 const routes: Routes = [
   {
+    path: '',
+    redirectTo: 'badge',
+    pathMatch: 'full'
+  },
+  {
+    path: 'badge',
+    component: SelectBadgeComponent,
+  },
+  {
     path: 'customize',
     component: CustomizeComponent
   },
   {
     path: 'products',
-    component: SelectProductsComponent
+    component: SelectProductsComponent,
   },
-    {
+  {
     path: 'remove',
     component: RemoveBadgesComponent
-  },
-   {
-    path: '',
-    component: SelectBadgeComponent
   },
 ];
 
