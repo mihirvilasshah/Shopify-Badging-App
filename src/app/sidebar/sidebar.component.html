@@ -1,23 +1,23 @@
 <nav>
   <ul>
     <li>
-      <a routerLink="">
-        <i class="material-icons">supervised_user_circle</i>Select Badge
+      <a routerLink="" [routerLinkActive]="['activated']" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-icons">card_membership</i><div class="label">Select Badge</div>
       </a>
     </li>
     <li>
-      <a routerLink="customize">
-        <i class="material-icons">message</i>Customize
+      <a routerLink="customize" [routerLinkActive]="['activated']">
+        <i class="material-icons">edit</i><div>Customize</div>
       </a>
     </li>
     <li>
-      <a routerLink="products">
-        <i class="material-icons">supervised_user_circle</i>Select Products
+      <a routerLink="products" [routerLinkActive]="['activated']">
+        <i class="material-icons">add_shopping_cart</i><div>Select Products</div>
       </a>
     </li>
     <li>
-      <a routerLink="remove">
-        <i class="material-icons">supervised_user_circle</i>Remove Badges
+      <a routerLink="remove" [routerLinkActive]="['activated']">
+        <i class="material-icons">remove_circle_outline</i><div>Remove Badges</div>
       </a>
     </li>
   </ul>

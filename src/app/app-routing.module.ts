@@ -8,10 +8,6 @@ import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
 
 const routes: Routes = [
   {
-    path: '',
-    component: SelectBadgeComponent
-  },
-  {
     path: 'customize',
     component: CustomizeComponent
   },
@@ -22,6 +18,10 @@ const routes: Routes = [
     {
     path: 'remove',
     component: RemoveBadgesComponent
+  },
+   {
+    path: '',
+    component: SelectBadgeComponent
   },
 ];
 
