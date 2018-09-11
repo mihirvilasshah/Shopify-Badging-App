@@ -4,8 +4,8 @@
 	<script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
 	<script type="text/javascript">
 	ShopifyApp.init({
-		apiKey: 'f777e7071cabd81a0f7171940fbbfb67',
-		shopOrigin: 'https://tricon-dev-store.myshopify.com'
+		apiKey:"<%= apiKey %>",
+		shopOrigin: "<%= shopOrigin %>",
 	});
 	</script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
@@ -23,28 +23,29 @@
 				primary: {
 					label: "Products",
 					message: 'bar_save',
-						href: 'https://3617ee8d.ngrok.io/static/products.html'
+						href: "<%= forwardingAddress %>" + "/static/products.html"
 				},
 				secondary: [
 					// Dropdown example
 				
 					{ 
 						// Link Button that opens in a new window
-						label: "Preview", href: 'http://tricon-dev-store.myshopify.com', 
+						label: "Preview", href: "<%= shopOrigin %>", 
 						target: "new" 
 					},
 					{ 
 						label: "Upload Image", 
 						callback: function() {
 							ShopifyApp.Modal.open({
-							  src: 'https://3617ee8d.ngrok.io/modal_content',
+							  src: "<%= forwardingAddress %>" + "/modal_content",
 							  title: 'A new modal',
 							  width: 'small',
 							  height: 300,
 							  buttons: {
 							    primary: { label: "OK", callback: function (label) { ShopifyApp.Modal.close(); } },
 							    secondary: [
-							      { label: "Cancel", callback: function (label) { ShopifyApp.Modal.close(); } }
+							      { label: "Cancel", 
+										  callback: function (label) { ShopifyApp.Modal.close(); } }
 							    ]
 							  }
 							});
