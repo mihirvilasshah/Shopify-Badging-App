@@ -211,6 +211,9 @@ exports.productPage = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/products.json';
     const shopRequestHeaders = {
         'X-Shopify-Access-Token': globalToken,
+        //----------------------------changed for http request---------------------
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
     };
 
     request.get(shopRequestUrl, { headers: shopRequestHeaders })
