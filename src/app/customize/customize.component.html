@@ -20,8 +20,8 @@
 
         <mat-form-field>
           <mat-select placeholder="Position">
-            <mat-option *ngFor="let position of positions" [value]="position.value">
-              {{position.viewValue}}
+            <mat-option *ngFor="let position of positions" [value]="position.name">
+              {{position.name}}
             </mat-option>
           </mat-select>
         </mat-form-field>

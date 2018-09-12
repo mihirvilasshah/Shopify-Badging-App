@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { BadgeService } from './badge.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+  products={}
   title = 'badger';
+
+  // constructor(private productService:BadgeService){
+
+  // }
+  // ngOnInit(){
+  //   this.productService.getProduct()
+  // }
 }
