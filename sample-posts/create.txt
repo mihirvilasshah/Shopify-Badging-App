@@ -1,0 +1,84 @@
+{
+            "id": 1458331512345,
+            "title": "Awesome Pant",
+            "body_html": "",
+            "vendor": "tricon-badger",
+            "product_type": "",
+            "created_at": "2018-08-17T17:38:06+05:30",
+            "handle": "pant",
+            "updated_at": "2018-08-17T17:46:24+05:30",
+            "published_at": "2018-08-17T17:37:38+05:30",
+            "template_suffix": null,
+            "tags": "",
+            "published_scope": "web",
+            "admin_graphql_api_id": "gid://shopify/Product/1458331549794",
+            "variants": [
+                {
+                    "id": 12981305759842,
+                    "product_id": 1458331549794,
+                    "title": "Default Title",
+                    "price": "2000.00",
+                    "sku": "",
+                    "position": 1,
+                    "inventory_policy": "deny",
+                    "compare_at_price": "2199.00",
+                    "fulfillment_service": "manual",
+                    "inventory_management": "shopify",
+                    "option1": "Default Title",
+                    "option2": null,
+                    "option3": null,
+                    "created_at": "2018-08-17T17:38:06+05:30",
+                    "updated_at": "2018-08-17T17:38:06+05:30",
+                    "taxable": true,
+                    "barcode": "",
+                    "grams": 590,
+                    "image_id": null,
+                    "inventory_quantity": 15,
+                    "weight": 0.59,
+                    "weight_unit": "kg",
+                    "inventory_item_id": 13279067275362,
+                    "old_inventory_quantity": 15,
+                    "requires_shipping": true,
+                    "admin_graphql_api_id": "gid://shopify/ProductVariant/12985305759842"
+                }
+            ],
+            "options": [
+                {
+                    "id": 1932661588066,
+                    "product_id": 1458331549794,
+                    "name": "Title",
+                    "position": 1,
+                    "values": [
+                        "Default Title"
+                    ]
+                }
+            ],
+            "images": [
+                {
+                    "id": 4037116466914,
+                    "product_id": 1458331549794,
+                    "position": 1,
+                    "created_at": "2018-08-17T17:38:10+05:30",
+                    "updated_at": "2018-08-17T17:38:10+05:30",
+                    "alt": null,
+                    "width": 960,
+                    "height": 1200,
+                    "src": "https://cdn.shopify.com/s/files/1/0029/6828/9378/products/35_383_2882_098_01.jpg?v=1534507690",
+                    "variant_ids": [],
+                    "admin_graphql_api_id": "gid://shopify/ProductImage/4037106466914"
+                }
+            ],
+            "image": {
+                "id": 4037116466914,
+                "product_id": 1458331549794,
+                "position": 1,
+                "created_at": "2018-08-17T17:38:10+05:30",
+                "updated_at": "2018-08-17T17:38:10+05:30",
+                "alt": null,
+                "width": 960,
+                "height": 1200,
+                "src": "https://cdn.shopify.com/s/files/1/0029/6828/9378/products/35_383_2882_098_01.jpg?v=1534507690",
+                "variant_ids": [],
+                "admin_graphql_api_id": "gid://shopify/ProductImage/4037106466914"
+            }
+        }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel='stylesheet' href='/stylesheets/foundation.min.css' />
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<title><%= title %></title>
+</head>
+<body>
+	<!-- <form action="https://a7461e57.ngrok.io/uploadPic">
+  		<input type="file" name="pic" accept="image/*">
+  		<input type="submit">
+	</form> -->
+
+	<form action="/uploadPic" method="POST" enctype="multipart/form-data">
+		<input type="file" name="picture" accept="application/x-zip-compressed,image/*">
+		<input class="btn btn-primary" type="submit" value="submit">
+	</form>
+</body>
+</html>
