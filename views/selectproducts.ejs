@@ -63,7 +63,9 @@
           <h1>List Of Products</h1>
           <input type="checkbox"> select all <br><br><br> 
           <div class="flex-container">
-              <p><%=items%></p>
+               <% for(var i=0; i<items.length; i++) {%>
+                           <input type= "checkbox"><%= items[i] %><br>
+                        <% } %>
          </section> 
           <div >
                   
