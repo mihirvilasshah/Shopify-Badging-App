@@ -427,7 +427,7 @@ exports.uploadPic = (req, res) => {
         console.log('upload Pic null');
         console.log(req.file);
         // If Submit was accidentally clicked with no file selected...
-        res.render('modal_content', { title: 'Please select a picture file to submit!' });
+        
     } else {
         MongoClient.connect(url, function (err, db) {
             console.log('upload Pic to mongo');
@@ -491,6 +491,8 @@ exports.uploadPic = (req, res) => {
     }
 
 
+
+
     // MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
     //     if (err) throw err;
     //     console.log(req.query);
@@ -544,16 +546,40 @@ exports.preview = (req, res) => {
         id: id
     });
 }
-
+var css;
 exports.selectProduct = (req, res) => {
-    res.render('selectproducts');
+
+    css = req.params.css;
+    console.log(css);
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+        var myquery = { Bid:id, css:css};
+
+        // if (flag == 0) {
+        
+            dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
+                if (err) throw err;
+                console.log("inserted to badge_Product_mapping ");
+            });
+        
+
+        // }
+        // res.send({ message: "Products copied to DB" });
+        db.close();
+    });
+    res.render('selectproducts',{items:""});
+    console.log(id);
+
+    
 }
 
 
 var id;
 exports.selectedBadgeID = (req, res) => {
     id = req.params.id;
-    console.log(id);
+    //console.log(id);
 }
 
 
@@ -572,7 +598,7 @@ exports.selectedBadgeID = (req, res) => {
             // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
             //     if (err) throw err;
 
-            dbo.collection("shopify_collection2").find({}, { projection: { title: 1} }).toArray(function (err, obj){
+            dbo.collection("shopify_collection").find({}, { projection: { title: 1} }).toArray(function (err, obj){
                     if (err) throw err;
 
                 
@@ -595,3 +621,6 @@ exports.selectedBadgeID = (req, res) => {
            
         });
     };
+
+
+

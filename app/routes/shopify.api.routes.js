@@ -45,7 +45,7 @@ module.exports = (app) => {
 
     app.get('/preview', controller.preview);
 
-    app.get('/selectProduct', controller.selectProduct);
+    app.get('/selectProduct/:css', controller.selectProduct);
 
     app.get('/selectedBadgeID/:id',controller.selectedBadgeID);
     app.get('/getProductPriceRange', controller.getProductPriceRange);

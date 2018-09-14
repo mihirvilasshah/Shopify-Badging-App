@@ -58,6 +58,8 @@
 </select>
 </form>
 
+
+
 </div>
 </div>
 
@@ -78,7 +80,7 @@
     <br>
     <br>
     <div class="divp">
-        <a href="/selectProduct" class="button">        
+        <a href="" onClick="this.href = link" class="button" id = "screen3">        
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"> NEXT
         </a>
 </button>
@@ -96,6 +98,10 @@
     function changeFunc() {
         var selectBox = document.getElementById("selectBox");
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        var selectedText = selectBox.options[selectBox.selectedIndex].text;
+        var link = "/selectProduct/"+selectedText;
+        document.getElementById("screen3").href = link;
+
         if (selectedValue == 1) {
             document.getElementById("image1").style.position = "static";
             document.getElementById("image1").style.top = "5px";
@@ -118,9 +124,18 @@
             document.getElementById("image1").style.left = "15px";
 
         }
+
+
     }
 
 </script>
+<script>
+
+    var e = document.getElementById("selectBox");
+    var csstext = e.options[e.selectedIndex].text;
+    var link = "/selectProduct/"+csstext;
+    document.getElementById("screen3").setAttribute("href", link);
+    </script>
 
 </body>
 
