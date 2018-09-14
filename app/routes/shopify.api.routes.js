@@ -47,6 +47,8 @@ module.exports = (app) => {
 
     app.get('/selectProduct', controller.selectProduct);
 
+    app.get('/selectedBadgeID/:id',controller.selectedBadgeID);
+
 
 
 

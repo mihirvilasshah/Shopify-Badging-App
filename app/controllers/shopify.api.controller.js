@@ -540,10 +540,18 @@ exports.getPicture = (req, res) => {
 }
 
 exports.preview = (req, res) => {
-    res.render('preview');
+    res.render('preview', {
+        id: id
+    });
 }
 
 exports.selectProduct = (req, res) => {
     res.render('selectproducts');
 }
 
+
+var id;
+exports.selectedBadgeID = (req, res) => {
+    id = req.params.id;
+    console.log(id);
+}

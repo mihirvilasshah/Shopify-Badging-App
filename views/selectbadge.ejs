@@ -51,7 +51,7 @@
 
 /* Style the tab content */
 			.tabcontent {
-				display: none;
+			
 				padding: 6px 12px;
 				border: 1px solid #ccc;
 				border-top: none;
@@ -81,16 +81,18 @@
 </div>
 
 
-<div id="Mybadges" class="tabcontent">
+<div id="Mybadges" class="tabcontent" style="display:none">
 
 <%ids.forEach(function(link){%>
+<a href="/selectedBadgeID/<%= link %>">
 <img src='/picture/<%= link %>' height="250px" width="250px">
+</a>
 <%});%> 
 
 </div>
 
 
-<div id="Upload" class="tabcontent">
+<div id="Upload" class="tabcontent" style="display:none">
 <h3>Upload</h3>
 <form action="/uploadPic" method="POST" enctype="multipart/form-data">
 <input type="file" name="picture" accept="application/x-zip-compressed,image/*">
