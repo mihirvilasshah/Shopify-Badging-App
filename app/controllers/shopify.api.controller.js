@@ -104,7 +104,7 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        
+
 
 
                         //var image = getPictures();
@@ -112,59 +112,47 @@ exports.auth = (req, res) => {
                         var flag = 0;
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
-                            dbo.collection("shopify_collection2").find({},{ projection: {contentType: 0, size: 0, img: 0,  src: 0 } } ).toArray(function(err, result) {
+                            dbo.collection("shopify_collection2").find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
                                 if (err) throw err;
-                                
 
                                 images = result;
                                 //var ids = result[0];
                                 var ids = [];
-                                for(var i=0;i<images.length;i++){
-
-
+                                for (var i = 0; i < images.length; i++) {
                                     ids[i] = images[i]._id;
                                 }
 
-                               console.log(images[0]._id);
-                               console.log(ids);
+                                //    console.log(images[0]._id);
+                                console.log(ids);
 
-                               res.render('selectbadge', {
-                                apiKey: process.env.SHOPIFY_API_KEY,
-                                shopOrigin: 'https://' + globalShop,
-                                ids:ids,
-    
-                                forwardingAddress: process.env.FORWARDING_ADDRESS
-    
+                                res.render('selectbadge', {
+                                    apiKey: process.env.SHOPIFY_API_KEY,
+                                    shopOrigin: 'https://' + globalShop,
+                                    ids: ids,
+
+                                    forwardingAddress: process.env.FORWARDING_ADDRESS
+
+                                });
                             });
-                               
-                                
-                              });
-                             
-                             
+
+                            // //
+                            //                             // dbo.collection('shopify_collection2')
+                            //                             //     .find({}, function (err, results) {
 
 
-// //
-//                             // dbo.collection('shopify_collection2')
-//                             //     .find({}, function (err, results) {
+                            //                             //         results.forEach(function (result) {
 
-                                    
-//                             //         results.forEach(function (result) {
+                            //                             //             images.push(result.img.buffer);
+                            //                             //         })
+                            //                             //     });
 
-//                             //             images.push(result.img.buffer);
-//                             //         })
-//                             //     });
-
-//                                 //
+                            //                                 //
                         });
 
                         //console.log(images);
 
 
                         //  res.redirect('/static/welcome.html');
-                        
-                       
-                    
-
                         console.log(images);
                         //res.render('index.html');
                         // console.log("Shop Response: "+shopResponse);
@@ -468,12 +456,37 @@ exports.uploadPic = (req, res) => {
                         // var img = document.createElement("IMG");
                         // img.setAttribute("src", forwardingAddress + '/picture/' + newoid);
 
-                        res.render('selectbadge', { src: forwardingAddress + '/picture/' + newoid });
+                        // res.render('selectbadge', { src: forwardingAddress + '/picture/' + newoid });
 
                         //res.send("Img can be viewed at: " + forwardingAddress + '/picture/' + newoid);
-                        console.log("uploaded" + newoid);
+                        console.log("uploaded: " + newoid);
                     });
                 });
+
+            dbo.collection("shopify_collection2")
+                .find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
+                    if (err) throw err;
+
+                    images = result;
+                    //var ids = result[0];
+                    var ids = [];
+                    for (var i = 0; i < images.length; i++) {
+                        ids[i] = images[i]._id;
+                    }
+
+                    //    console.log(images[0]._id);
+                    console.log(ids);
+
+                    res.render('selectbadge', {
+                        apiKey: process.env.SHOPIFY_API_KEY,
+                        shopOrigin: 'https://' + globalShop,
+                        ids: ids,
+
+                        forwardingAddress: process.env.FORWARDING_ADDRESS
+
+                    });
+                });
+
         });
     }
 
@@ -527,8 +540,10 @@ exports.getPicture = (req, res) => {
 }
 
 exports.preview = (req, res) => {
-    // assign the URL parameter to a variable
-   res.render('preview');
+    res.render('preview');
 }
 
+exports.selectProduct = (req, res) => {
+    res.render('selectproducts');
+}
 

@@ -38,12 +38,14 @@ module.exports = (app) => {
     app.post('/uploadPic', upload.single('picture'), controller.uploadPic);
 
     // Get picture
-    app.get('/picture/:picture',controller.getPicture);
+    app.get('/picture/:picture', controller.getPicture);
     // Get pictures
-   // app.get('/pictures',controller.getPictures);
+    // app.get('/pictures',controller.getPictures);
 
 
-   app.get('/preview',controller.preview);
+    app.get('/preview', controller.preview);
+
+    app.get('/selectProduct', controller.selectProduct);
 
 
 
