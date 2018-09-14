@@ -555,3 +555,43 @@ exports.selectedBadgeID = (req, res) => {
     id = req.params.id;
     console.log(id);
 }
+
+
+ exports.getProductPriceRange = (req, res) => {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            if (err) throw err;
+    
+            var dbo = db.db("shopifydbclone");
+    
+            console.log("inside getProd");
+            // var myquery = { _id: ObjectId(req.params.id) };
+            var myquery = { "variants.0.price":{$gte:"100"} };
+            // var myquery = { id: 1466289291362 };
+           
+
+            // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
+            //     if (err) throw err;
+
+            dbo.collection("shopify_collection2").find({}, { projection: { title: 1} }).toArray(function (err, obj){
+                    if (err) throw err;
+
+                
+
+
+                var products = obj;
+                //var ids = result[0];
+
+                var titles = [];
+                for (var i = 0; i < products.length; i++) {
+                    titles[i] = products[i].title;
+                }
+
+                console.log("product found: " + titles);
+                //console.log("product found: " + );
+               // res.send(obj);
+                res.render('selectproducts',{items:titles});
+            });
+            // res.send({ message: "Found product" });
+           
+        });
+    };
