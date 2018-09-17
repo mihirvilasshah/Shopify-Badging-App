@@ -17,15 +17,7 @@
                     document.getElementById("price").style.display = "block";
                     document.getElementById("date").style.display = "none";
                     document.getElementById("category").style.display = "none";
-                    
-
-
-
-
-                    
-
-
-                 
+                    document.getElementById("title").style.display = "none";                 
                     break;
                 case "date":
 
@@ -33,7 +25,7 @@
                     document.getElementById("price").style.display = "none";
                     document.getElementById("date").style.display = "block";
                     document.getElementById("category").style.display = "none";
-
+                    document.getElementById("title").style.display = "none";
 
                     break;
                 case "category":
@@ -44,6 +36,16 @@
                     document.getElementById("price").style.display = "none";
                     document.getElementById("date").style.display = "none";
                     document.getElementById("category").style.display = "block";
+
+                    break;
+                    case "title":
+
+
+                    document.getElementById("price").style.display = "none";
+                    document.getElementById("date").style.display = "none";
+                    document.getElementById("category").style.display = "none";
+                    document.getElementById("title").style.display = "block";
+
 
                     break;
                 default:
@@ -88,12 +90,38 @@ function DateRange(){
 
 
 }
+function prodTitle(){
+    t1 = document.getElementById("t1").value;
+                   
+                    console.log("t1"+t1);
+                    
+
+
+               // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
+               // query2= "'"+query+"'";
+               //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
+                link = "getProductTitle/"+t1;
+                // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
+                window.location = 'https://b55e44f6.ngrok.io/'+link;
+
+
+}
     </script>
      <script>
                 
             document.write(sessionStorage.selectedImg + "<br>");
             document.write(sessionStorage.selectedText);
+
       </script>
+      <script language="JavaScript">
+         function toggle(source) {
+    var checkboxes = document.querySelectorAll('input[name="products"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+        if (checkboxes[i] != source)
+            checkboxes[i].checked = source.checked;
+    }
+}
+            </script>
 </head>
 
 <body>
@@ -104,6 +132,7 @@ function DateRange(){
             <option value="price"> price</option>
             <option value="date">date</option>
             <option value="category">category</option>
+            <option value="title">select products using title</option>
         </select> &nbsp;&nbsp;
 
         
@@ -137,6 +166,16 @@ function DateRange(){
                      <button type="button" onClick="myFunction3()">apply </button>
         
                 </div>
+                <div id="title" style="display:none;">
+                
+                 
+                        <input type="text" id = "t1">
+                       
+                       <button type="button" onClick="prodTitle()">apply </button>
+        
+                    
+        
+                </div>
 
     
 
@@ -153,10 +192,10 @@ function DateRange(){
              
         </div>
         <h1>List Of Products</h1>
-        <input type="checkbox"> select all <br><br><br>
+        <input type="checkbox" onClick="toggle(this)"> select all <br><br><br>
         <div class="flex-container">
                 <% for(var i=0; i<items.length; i++) {%>
-                        <input type= "checkbox"><%= items[i] %><br>
+                        <input type= "checkbox" name="products"><%= items[i] %><br>
                      <% } %>
     </section>
     <div>
