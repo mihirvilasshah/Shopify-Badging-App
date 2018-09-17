@@ -590,16 +590,24 @@ exports.selectedBadgeID = (req, res) => {
     
             var dbo = db.db("shopifydbclone");
     
-            console.log("inside getProd");
+            console.log("inside getProdPrice");
             // var myquery = { _id: ObjectId(req.params.id) };
-            var myquery = { "variants.0.price":{$gte:"100"} };
-            // var myquery = { id: 1466289291362 };
-           
+           // var myquery = { "variants.0.price":{$gte:"100"} };
+           p1=req.params.p1;
+           console.log("p1: " +p1);
+           p2=req.params.p2;
+           console.log("p2: " +p2);
+       // var myquery=req.params.query;
+
+             var myquery = {"variants.0.price":{"$gte":p1,"$lte":p2}};
+             console.log(myquery);   
+              //var queryObj = JSON.parse(myquery);
+              //console.log(queryObj); 
 
             // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
             //     if (err) throw err;
 
-            dbo.collection("shopify_collection").find({}, { projection: { title: 1} }).toArray(function (err, obj){
+            dbo.collection("shopify_collection").find(myquery, { projection: { title: 1} }).toArray(function (err, obj){
                     if (err) throw err;
 
                 
@@ -622,6 +630,53 @@ exports.selectedBadgeID = (req, res) => {
            
         });
     };
+    exports.getProductDateRange = (req, res) => {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            if (err) throw err;
+    
+            var dbo = db.db("shopifydbclone");
+    
+            console.log("inside getProdPrice");
+            // var myquery = { _id: ObjectId(req.params.id) };
+           // var myquery = { "variants.0.price":{$gte:"100"} };
+           d1=req.params.d1;
+           console.log("p1: " +d1);
+           d2=req.params.d2;
+           console.log("p2: " +d2);
+       // var myquery=req.params.query;
+
+             var myquery = {"created_at":{"$gte":d1,"$lte":d2}};
+             console.log(myquery);   
+              //var queryObj = JSON.parse(myquery);
+              //console.log(queryObj); 
+
+            // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
+            //     if (err) throw err;
+
+            dbo.collection("shopify_collection").find(myquery, { projection: { title: 1} }).toArray(function (err, obj){
+                    if (err) throw err;
+
+                
+
+
+                var products = obj;
+                //var ids = result[0];
+
+                var titles = [];
+                for (var i = 0; i < products.length; i++) {
+                    titles[i] = products[i].title;
+                }
+
+                console.log("product found: " + titles);
+                //console.log("product found: " + );
+               // res.send(obj);
+                res.render('selectproducts',{items:titles});
+            });
+            // res.send({ message: "Found product" });
+           
+        });
+    };
+
 
 
 
