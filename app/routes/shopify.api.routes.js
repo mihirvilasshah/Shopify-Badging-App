@@ -52,6 +52,9 @@ module.exports = (app) => {
      app.get('/getProductPriceRange/:p1/:p2', controller.getProductPriceRange);
    // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
    app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
+    
+       app.get('/getProductTitle/:t1', controller.getProductTitle);
+
 
 
 
