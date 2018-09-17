@@ -26,6 +26,10 @@
     margin: 50px;
 }  
 </style>
+<script>
+     document.write(sessionStorage.selectedImg);
+</script>
+
 </head>
 
 <body>
@@ -41,7 +45,7 @@
                 <h4>
                     SELECTED BADGE
                 </h4>
-                <img src="/picture/<%= id%>" height="200px" width="200px">
+                <img id="selBadge" src="" height="200px" width="200px">
                 <h4>
                     POSITION:
                 </h4>
@@ -70,7 +74,7 @@
 
     <div class="container">
         <div id="imagediv">
-            <img id="image1" src="/picture/<%= id%>" alt="Cinque Terre" height="50" width="50" />
+            <img id="image1" src="" alt="Cinque Terre" height="50" width="50" />
             <center>
                 <img id="image2" src="/images/shirt.jpg" alt="Cinque Terre" height="300" width="300" />
             </center>
@@ -99,6 +103,10 @@
         var selectBox = document.getElementById("selectBox");
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
         var selectedText = selectBox.options[selectBox.selectedIndex].text;
+
+        sessionStorage.setItem("selectedText",selectedText);
+        
+
         var link = "/selectProduct/"+selectedText;
         document.getElementById("screen3").href = link;
 
@@ -135,7 +143,14 @@
     var csstext = e.options[e.selectedIndex].text;
     var link = "/selectProduct/"+csstext;
     document.getElementById("screen3").setAttribute("href", link);
-    </script>
+</script>
+
+<script>
+     var sessionSelectedImgID = sessionStorage.selectedImg;
+     var path = "/picture/" + sessionSelectedImgID;
+     document.getElementById('image1').src = path;
+     document.getElementById('selBadge').src = path;  
+</script>
 
 </body>
 

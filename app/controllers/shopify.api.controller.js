@@ -442,7 +442,7 @@ exports.uploadPic = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                src: forwardingAddress + '/picture/' + imname
+                src: forwardingAddress + '/picture/' + imname // not name, it should be id
 
             };
             var dbo = db.db("shopifydbclone");
@@ -545,6 +545,7 @@ exports.preview = (req, res) => {
     res.render('preview', {
         id: id
     });
+    console.log("id to preview: "+id);
 }
 var css;
 exports.selectProduct = (req, res) => {

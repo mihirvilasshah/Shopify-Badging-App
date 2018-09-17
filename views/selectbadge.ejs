@@ -58,6 +58,12 @@
 			}
 
 </style>
+<script>
+function session(){
+var selectedImg = document.querySelector('input[name = "img"]:checked').value;
+sessionStorage.setItem("selectedImg",selectedImg);
+}
+</script>
 
 </head>
 
@@ -83,11 +89,14 @@
 
 <div id="Mybadges" class="tabcontent" style="display:none">
 
+<form>
 <%ids.forEach(function(link){%>
 <a href="/selectedBadgeID/<%= link %>">
+<input type="radio" name="img" value="<%= link %>" checked>
 <img src='/picture/<%= link %>' height="250px" width="250px">
 </a>
 <%});%> 
+</form>
 
 </div>
 
@@ -101,7 +110,7 @@
 
 </div>
 
-<a href="/preview" class="button">NEXT</a>
+<a href="/preview" class="button" onclick="session()">NEXT</a>
 
 
 <script>
@@ -121,7 +130,11 @@ tablinks[i].className = tablinks[i].className.replace(" active", "");
 document.getElementById(cityName).style.display = "block";
 evt.currentTarget.className += " active";
 }
+
+
+
 </script>
+
 
 </body>
 </html> 
