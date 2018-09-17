@@ -346,3 +346,49 @@ exports.getProduct = (req, res) => {
         db.close();
     });
 };
+
+exports.getProductTitle = (req, res) => {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            if (err) throw err;
+    
+            var dbo = db.db("shopifydbclone");
+    
+            console.log("inside getProdPrice");
+            // var myquery = { _id: ObjectId(req.params.id) };
+           // var myquery = { "variants.0.price":{$gte:"100"} };
+           t1=req.params.t1;
+           console.log("t1: " +t1);
+        //    var t = "/"+t1+"/i";
+       // var myquery=req.params.query;
+
+            //  var myquery ={"title" :t};
+            //  console.log(myquery);   
+              //var queryObj = JSON.parse(myquery);
+              //console.log(queryObj); 
+
+            // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
+            //     if (err) throw err;
+
+            dbo.collection("shopify_collection").find({ 'title': new RegExp(t1, 'i') }, { projection: { title: 1} }).toArray(function (err, obj){
+                    if (err) throw err;
+
+                
+
+
+                var products = obj;
+                //var ids = result[0];
+
+                var titles = [];
+                for (var i = 0; i < products.length; i++) {
+                    titles[i] = products[i].title;
+                }
+
+                console.log("product found: " + titles);
+                //console.log("product found: " + );
+               // res.send(obj);
+                res.render('selectproducts',{items:titles});
+            });
+            // res.send({ message: "Found product" });
+           
+        });
+    };
