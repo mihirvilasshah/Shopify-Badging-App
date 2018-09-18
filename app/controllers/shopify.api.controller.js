@@ -555,36 +555,36 @@ exports.selectProduct = (req, res) => {
     id = req.params.id;
 
     console.log(css);
-    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-        if (err) throw err;
+    // MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+    //     if (err) throw err;
 
-        var dbo = db.db("shopifydbclone");
-        var myquery = { Bid: id, css: css };
+    //     var dbo = db.db("shopifydbclone");
+    //     var myquery = { Bid: id, css: css };
 
-        // if (flag == 0) {
+    //     // if (flag == 0) {
 
-        dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
-            if (err) throw err;
-            console.log("inserted to badge_Product_mapping ");
-            var newoid = new ObjectId(result.ops[0]._id);
-            console.log("ABid: " + newoid);
-        });
-
-
-        dbo.collection("shopify_collection").find({
-            "_id": {
-                "$in":
-                [ObjectId("55880c251df42d0466919268"),
-                ObjectId("55bf528e69b70ae79be35006")
-                ]
-            }
-        });
+    //     dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
+    //         if (err) throw err;
+    //         console.log("inserted to badge_Product_mapping ");
+    //         var newoid = new ObjectId(result.ops[0]._id);
+    //         console.log("ABid: " + newoid);
+    //     });
 
 
-        // }
-        // res.send({ message: "Products copied to DB" });
-        db.close();
-    });
+    //     dbo.collection("shopify_collection").find({
+    //         "_id": {
+    //             "$in":
+    //             [ObjectId("55880c251df42d0466919268"),
+    //             ObjectId("55bf528e69b70ae79be35006")
+    //             ]
+    //         }
+    //     });
+
+
+    //     // }
+    //     // res.send({ message: "Products copied to DB" });
+    //     db.close();
+    // });
     res.render('selectproducts', { items: "", pids: "" });
     console.log(id);
 
@@ -756,6 +756,86 @@ exports.getProductTitle = (req, res) => {
         // res.send({ message: "Found product" });
 
     });
+};
+exports.ajaxtest = (req, res) => {
+
+    var map = 0;
+    var abid;
+    console.log('body: ' + JSON.stringify(req.body));
+    console.log(req.body.bid);
+    res.send(req.body);
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+        var myquery = { Bid: req.body.bid, css: req.body.css };
+
+        // if (flag == 0) {
+
+        dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
+            if (err) throw err;
+            console.log("inserted to badge_Product_mapping ");
+
+            var newoid = new ObjectId(result.ops[0]._id);
+            console.log("ABid: " + newoid);
+
+            // console.log("asfas" + myquery._id);
+            // abid = myquery._id;
+
+            var newvalues = { $set: { "ABid": newoid } };
+
+
+            for (var i = 0; i < req.body.pid.length; i++) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i])
+                };
+                console.log("pids: "+req.body.pid[i]);
+
+                dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("product updated ABid: " + obj);
+                });
+            }
+            // map = 1;
+        });
+
+        // console.log("map:"+map);
+
+        // var x = ObjectId(req.body.pid[0]) + ",";
+        // for (var i = 1; i < req.body.pid.length; i++) {
+        //     x += ObjectId(req.body.pid[i]) + ",";
+        // }
+
+        // console.log("x: " + x);
+
+        // var myquery = {
+        //     "_id": {
+        //         "$in":
+
+        //             [
+        //                 x
+        //             ]
+        //     }
+        // };
+
+
+
+
+
+
+        // }
+        // res.send({ message: "Products copied to DB" });
+
+    });
+
+    // if (map == 1) {
+
+
+
+
+
+    // }
+
 };
 
 
