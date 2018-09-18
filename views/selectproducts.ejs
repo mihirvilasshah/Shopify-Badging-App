@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <script language="javascript" type="text/javascript">
+          function dynamicdropdown(listindex)
+          {
+              switch (listindex)
+              {
+              case "price" :
+              document.getElementById("value").options[0]=new Option("Select status","");
+              document.getElementById("value").options[1]=new Option("1000","1000");
+                  document.getElementById("value").options[2]=new Option("5000","5000");
+                 // document.getElementById("value").options[3]=new Option("500","500");
+                  break;
+              case "date" :
+             document.getElementById("value").options[0]=new Option("Select status","");
+               document.getElementById("value").options[1]=new Option("1 month", "1 month");
+                  document.getElementById("value").options[2]=new Option("1 Year","1 year");
+                  break;
+                  case "category" :
+              document.getElementById("value").options[0]=new Option("Select status","");
+               document.getElementById("value").options[1]=new Option("category1", "category1");
+                  document.getElementById("value").options[2]=new Option("category2","category2");
+                  
+                  break;
+                  default:
+                        document.getElementById("value").options[0]=new Option("select status","");
+                        break;
+              }
+              return true;
+          }
+          </script>
+          <script>
+                
+                document.write(sessionStorage.selectedImg + "<br>");
+                document.write(sessionStorage.selectedText);
+          </script>
+    </head>
+    <body>
+        <h1>Filters</h1>
+      <div >
+          <select id="source" name="source" onchange="javascript: dynamicdropdown(this.options[this.selectedIndex].value);">
+                  <option value="default"  selected="selected" disabled>select</option>
+                  <option value="price"> price</option>
+      <option value="date">date</option>  
+      <option value="category">category</option> 
+      </select> &nbsp;&nbsp;
+   
+      <select>
+          <option value="default" selected="selected" disabled>select</option>
+          <option value="greater than"  >  >  </option>
+          <option value="less than" >  <  </option>
+            
+          </select>&nbsp;&nbsp;
+    
+              <script type="text/javascript" language="JavaScript">
+                  document.write('<select name="value" id="value"><option value="">Select status</option></select>')
+                  </script>
+                  
+          
+          
+          </div><br>
+          <section>
+          <div>
+               <a href="/getProductPriceRange">   
+              <button type="button" >apply </button></a>
+              <button type="button" >reset </button>
+          </div>
+          <h1>List Of Products</h1>
+          <input type="checkbox"> select all <br><br><br> 
+          <div class="flex-container">
+               <% for(var i=0; i<items.length; i++) {%>
+                           <input type= "checkbox"><%= items[i] %><br>
+                        <% } %>
+         </section> 
+          <div >
+                  
+                  &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox"> With Badges <br>
+                  &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox"> Without Badges <br><br>
+  
+          </div></div>
+          <div>
+                  <button type="button" >Publish </button>
+  
+          </div>
+          
+       
+    </body> 
+   </html>

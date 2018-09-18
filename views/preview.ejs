@@ -1,0 +1,158 @@
+<html>
+
+<head>
+    <style>
+.container {
+      height: 500px;
+      width: 500px;
+      background: blue;
+
+  }
+
+.outer{
+    color: indigo;
+    font-family: 'Montserrat', sans-serif;
+    font-family: 'Slabo 27px', serif;
+    padding: 50px;
+}
+
+.df{
+    display: flex; 
+   
+}
+
+.divp{
+    padding: 50px;
+    margin: 50px;
+}  
+</style>
+<script>
+     document.write(sessionStorage.selectedImg);
+</script>
+
+</head>
+
+<body>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+
+    <section class="outer">
+        <DIV class="df">
+            <div class="divp">
+
+                <h4>
+                    SELECTED BADGE
+                </h4>
+                <img id="selBadge" src="" height="200px" width="200px">
+                <h4>
+                    POSITION:
+                </h4>
+                <div>
+
+
+
+                    <form name="theForm" method="post">
+                        <select name="items" id="selectBox" onchange="changeFunc();">
+<option value="1">top-left</option>
+<option value="2">top-right </option>
+<option value="3">bottom-right</option>
+<option value="4">bottom-left</option>
+</select>
+</form>
+
+
+
+</div>
+</div>
+
+<div class="divp">
+    <h4>
+        PREVIEW:
+    </h4>
+
+    <div class="container">
+        <div id="imagediv">
+            <img id="image1" src="" alt="Cinque Terre" height="50" width="50" />
+            <center>
+                <img id="image2" src="/images/shirt.jpg" alt="Cinque Terre" height="300" width="300" />
+            </center>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <div class="divp">
+        <a href="" onClick="this.href = link" class="button" id = "screen3">        
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"> NEXT
+        </a>
+</button>
+</div>
+</div>
+</DIV>
+
+</section>
+
+<script type="text/javascript">
+
+    document.getElementById("image2").style.position = "relative";
+    document.getElementById("image2").style.top = "45px";
+
+    function changeFunc() {
+        var selectBox = document.getElementById("selectBox");
+        var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+        var selectedText = selectBox.options[selectBox.selectedIndex].text;
+
+        sessionStorage.setItem("selectedText",selectedText);
+        
+
+        var link = "/selectProduct/"+selectedText;
+        document.getElementById("screen3").href = link;
+
+        if (selectedValue == 1) {
+            document.getElementById("image1").style.position = "static";
+            document.getElementById("image1").style.top = "5px";
+            document.getElementById("image1").style.left = "15px";
+        } else if (selectedValue == 2) {
+            document.getElementById("image1").style.position = "relative";
+            document.getElementById("image1").style.top = "5px";
+            document.getElementById("image1").style.left = "450px";
+            // document.getElementById("imagediv").style.float = "right";
+
+        } else if (selectedValue == 3) {
+            document.getElementById("image1").style.position = "relative";
+            document.getElementById("image1").style.top = "440px";
+            document.getElementById("image1").style.left = "450px";
+            // document.getElementById("imagediv").style.float = "right";
+
+        } else if (selectedValue == 4) {
+            document.getElementById("image1").style.position = "relative";
+            document.getElementById("image1").style.top = "440px";
+            document.getElementById("image1").style.left = "15px";
+
+        }
+
+
+    }
+
+</script>
+<script>
+
+    var e = document.getElementById("selectBox");
+    var csstext = e.options[e.selectedIndex].text;
+    var link = "/selectProduct/"+csstext;
+    document.getElementById("screen3").setAttribute("href", link);
+</script>
+
+<script>
+     var sessionSelectedImgID = sessionStorage.selectedImg;
+     var path = "/picture/" + sessionSelectedImgID;
+     document.getElementById('image1').src = path;
+     document.getElementById('selBadge').src = path;  
+</script>
+
+</body>
+
+
+</html>
