@@ -56,6 +56,7 @@ module.exports = (app) => {
     app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
 
     app.get('/getProductTitle/:t1', controller.getProductTitle);
+    app.post('/ajaxtest',controller.ajaxtest);
 
 
 
