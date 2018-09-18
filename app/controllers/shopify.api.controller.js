@@ -104,6 +104,17 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
+                      MongoClient.connect(url, function (err, db) {
+                            var dbo = db.db("shopifydbclone");
+                        dbo.listCollections({name: globalShop})
+                        .next(function(err, collinfo) {
+                            if (!collinfo) {
+                        request.get(forwardingAddress + '/copyDB');
+                        request.get(forwardingAddress + '/createWebhooks');
+                        // console.log("Started copying DB");
+                    }
+                });
+            });
 
 
 
@@ -183,8 +194,7 @@ exports.auth = (req, res) => {
                         // TODO: Make sure that DB copying is only done once
                         // API call to copy Shopify DB ton our DB
 
-                        request.get(forwardingAddress + '/copyDB');
-                        request.get(forwardingAddress + '/createWebhooks');
+                       
                         // console.log("Started copying DB");
 
                         //deleteProd(1451088838726);
@@ -327,7 +337,7 @@ exports.copyDB = (req, res) => {
 
         // if (flag == 0) {
         prod_list.forEach(function (item) {
-            dbo.collection("shopify_collection").insertOne(item, function (err, result) {
+            dbo.collection(globalShop).insertOne(item, function (err, result) {
                 if (err) throw err;
                 console.log("Number of documents inserted: " + result.insertedCount);
             });
