@@ -1,0 +1,45 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+<mat-tab-group>
+  <mat-tab label="Library"> 
+   <!-- to do add images to mongo do and fetch it from db through a call -->
+    images to be displayed
+
+  </mat-tab>
+
+
+
+  <mat-tab label="My Badges"> 
+  <!-- the pics that are uploaded will be displayed here   -->
+
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://3c7c6d64.ngrok.io/picture/5b9faee2e1439e16241352df">
+    <div id="imageContainer">
+      
+
+    </div>
+  
+  </mat-tab>
+  
+  
+  
+ 
+  <mat-tab label="Upload"> 
+    
+	<form action="https://3c7c6d64.ngrok.io/uploadPic/" method="POST" enctype="multipart/form-data"#form>
+		<input type="file" name="picture" accept="application/x-zip-compressed,image/*"/>
+		<button type="submit" (click)="form.submit()">Upload</button>
+	</form>
+
+  </mat-tab>
+
+</mat-tab-group>
+<br><br>
+<a routerLink="customize" [routerLinkActive]="['activated']">
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" onclick="customizeBadge()" > NEXT
+  </button>
+</a>
+
+
+

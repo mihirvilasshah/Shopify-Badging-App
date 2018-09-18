@@ -10,13 +10,14 @@ import { HttpClientModule }    from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { SelectBadgeComponent } from './select-badge/select-badge.component';
+import { SelectBadgeComponent } from './selectbadge/selectbadge.component';
 import { CustomizeComponent } from './customize/customize.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
 import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
 import {BadgeService} from './badge.service'
 // import { FormsModule } from '../../node_modules/@angular/forms';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { RouterModule, Routes } from '@angular/router';
 // import {NgModule} from '@angular/core';
 // import {FormsModule, ReactiveFormsModule}  from '@angular/forms';
 
@@ -42,9 +43,37 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     //   InMemoryDataService, { dataEncapsulation: false }
     // )
   ],
+
+
+
+
   providers: [
     BadgeService
   ],
   bootstrap: [AppComponent]
 })
+
+// const routes:Routes = [
+//   { 
+//     path: 'selectBadge',
+//     component: SelectBadgeComponent
+//   },
+//   { 
+//     path: 'customizeBadge', 
+//     component: CustomizeComponent 
+//   },
+//   {
+//     path: 'removeBadge/:id',
+//     component: RemoveBadgesComponent
+//   },
+
+//   { 
+//     path: 'sidebar',
+//     component: SidebarComponent
+//   },
+//   { 
+//     path: 'selectProducts',
+//     component: SelectProductsComponent
+//   }
+// ]
 export class AppModule { }

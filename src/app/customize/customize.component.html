@@ -2,15 +2,13 @@
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
-
-<section class="outer">
   <DIV class="df">
     <div class="divp">
 
       <h4>
         SELECTED BADGE
       </h4>
-      <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="200px" width="200px">
+      <img src="https://thumbs.dreamstime.com/z/winner-badge-81762.jpg" height="200px" width="200px">
       <h4>
         POSITION:
       </h4>
@@ -34,7 +32,11 @@
         PREVIEW:
       </h4>
 
-      <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px">
+      <div style="background-image: url(https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg); height: 500px; width: 500px; border: 1px solid black; background-size:cover ">
+        <img id="image1" src="https://thumbs.dreamstime.com/z/winner-badge-81762.jpg" alt="Cinque Terre" height="50" width="50" />
+      </div>
+
+      <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
 
       <br>
       <br>
@@ -45,4 +47,47 @@
 </div>
 </DIV>
 
-</section>
+<!-- <script type="text/javascript">
+
+  document.getElementById("image1").style.position = "relative";
+  document.getElementById("image1").style.top = "45px";
+
+  function changeFunc() {
+      var selectBox = document.getElementById("selectBox");
+      var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+      var selectedText = selectBox.options[selectBox.selectedIndex].text;
+
+      sessionStorage.setItem("selectedText",selectedText);
+      
+
+      var link = "/selectProduct/"+selectedText;
+      document.getElementById("screen3").href = link;
+
+      if (selectedValue == 1) {
+          document.getElementById("image1").style.position = "static";
+          document.getElementById("image1").style.top = "5px";
+          document.getElementById("image1").style.left = "15px";
+      } else if (selectedValue == 2) {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "5px";
+          document.getElementById("image1").style.left = "450px";
+          // document.getElementById("imagediv").style.float = "right";
+
+      } else if (selectedValue == 3) {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "440px";
+          document.getElementById("image1").style.left = "450px";
+          // document.getElementById("imagediv").style.float = "right";
+
+      } else if (selectedValue == 4) {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "440px";
+          document.getElementById("image1").style.left = "15px";
+
+      }
+
+
+  }
+
+</script>
+ -->
