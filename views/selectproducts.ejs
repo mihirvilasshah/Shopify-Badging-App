@@ -137,11 +137,13 @@
         }
 
         var selectedProducts = [];
+        var selectedProductscount = 0;
         function ticked() {
             selectedProducts = [];
 
             var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
-            for (var i = 0; i < selectedCheckboxes.length; i++) {
+            selectedProductscount = selectedCheckboxes.length;
+            for (var i = 0; i < selectedProductscount; i++) {
                 console.log(selectedCheckboxes[i].value);
                 selectedProducts.push(selectedCheckboxes[i].value);
                 console.log(selectedProducts);
@@ -165,6 +167,7 @@
                     success: function (data) {
                         console.log('success');
                         console.log(JSON.stringify(data));
+                        alert("Badge applied to "+selectedProductscount+" products");
                     }
                 });
 
