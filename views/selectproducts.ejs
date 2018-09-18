@@ -70,7 +70,7 @@
                //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
                 link = "getProductPriceRange/"+p1+"/"+p2;
                 // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-                window.location = 'https://b55e44f6.ngrok.io/'+link;
+                window.location = 'https://a5463aaf.ngrok.io/'+link;
 
 
 }
@@ -86,7 +86,7 @@ function DateRange(){
                //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
                 link = "getProductDateRange/"+d1+"/"+d2;
                 // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-                window.location = 'https://b55e44f6.ngrok.io/'+link;
+                window.location = 'https://a5463aaf.ngrok.io/'+link;
 
 
 }
@@ -102,7 +102,7 @@ function prodTitle(){
                //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
                 link = "getProductTitle/"+t1;
                 // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-                window.location = 'https://b55e44f6.ngrok.io/'+link;
+                window.location = 'https://a5463aaf.ngrok.io/'+link;
 
 
 }
@@ -111,6 +111,9 @@ function prodTitle(){
                 
             document.write(sessionStorage.selectedImg + "<br>");
             document.write(sessionStorage.selectedText);
+
+            var link = "/selectProduct/"+sessionStorage.selectedImg+"/"+sessionStorage.selectedText;
+            document.getElementById("publish").href = link;
 
       </script>
       <script language="JavaScript">
@@ -121,6 +124,8 @@ function prodTitle(){
             checkboxes[i].checked = source.checked;
     }
 }
+
+
             </script>
 </head>
 
@@ -152,7 +157,7 @@ function prodTitle(){
                  
                     <input type="text" id = "p1">
                    <input type="text" id = "p2">
-                   <button type="button" onClick="myFunction()">apply </button>
+                   <button type="submit" onClick="myFunction()">apply </button>
     
                 
     
@@ -206,7 +211,9 @@ function prodTitle(){
     </div>
     </div>
     <div>
-        <button type="button">Publish </button>
+        <a href="" onClick="this.href = link" class="button" id = "publish">
+        <button type="button" >Publish </button>
+        </a>
 
     </div>
 

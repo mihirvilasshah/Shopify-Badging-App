@@ -45,15 +45,17 @@ module.exports = (app) => {
 
     app.get('/preview', controller.preview);
 
-    app.get('/selectProduct/:css', controller.selectProduct);
+    app.get('/selectProduct/:id/:css', controller.selectProduct);
+    app.get('/selectProductPage', controller.selectProductPage);
 
-    app.get('/selectedBadgeID/:id',controller.selectedBadgeID);
-    
-     app.get('/getProductPriceRange/:p1/:p2', controller.getProductPriceRange);
-   // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
-   app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
-    
-       app.get('/getProductTitle/:t1', controller.getProductTitle);
+
+    app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
+
+    app.get('/getProductPriceRange/:p1/:p2', controller.getProductPriceRange);
+    // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
+    app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
+
+    app.get('/getProductTitle/:t1', controller.getProductTitle);
 
 
 

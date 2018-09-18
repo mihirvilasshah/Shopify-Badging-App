@@ -84,7 +84,7 @@
     <br>
     <br>
     <div class="divp">
-        <a href="" onClick="this.href = link" class="button" id = "screen3">        
+        <a href="/selectProductPage" class="button" id = "screen3">        
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"> NEXT
         </a>
 </button>
@@ -98,17 +98,20 @@
 
     document.getElementById("image2").style.position = "relative";
     document.getElementById("image2").style.top = "45px";
+    var selectBox = document.getElementById("selectBox");
+    var selectedText = selectBox.options[selectBox.selectedIndex].text;
+    sessionStorage.setItem("selectedText",selectedText);
 
     function changeFunc() {
-        var selectBox = document.getElementById("selectBox");
+        
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
         var selectedText = selectBox.options[selectBox.selectedIndex].text;
 
         sessionStorage.setItem("selectedText",selectedText);
         
 
-        var link = "/selectProduct/"+selectedText;
-        document.getElementById("screen3").href = link;
+        // var link = "/selectProduct/"+selectedText;
+        // document.getElementById("screen3").href = link;
 
         if (selectedValue == 1) {
             document.getElementById("image1").style.position = "static";
