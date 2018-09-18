@@ -553,6 +553,7 @@ exports.selectProduct = (req, res) => {
 
     css = req.params.css;
     id = req.params.id;
+
     console.log(css);
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
@@ -565,6 +566,18 @@ exports.selectProduct = (req, res) => {
         dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
             if (err) throw err;
             console.log("inserted to badge_Product_mapping ");
+            var newoid = new ObjectId(result.ops[0]._id);
+            console.log("ABid: " + newoid);
+        });
+
+
+        dbo.collection("shopify_collection").find({
+            "_id": {
+                "$in":
+                [ObjectId("55880c251df42d0466919268"),
+                ObjectId("55bf528e69b70ae79be35006")
+                ]
+            }
         });
 
 
@@ -572,14 +585,14 @@ exports.selectProduct = (req, res) => {
         // res.send({ message: "Products copied to DB" });
         db.close();
     });
-    res.render('selectproducts', { items: "" });
+    res.render('selectproducts', { items: "", pids: "" });
     console.log(id);
 
 
 }
 
 exports.selectProductPage = (req, res) => {
-    res.render('selectproducts', { items: "" });
+    res.render('selectproducts', { items: "", pids: "" });
 }
 
 
@@ -614,7 +627,7 @@ exports.getProductPriceRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find(myquery, { projection: { title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -628,10 +641,16 @@ exports.getProductPriceRange = (req, res) => {
                 titles[i] = products[i].title;
             }
 
+            var pids = [];
+            for (var i = 0; i < products.length; i++) {
+                pids[i] = products[i]._id;
+                // console.log(pids[i]);
+            }
+
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
-            res.render('selectproducts', { items: titles });
+            res.render('selectproducts', { items: titles, pids: pids });
         });
         // res.send({ message: "Found product" });
 
@@ -660,7 +679,7 @@ exports.getProductDateRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find(myquery, { projection: { title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
             var products = obj;
@@ -671,10 +690,16 @@ exports.getProductDateRange = (req, res) => {
                 titles[i] = products[i].title;
             }
 
+            var pids = [];
+            for (var i = 0; i < products.length; i++) {
+                pids[i] = products[i]._id;
+                // console.log(pids[i]);
+            }
+
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
-            res.render('selectproducts', { items: titles });
+            res.render('selectproducts', { items: titles, pids: pids });
         });
         // res.send({ message: "Found product" });
 
@@ -703,7 +728,7 @@ exports.getProductTitle = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find({ 'title': new RegExp(t1, 'i') }, { projection: { title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("shopify_collection").find({ 'title': new RegExp(t1, 'i') }, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -717,10 +742,16 @@ exports.getProductTitle = (req, res) => {
                 titles[i] = products[i].title;
             }
 
+            var pids = [];
+            for (var i = 0; i < products.length; i++) {
+                pids[i] = products[i]._id;
+                // console.log(pids[i]);
+            }
+
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
-            res.render('selectproducts', { items: titles });
+            res.render('selectproducts', { items: titles, pids: pids });
         });
         // res.send({ message: "Found product" });
 

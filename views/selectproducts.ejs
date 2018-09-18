@@ -112,21 +112,29 @@ function prodTitle(){
             document.write(sessionStorage.selectedImg + "<br>");
             document.write(sessionStorage.selectedText);
 
-            var link = "/selectProduct/"+sessionStorage.selectedImg+"/"+sessionStorage.selectedText;
-            document.getElementById("publish").href = link;
+            var link2 = "/selectProduct/"+sessionStorage.selectedImg+"/"+sessionStorage.selectedText;
+            // document.getElementById("publish").href = link2;
 
       </script>
       <script language="JavaScript">
          function toggle(source) {
-    var checkboxes = document.querySelectorAll('input[name="products"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i] != source)
-            checkboxes[i].checked = source.checked;
-    }
-}
+            var checkboxes = document.querySelectorAll('input[name="products"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] != source)
+                    checkboxes[i].checked = source.checked;
+            }
+         }
 
-
-            </script>
+          function ticked() { 
+          var selectedProducts = []; 
+          var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
+            for (var i = 0; i < selectedCheckboxes.length; i++) {
+                console.log(selectedCheckboxes[i].value);
+                selectedProducts.push(selectedCheckboxes[i].value);
+                console.log(selectedProducts);
+            }
+          }
+      </script>
 </head>
 
 <body>
@@ -200,7 +208,7 @@ function prodTitle(){
         <input type="checkbox" onClick="toggle(this)"> select all <br><br><br>
         <div class="flex-container">
                 <% for(var i=0; i<items.length; i++) {%>
-                        <input type= "checkbox" name="products"><%= items[i] %><br>
+                        <input type= "checkbox" name="products" onClick="ticked()" value="<%= pids[i] %>"><%= items[i] %><br>
                      <% } %>
     </section>
     <div>
@@ -211,7 +219,7 @@ function prodTitle(){
     </div>
     </div>
     <div>
-        <a href="" onClick="this.href = link" class="button" id = "publish">
+        <a href="" onClick="this.href = link2" class="button" id = "publish">
         <button type="button" >Publish </button>
         </a>
 
