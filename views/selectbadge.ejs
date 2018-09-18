@@ -59,9 +59,18 @@
 
 </style>
 <script>
+function sessionLib(){
+	// document.getElementsByClassName("tablinks active");
+	var selectedImg = document.querySelector('input[name = "imgLib"]:checked').value;
+	// var selectedImg = document.getElementsByClassName("tablinks active").querySelector('input[name = "img"]:checked').value;
+	sessionStorage.setItem("selectedImg",selectedImg);
+}
+
 function session(){
-var selectedImg = document.querySelector('input[name = "img"]:checked').value;
-sessionStorage.setItem("selectedImg",selectedImg);
+	// document.getElementsByClassName("tablinks active");
+	var selectedImg = document.querySelector('input[name = "img"]:checked').value;
+	// var selectedImg = document.getElementsByClassName("tablinks active").querySelector('input[name = "img"]:checked').value;
+	sessionStorage.setItem("selectedImg",selectedImg);
 }
 </script>
 
@@ -82,8 +91,18 @@ sessionStorage.setItem("selectedImg",selectedImg);
 </div>
 
 <div id="Library" class="tabcontent">
-<h3>Library</h3>
-<p>Displays from db</p>
+
+<form>
+<%lids.forEach(function(link){%>
+<a href="/selectedBadgeID/<%= link %>">
+<input type="radio" name="imgLib" value="<%= link %>">
+<img src='/picture/<%= link %>' height="250px" width="250px">
+</a>
+<%});%> 
+<br>
+<a href="/preview" class="button" onclick="sessionLib()">NEXT</a>
+</form>
+
 </div>
 
 
@@ -92,10 +111,12 @@ sessionStorage.setItem("selectedImg",selectedImg);
 <form>
 <%ids.forEach(function(link){%>
 <a href="/selectedBadgeID/<%= link %>">
-<input type="radio" name="img" value="<%= link %>" checked>
+<input type="radio" name="img" value="<%= link %>">
 <img src='/picture/<%= link %>' height="250px" width="250px">
 </a>
 <%});%> 
+<br>
+<a href="/preview" class="button" onclick="session()">NEXT</a>
 </form>
 
 </div>
@@ -110,10 +131,10 @@ sessionStorage.setItem("selectedImg",selectedImg);
 
 </div>
 
-<a href="/preview" class="button" onclick="session()">NEXT</a>
 
 
 <script>
+
 function openCity(evt, cityName) {
 
 var i, tabcontent, tablinks;
@@ -129,6 +150,7 @@ tablinks[i].className = tablinks[i].className.replace(" active", "");
 
 document.getElementById(cityName).style.display = "block";
 evt.currentTarget.className += " active";
+
 }
 
 

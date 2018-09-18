@@ -112,7 +112,7 @@ exports.auth = (req, res) => {
                         var flag = 0;
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
-                            dbo.collection("shopify_collection2").find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
+                            dbo.collection("badges").find({ "default": false }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
                                 if (err) throw err;
 
                                 images = result;
@@ -125,12 +125,29 @@ exports.auth = (req, res) => {
                                 //    console.log(images[0]._id);
                                 console.log(ids);
 
-                                res.render('selectbadge', {
-                                    apiKey: process.env.SHOPIFY_API_KEY,
-                                    shopOrigin: 'https://' + globalShop,
-                                    ids: ids,
+                                dbo.collection("badges").find({ "default": true }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
+                                    if (err) throw err;
 
-                                    forwardingAddress: process.env.FORWARDING_ADDRESS
+                                    images = result;
+                                    //var ids = result[0];
+                                    var lids = [];
+                                    for (var i = 0; i < images.length; i++) {
+                                        lids[i] = images[i]._id;
+                                    }
+
+                                    //    console.log(images[0]._id);
+                                    console.log(lids);
+
+
+                                    res.render('selectbadge', {
+                                        apiKey: process.env.SHOPIFY_API_KEY,
+                                        shopOrigin: 'https://' + globalShop,
+                                        ids: ids,
+                                        lids: lids,
+
+
+                                        forwardingAddress: process.env.FORWARDING_ADDRESS
+                                    });
 
                                 });
                             });
@@ -442,11 +459,12 @@ exports.uploadPic = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                src: forwardingAddress + '/picture/' + imname // not name, it should be id
+                // src: forwardingAddress + '/picture/' + imname // not name, it should be id
+                default: false
 
             };
             var dbo = db.db("shopifydbclone");
-            dbo.collection('shopify_collection2')
+            dbo.collection('badges')
                 .insert(newItem, function (err, result) {
                     if (err) { console.log(err); };
                     var newoid = new ObjectId(result.ops[0]._id);
@@ -463,8 +481,8 @@ exports.uploadPic = (req, res) => {
                     });
                 });
 
-            dbo.collection("shopify_collection2")
-                .find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
+            dbo.collection("badges")
+                .find({"default": false}, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
                     if (err) throw err;
 
                     images = result;
@@ -477,14 +495,32 @@ exports.uploadPic = (req, res) => {
                     //    console.log(images[0]._id);
                     console.log(ids);
 
-                    res.render('selectbadge', {
-                        apiKey: process.env.SHOPIFY_API_KEY,
-                        shopOrigin: 'https://' + globalShop,
-                        ids: ids,
+                    dbo.collection("badges").find({ "default": true }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
+                        if (err) throw err;
 
-                        forwardingAddress: process.env.FORWARDING_ADDRESS
+                        images = result;
+                        //var ids = result[0];
+                        var lids = [];
+                        for (var i = 0; i < images.length; i++) {
+                            lids[i] = images[i]._id;
+                        }
+
+                        //    console.log(images[0]._id);
+                        console.log(lids);
+
+
+                        res.render('selectbadge', {
+                            apiKey: process.env.SHOPIFY_API_KEY,
+                            shopOrigin: 'https://' + globalShop,
+                            ids: ids,
+                            lids: lids,
+
+
+                            forwardingAddress: process.env.FORWARDING_ADDRESS
+                        });
 
                     });
+
                 });
 
         });
@@ -527,7 +563,7 @@ exports.getPicture = (req, res) => {
     // string stored in the variable called url.
     MongoClient.connect(url, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection('shopify_collection2')
+        dbo.collection('badges')
             // perform a mongodb search and return only one result.
             // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
@@ -789,7 +825,7 @@ exports.ajaxtest = (req, res) => {
                 var myquery = {
                     "_id": ObjectId(req.body.pid[i])
                 };
-                console.log("pids: "+req.body.pid[i]);
+                console.log("pids: " + req.body.pid[i]);
 
                 dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
