@@ -663,9 +663,26 @@ exports.getProductPriceRange = (req, res) => {
         console.log("p1: " + p1);
         p2 = req.params.p2;
         console.log("p2: " + p2);
+        pr = req.params.pr;
+        var myquery;
         // var myquery=req.params.query;
 
-        var myquery = { "variants.0.price": { "$gte": p1, "$lte": p2 } };
+        if (pr == "all") {
+            myquery = {
+                "variants.0.price": { "$gte": p1, "$lte": p2 }
+            }
+        } else if (pr == "withBadges") {
+            myquery = {
+                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                "ABid": { $exists: true }
+            }
+        } else if (pr == "withoutBadges") {
+            myquery = {
+                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                "ABid": { $exists: false }
+            }
+        }
+
         console.log(myquery);
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
@@ -675,9 +692,6 @@ exports.getProductPriceRange = (req, res) => {
 
         dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
-
-
-
 
             var products = obj;
             //var ids = result[0];
@@ -711,13 +725,32 @@ exports.getProductDateRange = (req, res) => {
         console.log("inside getProdPrice");
         // var myquery = { _id: ObjectId(req.params.id) };
         // var myquery = { "variants.0.price":{$gte:"100"} };
+        var myquery;
         d1 = req.params.d1;
-        console.log("p1: " + d1);
+        console.log("d1: " + d1);
         d2 = req.params.d2;
-        console.log("p2: " + d2);
+        console.log("d2: " + d2);
+        dr = req.params.dr;
+        console.log("dr: " + dr);
         // var myquery=req.params.query;
 
-        var myquery = { "created_at": { "$gte": d1, "$lte": d2 } };
+        if (dr == "all") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 }
+            }
+        } else if (dr == "withBadges") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 },
+                "ABid": { $exists: true }
+            }
+        } else if (dr == "withoutBadges") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 },
+                "ABid": { $exists: false }
+            }
+        }
+
+
         console.log(myquery);
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
@@ -761,10 +794,27 @@ exports.getProductTitle = (req, res) => {
         console.log("inside getProdPrice");
         // var myquery = { _id: ObjectId(req.params.id) };
         // var myquery = { "variants.0.price":{$gte:"100"} };
-        t1 = req.params.t1;
+        var myquery;
+        var t1 = req.params.t1;
+        var tr = req.params.tr;
         console.log("t1: " + t1);
+        console.log("tr: " + tr);
         //    var t = "/"+t1+"/i";
-        // var myquery=req.params.query;
+        if (tr == "all") {
+            myquery = {
+                'title': new RegExp(t1, 'i')
+            }
+        } else if (tr == "withBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: true }
+            }
+        } else if (tr == "withoutBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: false }
+            }
+        }
 
         //  var myquery ={"title" :t};
         //  console.log(myquery);   
@@ -774,7 +824,7 @@ exports.getProductTitle = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find({ 'title': new RegExp(t1, 'i') }, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -886,11 +936,12 @@ exports.ajaxtest = (req, res) => {
 
 
 exports.withoutBadge = (req, res) => {
-    var titles = [];
-    var pids = [];
+
 
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
+        var titles = [];
+        var pids = [];
 
         var dbo = db.db("shopifydbclone");
 
@@ -902,7 +953,7 @@ exports.withoutBadge = (req, res) => {
             console.log(myquery);
             console.log("pids: " + req.body.pid[i]);
 
-            dbo.collection("shopify_collection").findOne(myquery,{ projection: { _id: 1, title: 1 } }, function (err, obj) {
+            dbo.collection("shopify_collection").findOne(myquery, { projection: { _id: 1, title: 1 } }, function (err, obj) {
                 if (err) throw err;
 
                 console.log("product without ABid: ");
@@ -916,12 +967,17 @@ exports.withoutBadge = (req, res) => {
                 // console.log(obj);
             });
         }
+
         // res.render('selectproducts', { items: titles, pids: pids });
-        var titlesStr = JSON.stringify(titles);
-        console.log("titleStr: "+titles);
-        var pidsStr = JSON.stringify(pids);
-        res.send({ items: titlesStr, pids: pidsStr });
+
     });
+
+
+    var titlesStr = JSON.stringify(titles);
+    console.log("titleStr: " + titles);
+    var pidsStr = JSON.stringify(pids);
+
+    res.send({ items: titlesStr, pids: pidsStr });
 
 };
 

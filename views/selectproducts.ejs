@@ -46,32 +46,37 @@
             // document.write(a);
             p1 = document.getElementById("p1").value;
             p2 = document.getElementById("p2").value;
+            pr = document.querySelector('input[name="priceRadio"]:checked').value;
             console.log("p1" + p1);
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
-            link = "getProductPriceRange/" + p1 + "/" + p2;
+            link = "getProductPriceRange/" + p1 + "/" + p2+ "/" + pr;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
             window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
         function DateRange() {
             d1 = document.getElementById("d1").value;
             d2 = document.getElementById("d2").value;
+            dr = document.querySelector('input[name="dateRadio"]:checked').value;
             console.log("d1" + d1);
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
-            link = "getProductDateRange/" + d1 + "/" + d2;
+            link = "getProductDateRange/" + d1 + "/" + d2+"/"+dr;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
             window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
         function prodTitle() {
-            t1 = document.getElementById("t1").value;
+            var t1 = document.getElementById("t1").value;
             console.log("t1" + t1);
+            // tr = document.getElementByName("titleRadio").value;
+            var tr = document.querySelector('input[name="titleRadio"]:checked').value;
+            console.log("tr" + tr);
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
-            link = "getProductTitle/" + t1;
+            link = "getProductTitle/" + t1+"/"+tr;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
             window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
@@ -189,7 +194,6 @@
             <option value="default" selected="selected" disabled>select</option>
             <option value="price"> price</option>
             <option value="date">date</option>
-            <option value="category">category</option>
             <option value="title">select products using title</option>
         </select> &nbsp;&nbsp;
 
@@ -198,6 +202,9 @@
 
             <input type="date" id="d1" name="bday">
             <input type="date" id="d2" name="bday">
+            <input type="radio" name="dateRadio" value="withBadges"> With Badges  
+            <input type="radio" name="dateRadio" value="withoutBadges"> Without Badges 
+            <input type="radio" name="dateRadio" value="all"> All
             <button type="button" onClick="DateRange()">apply </button>
 
 
@@ -210,6 +217,9 @@
 
             <input type="text" id="p1">
             <input type="text" id="p2">
+            <input type="radio" name="priceRadio" value="withBadges"> With Badges  
+            <input type="radio" name="priceRadio" value="withoutBadges"> Without Badges 
+            <input type="radio" name="priceRadio" value="all"> All
             <button type="submit" onClick="myFunction()">apply </button>
 
 
@@ -226,6 +236,9 @@
 
 
             <input type="text" id="t1">
+            <input type="radio" name="titleRadio" value="withBadges"> With Badges  
+            <input type="radio" name="titleRadio" value="withoutBadges"> Without Badges 
+            <input type="radio" name="titleRadio" value="all"> All
 
             <button type="button" onClick="prodTitle()">apply </button>
 

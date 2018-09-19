@@ -51,11 +51,11 @@ module.exports = (app) => {
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
 
-    app.get('/getProductPriceRange/:p1/:p2', controller.getProductPriceRange);
+    app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
-    app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
+    app.get('/getProductDateRange/:d1/:d2/:dr', controller.getProductDateRange);
 
-    app.get('/getProductTitle/:t1', controller.getProductTitle);
+    app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
     app.post('/ajaxtest',controller.ajaxtest);
 
     app.post('/withoutBadge',controller.withoutBadge);
