@@ -7,47 +7,33 @@
         var link;
         var query;
         function dynamicdropdown(listindex) {
-
-
-
             type = listindex;
             switch (listindex) {
                 case "price":
-
-
                     document.getElementById("price").style.display = "block";
                     document.getElementById("date").style.display = "none";
                     document.getElementById("category").style.display = "none";
                     document.getElementById("title").style.display = "none";
                     break;
                 case "date":
-
-
                     document.getElementById("price").style.display = "none";
                     document.getElementById("date").style.display = "block";
                     document.getElementById("category").style.display = "none";
                     document.getElementById("title").style.display = "none";
-
                     break;
                 case "category":
-
                     document.getElementById("value").options[0] = new Option("Select category", "");
                     document.getElementById("value").options[1] = new Option("category1", "category1");
                     document.getElementById("value").options[2] = new Option("category2", "category2");
                     document.getElementById("price").style.display = "none";
                     document.getElementById("date").style.display = "none";
                     document.getElementById("category").style.display = "block";
-
                     break;
                 case "title":
-
-
                     document.getElementById("price").style.display = "none";
                     document.getElementById("date").style.display = "none";
                     document.getElementById("category").style.display = "none";
                     document.getElementById("title").style.display = "block";
-
-
                     break;
                 default:
                     document.getElementById("value").options[0] = new Option("select status", "");
@@ -55,67 +41,46 @@
             }
             return true;
         }
-
         function myFunction() {
             var a = document.getElementById("p1").value;
             // document.write(a);
-
             p1 = document.getElementById("p1").value;
             p2 = document.getElementById("p2").value;
             console.log("p1" + p1);
-
-
-
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
             link = "getProductPriceRange/" + p1 + "/" + p2;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-            window.location = 'https://1d977961.ngrok.io/' + link;
-
-
+            window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
         function DateRange() {
             d1 = document.getElementById("d1").value;
             d2 = document.getElementById("d2").value;
             console.log("d1" + d1);
-
-
-
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
             link = "getProductDateRange/" + d1 + "/" + d2;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-            window.location = 'https://1d977961.ngrok.io/' + link;
-
-
+            window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
         function prodTitle() {
             t1 = document.getElementById("t1").value;
-
             console.log("t1" + t1);
-
-
-
             // query = {"variants.0.price":{"$gte":p1,"$lte":p2}};
             // query2= "'"+query+"'";
             //query='{"variants.0.price":{"$gte":"0","$lte":"10000"}}';
             link = "getProductTitle/" + t1;
             // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
-            window.location = 'https://1d977961.ngrok.io/' + link;
-
-
+            window.location = 'https://a5463aaf.ngrok.io/' + link;
         }
     </script>
     <script>
-
         document.write(sessionStorage.selectedImg + "<br>");
         document.write(sessionStorage.selectedText);
-
         var link2 = "/selectProduct/" + sessionStorage.selectedImg + "/" + sessionStorage.selectedText;
             // document.getElementById("publish").href = link2;
-
     </script>
     <script language="JavaScript">
         function toggle(source) {
@@ -125,22 +90,66 @@
                     checkboxes[i].checked = source.checked;
             }
         }
-
-
         function withBadges() {
             var pid = "<%= pids %>";
             console.log(pid);
             // for (var i = 0; i < pid.length; i++) {
             //     console.log("<%= pids[i] %>");
-
             // }
         }
+
+         function withoutBadges() {
+             var pid = "<%= pids %>";
+            console.log(pid);
+
+            // var pids = pid.split(",");
+            // for (var i = 0; i < pids.length; i++) {
+            //     console.log(pids[i]);
+            // }
+            
+            linkwb = "withoutBadge/" + pid;
+            // window.location = 'http://something.jsp?name=' + name + '&age=' + age;
+            window.location = 'https://a5463aaf.ngrok.io/' + linkwb;
+        }
+
+
+        
+         $(function () {
+            $('#withoutBadge').click(function (e) {
+                e.preventDefault();
+                console.log('withoutBadge clicked');
+
+                var pid = "<%= pids %>";
+                console.log(pid);
+               
+                var pids = pid.split(",");
+                console.log(pids);
+
+                var data = {};
+                data.pid = pids;
+
+                $.ajax({
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    url: 'https://a5463aaf.ngrok.io/withoutBadge',
+                    success: function (res) {
+                        console.log('success');
+                        console.log(res);
+                        var print = JSON.stringify(res);
+                    //     console.log(JSON.stringify(data));
+                    //     // alert("Badge applied to "+selectedProductscount+" products");
+                    $('#div_products').html(print);
+                    }
+                });
+
+            });
+        });
 
         var selectedProducts = [];
         var selectedProductscount = 0;
         function ticked() {
             selectedProducts = [];
-
             var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
             selectedProductscount = selectedCheckboxes.length;
             for (var i = 0; i < selectedProductscount; i++) {
@@ -153,28 +162,23 @@
             $('#select_link').click(function (e) {
                 e.preventDefault();
                 console.log('select_link clicked');
-
                 var data = {};
                 data.bid = sessionStorage.selectedImg;
                 data.css = sessionStorage.selectedText;
                 data.pid = selectedProducts;
-
                 $.ajax({
                     type: 'POST',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    url: 'https://1d977961.ngrok.io/ajaxtest',
+                    url: 'https://a5463aaf.ngrok.io/ajaxtest',
                     success: function (data) {
                         console.log('success');
                         console.log(JSON.stringify(data));
                         alert("Badge applied to "+selectedProductscount+" products");
                     }
                 });
-
             });
         });
-
-
     </script>
 </head>
 
@@ -213,9 +217,7 @@
         </div>
         <div id="category" style="display:none;">
             <script type="text/javascript" language="JavaScript">
-
                 document.write('<select name="value" id="category"><option value="">Select status</option></select>')
-
             </script>
             <button type="button" onClick="myFunction3()">apply </button>
 
@@ -247,15 +249,17 @@
         </div>
         <h1>List Of Products</h1>
         <input type="checkbox" onClick="toggle(this)"> select all <br><br><br>
+        <div class="flex-container" id="div_products"></div>
         <div class="flex-container">
             <% for(var i=0; i<items.length; i++) {%>
                 <input type="checkbox" name="products" onClick="ticked()" value="<%= pids[i] %>"><%= items[i] %><br>
                     <% } %>
     </section>
     <div>
+    
 
-        &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox" onClick="withBadges()"> With Badges <br> &nbsp; &nbsp; &nbsp; &nbsp;<input
-            type="checkbox"> Without Badges <br><br>
+        &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox" onClick="withBadges()"> With Badges <br> &nbsp; &nbsp; &nbsp; &nbsp;
+        <input type="checkbox" id="withoutBadge" > Without Badges <br><br>
 
     </div>
     </div>
