@@ -20,14 +20,14 @@ export class SelectBadgeComponent implements OnInit {
 
   count1: number = 0;
 
-  onClickMe() {
+  customizeBadge():void {
      this.count1 = this.count1 + 1; 
      console.log('in');
   }
 
   uploadPic(name){
     console.log('inside submit type of name'+name);
-    this.http.post("https://3c7c6d64.ngrok.io/uploadPic/",name);
+    this.http.post("https://1d977961.ngrok.io/uploadPic/",name);
     //this.badge.getProduct();
   }
 

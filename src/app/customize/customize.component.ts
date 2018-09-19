@@ -25,6 +25,37 @@ export class CustomizeComponent {
 
   }
 
+
+  nextFunc(){
+    console.log("in next func");
+  }
+
+  changeFunc(event){
+      if (event == "top-right") {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "0px";
+          document.getElementById("image1").style.left = "450px";
+      
+      } else if (event == "top-left") {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "0px";
+          document.getElementById("image1").style.left = "0px";
+          // document.getElementById("imagediv").style.float = "right";
+
+      } else if (event == "bottom-right") {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "450px";
+          document.getElementById("image1").style.left = "450px";
+          // document.getElementById("imagediv").style.float = "right";
+
+      } else if (event == "bottom-left") {
+          document.getElementById("image1").style.position = "relative";
+          document.getElementById("image1").style.top = "450px";
+          document.getElementById("image1").style.left = "0px";
+
+      }
+  }
+
   positionControl = new FormControl('', [Validators.required]);
   positions: position[] = [
     { name: 'top-right' },
@@ -33,12 +64,6 @@ export class CustomizeComponent {
     { name: 'bottom-right' },
   ];
 
-  // positions: Position[] = [
-  //   {value: 'top-right', viewValue: 'top-right'},
-  //   {value: 'top-left', viewValue: 'top-left'},
-  //   {value: 'bottom-right', viewValue: 'bottom-right'}
-  //   {value: 'bottom-left', viewValue: 'bottom-left'}
-  // ];
 
 
 

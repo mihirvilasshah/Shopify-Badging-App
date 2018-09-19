@@ -18,7 +18,7 @@ export class BadgeService {
     //   'Access-Control-Allow-Origin': '*',
     //   'Content-Type': 'application/json'
     // };
-    let obs = this.http.get("https://3c7c6d64.ngrok.io/getProduct/1451088838726.0")
+    let obs = this.http.get("https://1d977961.ngrok.io/getProduct/1451088838726.0")
     obs.subscribe(data => {
       console.log("here is the response", data)
     })

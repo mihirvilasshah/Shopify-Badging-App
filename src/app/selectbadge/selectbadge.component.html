@@ -9,25 +9,19 @@
 
   </mat-tab>
 
-
-
   <mat-tab label="My Badges"> 
   <!-- the pics that are uploaded will be displayed here   -->
 
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://3c7c6d64.ngrok.io/picture/5b9faee2e1439e16241352df">
+    <!-- <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://1d977961.ngrok.io/picture/5ba1fb45da30c32fa8f1c27e"> -->
     <div id="imageContainer">
       
-
     </div>
   
   </mat-tab>
   
-  
-  
- 
   <mat-tab label="Upload"> 
     
-	<form action="https://3c7c6d64.ngrok.io/uploadPic/" method="POST" enctype="multipart/form-data"#form>
+	<form action="https://1d977961.ngrok.io/uploadPic/" method="POST" enctype="multipart/form-data"#form>
 		<input type="file" name="picture" accept="application/x-zip-compressed,image/*"/>
 		<button type="submit" (click)="form.submit()">Upload</button>
 	</form>
@@ -35,11 +29,23 @@
   </mat-tab>
 
 </mat-tab-group>
+<script>
+localStorage.setItem('whatever', 'something');
+let key = 'Item 1'; 
+localStorage.setItem(key, 'Value');
+let myItem = localStorage.getItem(key);
+document.write(myItem);
+console.log(myItem);
+</script>
+
 <br><br>
-<a routerLink="customize" [routerLinkActive]="['activated']">
-<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" onclick="customizeBadge()" > NEXT
+<!-- 
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']" (click)="customizeBadge()"  > NEXT
+  </button> -->
+
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']" > NEXT
   </button>
-</a>
+
 
 
 
