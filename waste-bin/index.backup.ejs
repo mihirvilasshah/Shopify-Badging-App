@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://cdn.shopify.com/s/assets/external/app.js"></script>
+	<script type="text/javascript">
+	ShopifyApp.init({
+		apiKey: <%= apiKey %>
+		shopOrigin: <%= shopOrigin %>
+		forwardingAddress: <%= forwardingAddress %> 
+	});
+
+	console.log(apiKey);
+	console.log(shopOrigin);
+	console.log(forwardingAddress);
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<link rel='stylesheet' href='/stylesheets/foundation.min.css' />
+	<link rel='stylesheet' href='/stylesheets/style.css' />
+	<title>hi</title>
+</head>
+<body>
+	<script type="text/javascript">
+
+	// const dotenv = require('dotenv').config();
+	// const forwardingAddress = process.env.FORWARDING_ADDRESS;
+	
+	ShopifyApp.ready(function(){
+		ShopifyApp.Bar.initialize({
+			title: 'Welcome',
+			icon: '/images/logo.png',
+			buttons: {
+				primary: {
+					label: "Products",
+					message: 'bar_save',
+					href: forwardingAddress+'/static/products.html'
+				},
+				secondary: [
+					// Dropdown example
+					{ 
+						label: "More",
+						type: "dropdown",
+						links: [
+							// Link Button that opens in the app
+							{ label: "Update", href: "/product", target: "app" },
+							// Button with a callback function
+							{ label: "Delete", callback: function(){ alert("destroy") } }
+						]
+					},
+					{ 
+						// Link Button that opens in a new window
+						label: "Preview", href: shopOrigin, 
+						target: "new" 
+					},
+					{ 
+						label: "Upload Image", 
+						callback: function() {
+							ShopifyApp.Modal.open({
+							  src: forwardingAddress+'/modal_content',
+							  title: 'Upload Image',
+							  width: 'small',
+							  height: 300,
+							  buttons: {
+							    primary: { label: "OK", callback: function (label) { ShopifyApp.Modal.close(); } },
+							    secondary: [
+							      { label: "Cancel", callback: function (label) { ShopifyApp.Modal.close(); } }
+							    ]
+							  }
+							});
+						}
+					}
+				]
+			}
+		});
+		ShopifyApp.Bar.loadingOff();
+
+	});
+	</script>
+	  <div class="row">
+	    <div class="large-6 columns">
+					<center>
+	    			<h1>Welcome</h1>
+					</center>
+				<!--
+	      <div class="row collapse">
+	        <div class="small-12 columns">
+	          <a href="/product">See All Products</a>
+	        </div>
+	        <div class="small-12 columns">
+	          <a href="/product">Add A Product</a>
+	        </div>
+	      </div>
+				-->
+	    </div>
+	  </div>
+</body>
+</html>

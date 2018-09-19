@@ -1,0 +1,4 @@
+{
+	"title": "shirt edited",
+	"product_type": "clothes"
+}
