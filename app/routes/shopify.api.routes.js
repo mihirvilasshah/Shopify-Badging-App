@@ -58,6 +58,9 @@ module.exports = (app) => {
     app.get('/getProductTitle/:t1', controller.getProductTitle);
     app.post('/ajaxtest',controller.ajaxtest);
 
+    app.post('/withoutBadge',controller.withoutBadge);
+    // app.post('/withoutBadge/:pids',controller.withoutBadge);
+
 
 
 
