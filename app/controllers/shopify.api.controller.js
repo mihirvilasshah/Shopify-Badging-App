@@ -18,13 +18,13 @@ var globalToken = undefined;
 var globalShop = undefined;
 var globalShopResponse = undefined;
 
+var MongoClient = require('mongodb').MongoClient;
+var ObjectId = require('mongodb').ObjectId
+var url = "mongodb://localhost:27017/";
+const fs = require('fs-extra');
+
 console.log('Entered Shopify Controller');
 
-// var webhookPCFlag = 0;
-// var webhookPDFlag = 0;
-// var webhookPUFlag = 0;
-
-// Install app
 exports.install = (req, res) => {
     const shop = req.query.shop;
     if (shop) {
@@ -162,43 +162,12 @@ exports.auth = (req, res) => {
 
                                 });
                             });
-
-                            // //
-                            //                             // dbo.collection('shopify_collection2')
-                            //                             //     .find({}, function (err, results) {
-
-
-                            //                             //         results.forEach(function (result) {
-
-                            //                             //             images.push(result.img.buffer);
-                            //                             //         })
-                            //                             //     });
-
-                            //                                 //
                         });
 
-                        //console.log(images);
-
-
-                        //  res.redirect('/static/welcome.html');
                         console.log(images);
-                        //res.render('index.html');
-                        // console.log("Shop Response: "+shopResponse);
+                  
                         globalShopResponse = shopResponse;
-                        // console.log("Global Shop Response: "+globalShopResponse);
-
-                        // res.sendFile("../../client/src/index.html");
-                        // res.redirect('/angular/src/index.html');
-
-                        // copyDB(); //using func
-                        // TODO: Make sure that DB copying is only done once
-                        // API call to copy Shopify DB ton our DB
-
-                       
-                        // console.log("Started copying DB");
-
-                        //deleteProd(1451088838726);
-                        //res.end(shopResponse.body.products);
+                     
                     })
                     .catch((error) => {
                         res.status(error.statusCode).send(error.error.error_description);
@@ -240,7 +209,6 @@ exports.createWebhooks = (req, res) => {
 
     const webhookUrl = 'https://' + globalShop + '/admin/webhooks.json';
 
-    // if (webhookPCFlag == 0) {
     request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson })
         .then((webresponse) => {
             console.log(webresponse);
@@ -248,7 +216,6 @@ exports.createWebhooks = (req, res) => {
         .catch((error) => {
             if (error) throw error;
         });
-    // }
 
     // Webhook products/update      
     const Webhookjson2 = {
@@ -258,8 +225,6 @@ exports.createWebhooks = (req, res) => {
             format: "json",
         }
     };
-
-    // if (webhookPUFlag == 0) {
     request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson2 })
         .then((webresponse) => {
             console.log(webresponse);
@@ -269,7 +234,6 @@ exports.createWebhooks = (req, res) => {
             if (error) throw error;
         });
     webhookPCFlag = 1;
-    // }
 
     // Webhook products/delete      
     const Webhookjson3 = {
@@ -280,7 +244,6 @@ exports.createWebhooks = (req, res) => {
         }
     };
 
-    // if (webhookPDFlag == 0) {
     request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson3 })
         .then((webresponse) => {
             console.log(webresponse);
@@ -289,15 +252,8 @@ exports.createWebhooks = (req, res) => {
         .catch((error) => {
             if (error) throw error;
         });
-    // }
 
 }
-// webhookPCFlag = 1;
-// webhookPUFlag = 1;
-// webhookPDFlag = 1;
-
-
-// Product page 
 exports.productPage = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/products.json';
     const shopRequestHeaders = {
@@ -313,16 +269,6 @@ exports.productPage = (req, res) => {
         });
 };
 
-// MongoDB
-var MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectId
-var url = "mongodb://localhost:27017/";
-// mLab DaaS URI
-// var url = "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@ds239682.mlab.com:39682/shopifydbclone";
-// DO NOT USE @ or other special characters IN DB_PASSWORD
-
-// var flag = 0;
-// Copy Shopify DB to our DB
 exports.copyDB = (req, res) => {
     // console.log("Shop Response: "+globalShopResponse);
     console.log('Entered copyDB');
@@ -348,9 +294,7 @@ exports.copyDB = (req, res) => {
         db.close();
     });
 };
-// flag = 1;
 
-// Delete product from our DB when triggered from webhook 
 exports.deleteProduct = (req, res) => {
     console.log('Entered deleteProduct');
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
@@ -380,13 +324,11 @@ exports.updateProduct = (req, res) => {
         var dbo = db.db("shopifydbclone");
 
         console.log("inside updateProd");
-        // var myquery = { _id: ObjectId(req.params.id) };
-        // var prod_id = parseInt(JSON.parse(req).id);
+       
         var prod_id = parseInt(req.body.id);
 
-        // var myquery = { id: parseInt(req.params.id) };
         var myquery = { id: prod_id };
-        // console.log("id: " + req.params.id);
+
         console.log("id: " + prod_id);
 
         var newvalues = { $set: req.body };
@@ -440,12 +382,6 @@ exports.getProduct = (req, res) => {
     });
 };
 
-// const fsonly = require('fs');
-const fs = require('fs-extra');
-// const multer = require('multer')
-// const upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
-
-// Upload Pic
 exports.uploadPic = (req, res) => {
     // console.log("Shop Response: "+globalShopResponse);
     console.log('upload Pic');
@@ -459,7 +395,8 @@ exports.uploadPic = (req, res) => {
         MongoClient.connect(url, function (err, db) {
             console.log('upload Pic to mongo');
             console.log(req.file.originalname);
-            var imname = req.file.originalname;
+            var picname = req.file.originalname;
+            console.log("pic file name=" + picname);
             // read the img file from tmp in-memory location
             var newImg = fs.readFileSync(req.file.path);
             // encode the file as a base64 string.
@@ -469,30 +406,22 @@ exports.uploadPic = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                // src: forwardingAddress + '/picture/' + imname // not name, it should be id
-                default: false
+                src: forwardingAddress + '/picture/' + picname // not name, it should be id
 
             };
             var dbo = db.db("shopifydbclone");
-            dbo.collection('badges')
+            dbo.collection('shopify_collection2')
                 .insert(newItem, function (err, result) {
                     if (err) { console.log(err); };
                     var newoid = new ObjectId(result.ops[0]._id);
                     fs.remove(req.file.path, function (err) {
                         if (err) { console.log(err) };
-
-                        // var img = document.createElement("IMG");
-                        // img.setAttribute("src", forwardingAddress + '/picture/' + newoid);
-
-                        // res.render('selectbadge', { src: forwardingAddress + '/picture/' + newoid });
-
-                        //res.send("Img can be viewed at: " + forwardingAddress + '/picture/' + newoid);
                         console.log("uploaded: " + newoid);
                     });
                 });
 
-            dbo.collection("badges")
-                .find({"default": false}, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
+            dbo.collection("shopify_collection2")
+                .find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
                     if (err) throw err;
 
                     images = result;
@@ -501,69 +430,22 @@ exports.uploadPic = (req, res) => {
                     for (var i = 0; i < images.length; i++) {
                         ids[i] = images[i]._id;
                     }
+                    console.log(ids)
 
-                    //    console.log(images[0]._id);
-                    console.log(ids);
-
-                    dbo.collection("badges").find({ "default": true }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
-                        if (err) throw err;
-
-                        images = result;
-                        //var ids = result[0];
-                        var lids = [];
-                        for (var i = 0; i < images.length; i++) {
-                            lids[i] = images[i]._id;
-                        }
-
-                        //    console.log(images[0]._id);
-                        console.log(lids);
-
-
-                        res.render('selectbadge', {
-                            apiKey: process.env.SHOPIFY_API_KEY,
-                            shopOrigin: 'https://' + globalShop,
-                            ids: ids,
-                            lids: lids,
-
-
-                            forwardingAddress: process.env.FORWARDING_ADDRESS
-                        });
-
-                    });
-
+                    if (req.url == '/uploadPic/') {
+                  
+                        console.log("inside redirection");
+                        return res.redirect("http://localhost:4200/badge");
+                    } else {
+                        console.log(req.url)
+                      
+                    } 
                 });
 
         });
     }
+}
 
-
-
-
-    // MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-    //     if (err) throw err;
-    //     console.log(req.query);
-
-    //     var dbo = db.db("shopifydbclone");
-    //     var myquery = req.query;
-
-    //     // // write to a new file named 2pac.txt
-    //     // fs.writeFile('pic.txt', res, (err) => {
-    //     //     // throws an error, you could also catch it here
-    //     //     if (err) throw err;
-
-    //     //     // success case, the file was saved
-    //     //     console.log('Lyric saved!');
-    //     // });
-
-    //     dbo.collection("shopify_collection").insertOne(myquery, function (err, result) {
-    //         if (err) throw err;
-    //         console.log("Number of documents inserted: " + result);
-    //     });
-
-    //     res.send({ message: "Pic uploaded to DB" });
-    //     db.close();
-    // });
-};
 
 // Upload Pic
 exports.getPicture = (req, res) => {
@@ -601,36 +483,6 @@ exports.selectProduct = (req, res) => {
     id = req.params.id;
 
     console.log(css);
-    // MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-    //     if (err) throw err;
-
-    //     var dbo = db.db("shopifydbclone");
-    //     var myquery = { Bid: id, css: css };
-
-    //     // if (flag == 0) {
-
-    //     dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
-    //         if (err) throw err;
-    //         console.log("inserted to badge_Product_mapping ");
-    //         var newoid = new ObjectId(result.ops[0]._id);
-    //         console.log("ABid: " + newoid);
-    //     });
-
-
-    //     dbo.collection("shopify_collection").find({
-    //         "_id": {
-    //             "$in":
-    //             [ObjectId("55880c251df42d0466919268"),
-    //             ObjectId("55bf528e69b70ae79be35006")
-    //             ]
-    //         }
-    //     });
-
-
-    //     // }
-    //     // res.send({ message: "Products copied to DB" });
-    //     db.close();
-    // });
     res.render('selectproducts', { items: "", pids: "" });
     console.log(id);
 
@@ -825,9 +677,6 @@ exports.ajaxtest = (req, res) => {
             var newoid = new ObjectId(result.ops[0]._id);
             console.log("ABid: " + newoid);
 
-            // console.log("asfas" + myquery._id);
-            // abid = myquery._id;
-
             var newvalues = { $set: { "ABid": newoid } };
 
 
@@ -842,47 +691,32 @@ exports.ajaxtest = (req, res) => {
                     console.log("product updated ABid: " + obj);
                 });
             }
-            // map = 1;
+    
         });
-
-        // console.log("map:"+map);
-
-        // var x = ObjectId(req.body.pid[0]) + ",";
-        // for (var i = 1; i < req.body.pid.length; i++) {
-        //     x += ObjectId(req.body.pid[i]) + ",";
-        // }
-
-        // console.log("x: " + x);
-
-        // var myquery = {
-        //     "_id": {
-        //         "$in":
-
-        //             [
-        //                 x
-        //             ]
-        //     }
-        // };
-
-
-
-
-
-
-        // }
-        // res.send({ message: "Products copied to DB" });
-
     });
-
-    // if (map == 1) {
-
-
-
-
-
-    // }
-
 };
+
+exports.getIDS = (req, res) => {
+    MongoClient.connect(url, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection("shopify_collection2").find({}, { projection: { _id: 1 } }).toArray(function (err, result) {
+            if (err) throw err;
+
+            images = result;
+            //var ids = result[0];
+            var ids = [];
+            for (var i = 0; i < images.length; i++) {
+                ids[i] = images[i]._id;
+            }
+
+            //    console.log(images[0]._id);
+            console.log(ids);
+            res.send(ids);
+            return ids;
+        });
+    });
+}
+
 
 
 
