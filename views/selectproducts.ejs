@@ -1,6 +1,20 @@
 <html>
 
 <head>
+    <style>
+        .button {
+				background-color: #4CAF50;
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+			}
+    </style>
     <script src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
     <script language="javascript" type="text/javascript">
         var type;
@@ -82,8 +96,9 @@
         }
     </script>
     <script>
-        document.write(sessionStorage.selectedImg + "<br>");
-        document.write(sessionStorage.selectedText);
+        // document.write(sessionStorage.selectedImg + "<br>");
+        // document.write(sessionStorage.selectedText);
+
         var link2 = "/selectProduct/" + sessionStorage.selectedImg + "/" + sessionStorage.selectedText;
             // document.getElementById("publish").href = link2;
     </script>
@@ -179,7 +194,7 @@
                     success: function (data) {
                         console.log('success');
                         console.log(JSON.stringify(data));
-                        alert("Badge applied to "+selectedProductscount+" products");
+                        alert("Badge applied to "+selectedProductscount+" product(s)");
                     }
                 });
             });
@@ -205,7 +220,7 @@
             <input type="radio" name="dateRadio" value="withBadges"> With Badges  
             <input type="radio" name="dateRadio" value="withoutBadges"> Without Badges 
             <input type="radio" name="dateRadio" value="all"> All
-            <button type="button" onClick="DateRange()">apply </button>
+            <button type="button" onClick="DateRange()" class="button">apply </button>
 
 
 
@@ -220,7 +235,7 @@
             <input type="radio" name="priceRadio" value="withBadges"> With Badges  
             <input type="radio" name="priceRadio" value="withoutBadges"> Without Badges 
             <input type="radio" name="priceRadio" value="all"> All
-            <button type="submit" onClick="myFunction()">apply </button>
+            <button type="submit" onClick="myFunction()" class="button">apply </button>
 
 
 
@@ -229,7 +244,7 @@
             <script type="text/javascript" language="JavaScript">
                 document.write('<select name="value" id="category"><option value="">Select status</option></select>')
             </script>
-            <button type="button" onClick="myFunction3()">apply </button>
+            <button type="button" onClick="myFunction3()" class="button">apply </button>
 
         </div>
         <div id="title" style="display:none;">
@@ -240,7 +255,7 @@
             <input type="radio" name="titleRadio" value="withoutBadges"> Without Badges 
             <input type="radio" name="titleRadio" value="all"> All
 
-            <button type="button" onClick="prodTitle()">apply </button>
+            <button type="button" onClick="prodTitle()" class="button">apply </button>
 
 
 
@@ -256,31 +271,34 @@
 
             <!-- <button type="button" onClick="myFunction()">apply </button> -->
 
-
+             <!--
             <button type="button">reset </button>
+            -->
 
         </div>
         <h1>List Of Products</h1>
-        <input type="checkbox" onClick="toggle(this)"> select all <br><br><br>
+        <input type="checkbox" onClick="toggle(this)"> select all <br><br>
         <div class="flex-container" id="div_products"></div>
         <div class="flex-container">
             <% for(var i=0; i<items.length; i++) {%>
                 <input type="checkbox" name="products" onClick="ticked()" value="<%= pids[i] %>"><%= items[i] %><br>
                     <% } %>
+            <br>
     </section>
+    <!--
     <div>
-    
-
-        &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox" onClick="withBadges()"> With Badges <br> &nbsp; &nbsp; &nbsp; &nbsp;
-        <input type="checkbox" id="withoutBadge" > Without Badges <br><br>
-
+         &nbsp; &nbsp; &nbsp; &nbsp;<input type="checkbox" onClick="withBadges()"> With Badges <br> &nbsp; &nbsp; &nbsp; &nbsp;
+         <input type="checkbox" id="withoutBadge" > Without Badges <br><br>
     </div>
+    -->
     </div>
     <div>
-        <a href="#" class="button" id="select_link">
-            <button type="button">Publish </button>
+        <a href="#" id="select_link">
+            <button type="button" class="button">Publish </button>
         </a>
+        <!--
         <div id="select_div"><a href="" onClick="this.href = link2" id="publish">Test</a></div>
+        -->
 
     </div>
 

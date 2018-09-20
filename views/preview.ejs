@@ -5,26 +5,34 @@
 .container {
       height: 500px;
       width: 500px;
-      background: blue;
-
+      background: white;
   }
-
 .outer{
     color: indigo;
     font-family: 'Montserrat', sans-serif;
     font-family: 'Slabo 27px', serif;
     padding: 50px;
 }
-
 .df{
     display: flex; 
    
 }
-
 .divp{
     padding: 50px;
     margin: 50px;
 }  
+.button {
+				background-color: #4CAF50;
+				border: none;
+				color: white;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+			}
 </style>
 <script>
      document.write(sessionStorage.selectedImg);
@@ -72,11 +80,11 @@
         PREVIEW:
     </h4>
 
-    <div class="container">
+    <div class="container" >
         <div id="imagediv">
             <img id="image1" src="" alt="Cinque Terre" height="50" width="50" />
             <center>
-                <img id="image2" src="/images/shirt.jpg" alt="Cinque Terre" height="300" width="300" />
+                <img id="image2" src="/images/shirt.jpg" alt="shirt" height="380" width="380" />
             </center>
         </div>
     </div>
@@ -84,9 +92,9 @@
     <br>
     <br>
     <div class="divp">
-        <a href="/selectProductPage" class="button" id = "screen3">        
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"> NEXT
-        </a>
+        <a href="/selectProductPage" class="button">NEXT</a>
+
+        
 </button>
 </div>
 </div>
@@ -95,24 +103,19 @@
 </section>
 
 <script type="text/javascript">
-
     document.getElementById("image2").style.position = "relative";
-    document.getElementById("image2").style.top = "45px";
+    document.getElementById("image2").style.top = "5px";
     var selectBox = document.getElementById("selectBox");
     var selectedText = selectBox.options[selectBox.selectedIndex].text;
     sessionStorage.setItem("selectedText",selectedText);
-
     function changeFunc() {
         
         var selectedValue = selectBox.options[selectBox.selectedIndex].value;
         var selectedText = selectBox.options[selectBox.selectedIndex].text;
-
         sessionStorage.setItem("selectedText",selectedText);
         
-
         // var link = "/selectProduct/"+selectedText;
         // document.getElementById("screen3").href = link;
-
         if (selectedValue == 1) {
             document.getElementById("image1").style.position = "static";
             document.getElementById("image1").style.top = "5px";
@@ -122,26 +125,19 @@
             document.getElementById("image1").style.top = "5px";
             document.getElementById("image1").style.left = "450px";
             // document.getElementById("imagediv").style.float = "right";
-
         } else if (selectedValue == 3) {
             document.getElementById("image1").style.position = "relative";
             document.getElementById("image1").style.top = "440px";
             document.getElementById("image1").style.left = "450px";
             // document.getElementById("imagediv").style.float = "right";
-
         } else if (selectedValue == 4) {
             document.getElementById("image1").style.position = "relative";
             document.getElementById("image1").style.top = "440px";
             document.getElementById("image1").style.left = "15px";
-
         }
-
-
     }
-
 </script>
 <script>
-
     var e = document.getElementById("selectBox");
     var csstext = e.options[e.selectedIndex].text;
     var link = "/selectProduct/"+csstext;

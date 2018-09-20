@@ -391,7 +391,7 @@ exports.updateProduct = (req, res) => {
 
         var newvalues = { $set: req.body };
 
-        dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+        dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
             if (err) throw err;
             console.log("product updated:" + obj);
         });
@@ -409,7 +409,7 @@ exports.createProduct = (req, res) => {
 
         console.log("inside createProd");
         var myquery = req.body;
-        dbo.collection("shopify_collection").insertOne(myquery, function (err, obj) {
+        dbo.collection(globalShop).insertOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product created/added: " + obj.insertedCount);
         });
@@ -430,7 +430,7 @@ exports.getProduct = (req, res) => {
         var myquery = { id: parseInt(req.params.id) };
         // var myquery = { id: 1466289291362 };
         console.log("id: " + req.params.id);
-        dbo.collection("shopify_collection").findOne(myquery, function (err, obj) {
+        dbo.collection(globalShop).findOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product found: " + obj);
             res.send(obj);
@@ -669,7 +669,8 @@ exports.getProductPriceRange = (req, res) => {
 
         if (pr == "all") {
             myquery = {
-                "variants.0.price": { "$gte": p1, "$lte": p2 }
+                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                // "variants": { price: { "$gte": p1, "$lte": p2 } }
             }
         } else if (pr == "withBadges") {
             myquery = {
@@ -690,7 +691,7 @@ exports.getProductPriceRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
             var products = obj;
@@ -723,8 +724,7 @@ exports.getProductDateRange = (req, res) => {
         var dbo = db.db("shopifydbclone");
 
         console.log("inside getProdPrice");
-        // var myquery = { _id: ObjectId(req.params.id) };
-        // var myquery = { "variants.0.price":{$gte:"100"} };
+
         var myquery;
         d1 = req.params.d1;
         console.log("d1: " + d1);
@@ -758,7 +758,7 @@ exports.getProductDateRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
             var products = obj;
@@ -824,7 +824,7 @@ exports.getProductTitle = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("shopify_collection").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -887,7 +887,7 @@ exports.ajaxtest = (req, res) => {
                 };
                 console.log("pids: " + req.body.pid[i]);
 
-                dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
                 });
@@ -953,7 +953,7 @@ exports.withoutBadge = (req, res) => {
             console.log(myquery);
             console.log("pids: " + req.body.pid[i]);
 
-            dbo.collection("shopify_collection").findOne(myquery, { projection: { _id: 1, title: 1 } }, function (err, obj) {
+            dbo.collection("globalShop").findOne(myquery, { projection: { _id: 1, title: 1 } }, function (err, obj) {
                 if (err) throw err;
 
                 console.log("product without ABid: ");
