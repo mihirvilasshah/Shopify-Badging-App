@@ -321,9 +321,10 @@ var url = "mongodb://localhost:27017/";
 // var url = "mongodb://" + process.env.DB_USER + ":" + process.env.DB_PASSWORD + "@ds239682.mlab.com:39682/shopifydbclone";
 // DO NOT USE @ or other special characters IN DB_PASSWORD
 
-// var flag = 0;
+
 // Copy Shopify DB to our DB
 exports.copyDB = (req, res) => {
+    var flag = 0;
     // console.log("Shop Response: "+globalShopResponse);
     console.log('Entered copyDB');
 
@@ -340,12 +341,47 @@ exports.copyDB = (req, res) => {
             dbo.collection(globalShop).insertOne(item, function (err, result) {
                 if (err) throw err;
                 console.log("Number of documents inserted: " + result.insertedCount);
+
             });
+            flag = 1;
         });
 
+        console.log("before: " + flag);
+        if (flag == 1) {
+            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+                var n = { "$set": { "variants.0.price": newPrice } }
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+        }
         // }
         res.send({ message: "Products copied to DB" });
-        db.close();
+        //db.close();
     });
 };
 // flag = 1;
@@ -363,7 +399,7 @@ exports.deleteProduct = (req, res) => {
         // var myquery = { _id: ObjectId(req.params.id) };
         var myquery = { id: prod_id };
 
-        dbo.collection("shopify_collection").deleteOne(myquery, function (err, obj) {
+        dbo.collection(globalShop).deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product deleted:" + obj.deletedCount);
         });
@@ -380,6 +416,7 @@ exports.updateProduct = (req, res) => {
         var dbo = db.db("shopifydbclone");
 
         console.log("inside updateProd");
+        var flag = 0;
         // var myquery = { _id: ObjectId(req.params.id) };
         // var prod_id = parseInt(JSON.parse(req).id);
         var prod_id = parseInt(req.body.id);
@@ -394,14 +431,49 @@ exports.updateProduct = (req, res) => {
         dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
             if (err) throw err;
             console.log("product updated:" + obj);
+
         });
+        flag = 1;
+        if (flag == 1) {
+            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+                var n = { "$set": { "variants.0.price": newPrice } }
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+        }
         res.send({ message: "Product updated" });
-        db.close();
+        // db.close();
     });
 };
 
 // Create product in our DB when triggered by webhook
 exports.createProduct = (req, res) => {
+    var flag = 0;
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
@@ -409,12 +481,47 @@ exports.createProduct = (req, res) => {
 
         console.log("inside createProd");
         var myquery = req.body;
+        console.log(globalShop);
         dbo.collection(globalShop).insertOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product created/added: " + obj.insertedCount);
         });
+
+        flag = 1;
+        if (flag == 1) {
+            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+                var n = { "$set": { "variants.0.price": newPrice } }
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+        }
         res.send({ message: "Product created/added" });
-        db.close();
+        // db.close();
     });
 };
 
@@ -654,9 +761,21 @@ exports.getProductPriceRange = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
+
         var dbo = db.db("shopifydbclone");
 
         console.log("inside getProdPrice");
+
+        // console.log(bulkUpdateOps);
+        // if (bulkUpdateOps.length > 0) {
+        //     dbo.collection(globalShop).bulkWrite(bulkUpdateOps);
+        //     console.log("if: " + doc.published_at);
+        // }
+
+
+
+
+
         // var myquery = { _id: ObjectId(req.params.id) };
         // var myquery = { "variants.0.price":{$gte:"100"} };
         p1 = req.params.p1;
@@ -669,17 +788,17 @@ exports.getProductPriceRange = (req, res) => {
 
         if (pr == "all") {
             myquery = {
-                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
                 // "variants": { price: { "$gte": p1, "$lte": p2 } }
             }
         } else if (pr == "withBadges") {
             myquery = {
-                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
                 "ABid": { $exists: true }
             }
         } else if (pr == "withoutBadges") {
             myquery = {
-                "variants.0.price": { "$gte": p1, "$lte": p2 },
+                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
                 "ABid": { $exists: false }
             }
         }
@@ -696,15 +815,18 @@ exports.getProductPriceRange = (req, res) => {
 
             var products = obj;
             //var ids = result[0];
+            console.log(obj);
 
             var titles = [];
             for (var i = 0; i < products.length; i++) {
                 titles[i] = products[i].title;
+                console.log("aaa");
             }
 
             var pids = [];
             for (var i = 0; i < products.length; i++) {
                 pids[i] = products[i]._id;
+                console.log("aaa");
                 // console.log(pids[i]);
             }
 
@@ -934,7 +1056,7 @@ exports.ajaxtest = (req, res) => {
 
 };
 
-
+// Deprecated
 exports.withoutBadge = (req, res) => {
 
 
