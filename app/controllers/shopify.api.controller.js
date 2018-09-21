@@ -4,6 +4,14 @@ const crypto = require('crypto');
 const cookie = require('cookie');
 const querystring = require('querystring');
 const request = require('request-promise');
+const path = require('path');
+const fs = require('fs');
+const fse = require('fs-extra');
+const express = require('express');
+const multer = require('multer');
+const bodyParser = require('body-parser');
+const app = express();
+const router = express.Router();
 
 const scopes = 'read_products';
 // const scopes = 'read_products,read_themes,write_themes';
@@ -21,7 +29,7 @@ var globalShopResponse = undefined;
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
 var url = "mongodb://localhost:27017/";
-const fs = require('fs-extra');
+
 
 console.log('Entered Shopify Controller');
 
@@ -121,7 +129,7 @@ exports.auth = (req, res) => {
                         //var image = getPictures();
                         var images;
                         var flag = 0;
-                        MongoClient.connect(url, function (err, db) {
+                        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
                             var dbo = db.db("shopifydbclone");
                             dbo.collection("badges").find({ "default": false }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
                                 if (err) throw err;
@@ -382,23 +390,23 @@ exports.getProduct = (req, res) => {
     });
 };
 
-exports.uploadPic = (req, res) => {
-    // console.log("Shop Response: "+globalShopResponse);
-    console.log('upload Pic');
+ 
+exports.upload = (req, res) => {
 
-    if (req.file == null) {
-        console.log('upload Pic null');
-        console.log(req.file);
-        // If Submit was accidentally clicked with no file selected...
-
-    } else {
-        MongoClient.connect(url, function (err, db) {
+    console.log("api/upload");
+    if (!req.file) {
+        alert("No file received");
+        return res.redirect("http://localhost:4200/");
+    
+      } else {
+        console.log('file received');
+        console.log(req.file.originalname);
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
             console.log('upload Pic to mongo');
-            console.log(req.file.originalname);
             var picname = req.file.originalname;
             console.log("pic file name=" + picname);
             // read the img file from tmp in-memory location
-            var newImg = fs.readFileSync(req.file.path);
+            var newImg = fse.readFileSync(req.file.path);
             // encode the file as a base64 string.
             var encImg = newImg.toString('base64');
             // define your new document
@@ -406,48 +414,95 @@ exports.uploadPic = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                src: forwardingAddress + '/picture/' + picname // not name, it should be id
-
+                src: picname // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection('shopify_collection2')
                 .insert(newItem, function (err, result) {
                     if (err) { console.log(err); };
                     var newoid = new ObjectId(result.ops[0]._id);
-                    fs.remove(req.file.path, function (err) {
+                    fse.remove(req.file.path, function (err) {
                         if (err) { console.log(err) };
                         console.log("uploaded: " + newoid);
                     });
+                    res.send(newoid);
                 });
-
-            dbo.collection("shopify_collection2")
-                .find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
-                    if (err) throw err;
-
-                    images = result;
-                    //var ids = result[0];
-                    var ids = [];
-                    for (var i = 0; i < images.length; i++) {
-                        ids[i] = images[i]._id;
-                    }
-                    console.log(ids)
-
-                    if (req.url == '/uploadPic/') {
-                  
-                        console.log("inside redirection");
-                        return res.redirect("http://localhost:4200/badge");
-                    } else {
-                        console.log(req.url)
-                      
-                    } 
-                });
+                console.log("upload done");
+        
+                // return res.redirect("http://localhost:4200/");
 
         });
-    }
-}
+       
+      }
+};
 
+// exports.uploadPic = (req, res) => {
+//     // console.log("Shop Response: "+globalShopResponse);
+//     console.log('upload Pic');
 
-// Upload Pic
+//     if (req.file == null) {
+//         console.log('upload Pic null');
+//         console.log(req.file);
+//         // If Submit was accidentally clicked with no file selected...
+
+//     } else {
+//         MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+//             console.log('upload Pic to mongo');
+//             console.log(req.file.originalname);
+//             var picname = req.file.originalname;
+//             console.log("pic file name=" + picname);
+//             // read the img file from tmp in-memory location
+//             var newImg = fse.readFileSync(req.file.path);
+//             // encode the file as a base64 string.
+//             var encImg = newImg.toString('base64');
+//             // define your new document
+//             var newItem = {
+//                 contentType: req.file.mimetype,
+//                 size: req.file.size,
+//                 img: Buffer(encImg, 'base64'),
+//                 src: '/picture/' + picname // not name, it should be id
+
+//             };
+//             var dbo = db.db("shopifydbclone");
+//             dbo.collection('shopify_collection2')
+//                 .insert(newItem, function (err, result) {
+//                     if (err) { console.log(err); };
+//                     var newoid = new ObjectId(result.ops[0]._id);
+//                     fse.remove(req.file.path, function (err) {
+//                         if (err) { console.log(err) };
+//                         console.log("uploaded: " + newoid);
+//                     });
+//                 });
+
+//             dbo.collection("shopify_collection2")
+//                 .find({}, { projection: { contentType: 0, size: 0, img: 0, src: 0 } }).toArray(function (err, result) {
+//                     if (err) throw err;
+
+//                     images = result;
+//                     //var ids = result[0];
+//                     var ids = [];
+//                     for (var i = 0; i < images.length; i++) {
+//                         ids[i] = images[i]._id;
+//                     }
+//                     console.log(ids);
+
+//                     if (req.url == '/uploadPic/') {
+                  
+//                         console.log("inside redirection");
+//                         res.send({
+//                             success: true
+//                           })
+//                         return res.redirect("http://localhost:4200/badge");
+//                     } else {
+//                         console.log(req.url)
+                      
+//                     } 
+//                 });
+
+//         });
+//     }
+// }
+
 exports.getPicture = (req, res) => {
     // assign the URL parameter to a variable
     var filename = req.params.picture;
@@ -455,7 +510,7 @@ exports.getPicture = (req, res) => {
     // string stored in the variable called url.
     MongoClient.connect(url, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection('badges')
+        dbo.collection('shopify_collection2')
             // perform a mongodb search and return only one result.
             // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
@@ -697,7 +752,8 @@ exports.ajaxtest = (req, res) => {
 };
 
 exports.getIDS = (req, res) => {
-    MongoClient.connect(url, function (err, db) {
+    console.log("inside get IDS");
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
         dbo.collection("shopify_collection2").find({}, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
@@ -712,7 +768,7 @@ exports.getIDS = (req, res) => {
             //    console.log(images[0]._id);
             console.log(ids);
             res.send(ids);
-            return ids;
+            // return ids;
         });
     });
 }

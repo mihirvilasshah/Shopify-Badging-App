@@ -44,17 +44,6 @@ function onLoad() {
         }
     };
 
-    xhttp.open("GET", "https://1d977961.ngrok.io/product", true);
+    xhttp.open("GET", "https://2db78424.ngrok.io/product", true);
     xhttp.send();
-
-
-
-    //  fetch('http://localhost:3000/product',{content-}).then((respose)=>{
-    //      console.log(respose.json());
-    //      var products = respose.body.products // [{name : "P1", id  :1},{name : "P2", id  :2}] // respose.products;
-
-    //      products.forEach(function(product){
-    //          productHolder.append(`<p>${product.name} : ${product.id} </p>`);
-    //      });
-    //  }) 
 }

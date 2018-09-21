@@ -34,15 +34,12 @@ module.exports = (app) => {
     const multer = require('multer')
     const upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
 
-    // Upload Pic
-    app.post('/uploadPic', upload.single('picture'), controller.uploadPic);
-
     // Get picture
     app.get('/picture/:picture', controller.getPicture);
     // Get pictures
     // app.get('/pictures',controller.getPictures);
 
-
+    app.get('/getIDS', controller.getIDS);
     app.get('/preview', controller.preview);
 
     app.get('/selectProduct/:id/:css', controller.selectProduct);
@@ -58,8 +55,8 @@ module.exports = (app) => {
     app.get('/getProductTitle/:t1', controller.getProductTitle);
     app.post('/ajaxtest',controller.ajaxtest);
 
-
-
-
+    // upload pic using uploader
+    app.post('/api/upload',upload.single('photo'), controller.upload); 
+    // app.get('/api', controller.api );
 
 }
