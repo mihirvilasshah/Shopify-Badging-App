@@ -1,3 +1,5 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
 nav {
     background: #2D2E2E;
     height: 100%;
@@ -25,7 +27,7 @@ nav {
 
             .activated {
                 background-color: #00a8ff;
-                width: 82%;
+                width: 103%;
             }
         }
     }

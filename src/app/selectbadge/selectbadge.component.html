@@ -3,49 +3,52 @@
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
 <mat-tab-group>
-  <mat-tab label="Library"> 
-   <!-- to do add images to mongo do and fetch it from db through a call -->
-    images to be displayed
+  <mat-tab label="Library">
+    <!-- to do add images to mongo do and fetch it from db through a call -->
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://2db78424.ngrok.io/picture/5ba4be30ada14a2834c9bc0f">
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://2db78424.ngrok.io/picture/5ba4be4cada14a2834c9bc10">
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://2db78424.ngrok.io/picture/5ba4bdf861cdb33194053923">
 
   </mat-tab>
 
-  <mat-tab label="My Badges"> 
-  <!-- the pics that are uploaded will be displayed here   -->
+  <mat-tab label="My Badges">
+    <!-- the pics that are uploaded will be displayed here   -->
 
-    <!-- <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://1d977961.ngrok.io/picture/5ba1fb45da30c32fa8f1c27e"> -->
-    <div id="imageContainer">
-      
-    </div>
-  
-  </mat-tab>
-  
-  <mat-tab label="Upload"> 
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://2db78424.ngrok.io/picture/5ba3c89daf159422685ba06e">
+    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://2db78424.ngrok.io/picture/5ba47ea97bc38f2b9cbd88e6">
+
     
-	<form action="https://1d977961.ngrok.io/uploadPic/" method="POST" enctype="multipart/form-data"#form>
-		<input type="file" name="picture" accept="application/x-zip-compressed,image/*"/>
-		<button type="submit" (click)="form.submit()">Upload</button>
-	</form>
+    <div id="imageContainer" >
+        
+    </div>
+
+  </mat-tab>
+
+  <mat-tab label="Upload">
+    
+    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" id="pic_name" [(ngModel)]="pic_name" />
+    <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+      Upload an Image
+    </button>
 
   </mat-tab>
 
 </mat-tab-group>
 <script>
-localStorage.setItem('whatever', 'something');
-let key = 'Item 1'; 
-localStorage.setItem(key, 'Value');
-let myItem = localStorage.getItem(key);
-document.write(myItem);
-console.log(myItem);
+  localStorage.setItem('whatever', 'something');
+  let key = 'Item 1';
+  localStorage.setItem(key, 'Value');
+  let myItem = localStorage.getItem(key);
+  document.write(myItem);
+  console.log(myItem);
 </script>
 
-<br><br>
-<!-- 
-<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']" (click)="customizeBadge()"  > NEXT
-  </button> -->
+<br>
+<br>
 
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']" > NEXT
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="customizeBadge()"> NEXT
   </button>
-
-
-
-
+<!-- 
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']">
+  NEXT
+</button> -->

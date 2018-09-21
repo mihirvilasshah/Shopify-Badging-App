@@ -4,9 +4,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { MatSelectModule} from '@angular/material/select';
 import { HttpClientModule }    from '@angular/common/http';
-// import { HttpClientInMemoryWebApiModule } from 'angular-in-memory-web-api';
-// import { InMemoryDataService }  from './in-memory-data.service';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
@@ -15,11 +12,10 @@ import { CustomizeComponent } from './customize/customize.component';
 import { SelectProductsComponent } from './select-products/select-products.component';
 import { RemoveBadgesComponent } from './remove-badges/remove-badges.component';
 import {BadgeService} from './badge.service'
-// import { FormsModule } from '../../node_modules/@angular/forms';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-// import {NgModule} from '@angular/core';
-// import {FormsModule, ReactiveFormsModule}  from '@angular/forms';
+import { FileSelectDirective } from 'ng2-file-upload';
+
 
 @NgModule({
   declarations: [
@@ -28,7 +24,8 @@ import { RouterModule, Routes } from '@angular/router';
     SelectBadgeComponent,
     CustomizeComponent,
     SelectProductsComponent,
-    RemoveBadgesComponent
+    RemoveBadgesComponent,
+    FileSelectDirective
   ],
   imports: [
     BrowserModule,

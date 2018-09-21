@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { BadgeService } from '../badge.service';
+import {ActivatedRoute, Router} from "@angular/router";
 
 export interface position {
   name: string;
@@ -20,10 +21,23 @@ export interface position {
 
 export class CustomizeComponent {
 
-  constructor(private badge: BadgeService) {
-    this.badge.getProduct()
+
+  selected_image_src="";
+
+  public picName: string;
+  public lastname: string;
+
+
+  constructor(private badge: BadgeService, private route: ActivatedRoute) {
+    this.badge.getProduct();
+    this.route.queryParams.subscribe(params => {
+      this.selected_image_src = params["picName"];
+   
+      console.log(this.selected_image_src);
+  });
 
   }
+
 
 
   nextFunc(){
