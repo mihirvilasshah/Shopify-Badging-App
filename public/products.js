@@ -44,6 +44,6 @@ function onLoad() {
         }
     };
 
-    xhttp.open("GET", "https://2db78424.ngrok.io/product", true);
+    xhttp.open("GET", "https://209f9b2b.ngrok.io/product", true);
     xhttp.send();
 }
