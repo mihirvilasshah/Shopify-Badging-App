@@ -8,7 +8,7 @@
       <h4>
         SELECTED BADGE
       </h4>
-      <img src="https://thumbs.dreamstime.com/z/winner-badge-81762.jpg" height="200px" width="200px">
+      <img src={{selected_image_src}} height="200px" width="200px">
       <h4>
         POSITION:
       </h4>
@@ -33,7 +33,7 @@
       </h4>
 
       <div style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg'); height: 500px; width: 500px; border: 1px solid black; background-size:cover ">
-        <img #panel id="image1" src="https://thumbs.dreamstime.com/z/winner-badge-81762.jpg" alt="Cinque Terre" height="50" width="50" />
+        <img #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="50" width="50" />
       </div>
 
       <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
@@ -42,7 +42,7 @@
       <br>
       <div class="divp">
 
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/products']"> NEXT
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()"> NEXT
 </button>
 </div>
 

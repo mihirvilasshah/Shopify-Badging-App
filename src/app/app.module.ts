@@ -15,6 +15,7 @@ import {BadgeService} from './badge.service'
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FileSelectDirective } from 'ng2-file-upload';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { FileSelectDirective } from 'ng2-file-upload';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    HttpClientModule
+    HttpClientModule,
+    NgxSpinnerModule
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // )

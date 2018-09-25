@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { BadgeService } from '../badge.service';
-import {ActivatedRoute, Router} from "@angular/router";
+import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
+import { NgxSpinnerService } from 'ngx-spinner';
 
 export interface position {
   name: string;
@@ -23,14 +24,15 @@ export class CustomizeComponent {
 
 
   selected_image_src="";
+  pic_name="";
+  badge_css="";
 
-  public picName: string;
-  public lastname: string;
 
 
-  constructor(private badge: BadgeService, private route: ActivatedRoute) {
+  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router) {
     this.badge.getProduct();
     this.route.queryParams.subscribe(params => {
+      if( params["picName"])
       this.selected_image_src = params["picName"];
    
       console.log(this.selected_image_src);
@@ -49,23 +51,27 @@ export class CustomizeComponent {
           document.getElementById("image1").style.position = "relative";
           document.getElementById("image1").style.top = "0px";
           document.getElementById("image1").style.left = "450px";
+          this.badge_css="top-right";
       
       } else if (event == "top-left") {
           document.getElementById("image1").style.position = "relative";
           document.getElementById("image1").style.top = "0px";
           document.getElementById("image1").style.left = "0px";
           // document.getElementById("imagediv").style.float = "right";
+          this.badge_css="top-left";
 
       } else if (event == "bottom-right") {
           document.getElementById("image1").style.position = "relative";
           document.getElementById("image1").style.top = "450px";
           document.getElementById("image1").style.left = "450px";
           // document.getElementById("imagediv").style.float = "right";
+          this.badge_css="bottom-right";
 
       } else if (event == "bottom-left") {
           document.getElementById("image1").style.position = "relative";
           document.getElementById("image1").style.top = "450px";
           document.getElementById("image1").style.left = "0px";
+          this.badge_css="bottom-left";
 
       }
   }
@@ -77,6 +83,24 @@ export class CustomizeComponent {
     { name: 'bottom-left' },
     { name: 'bottom-right' },
   ];
+
+  selectProducts(){
+    console.log("inside selectProducts");
+    this.spinner.show();
+    setTimeout(() => {
+
+      console.log("pic name" + this.selected_image_src);
+      // console.log("ids"+this.ids);
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          picName: this.selected_image_src,
+          badgeCss:this.badge_css
+        }
+      };
+      this.router.navigate(["/products"], navigationExtras);
+      this.spinner.hide();
+    }, 1000);
+  }
 
 
 
