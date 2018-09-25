@@ -414,7 +414,8 @@ exports.upload = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                src: picname // not name, it should be id
+                src: picname,
+                default : 'false' // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -510,7 +511,7 @@ exports.getPicture = (req, res) => {
     // string stored in the variable called url.
     MongoClient.connect(url, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection('badges')
+        dbo.collection('shopify_collection2')
             // perform a mongodb search and return only one result.
             // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
@@ -778,7 +779,7 @@ exports.getIDS = (req, res) => {
     console.log("inside get IDS");
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection("shopify_collection2").find({}, { projection: { _id: 1 } }).toArray(function (err, result) {
+        dbo.collection("shopify_collection2").find({default:'true'}, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
 
             images = result;
@@ -796,6 +797,27 @@ exports.getIDS = (req, res) => {
     });
 }
 
+exports.getUserIDS = (req, res) => {
+    console.log("inside get User IDS");
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection("shopify_collection2").find({default:'false'}, { projection: { _id: 1 } }).toArray(function (err, result) {
+            if (err) throw err;
+
+            images = result;
+            //var ids = result[0];
+            var ids = [];
+            for (var i = 0; i < images.length; i++) {
+                ids[i] = images[i]._id;
+            }
+
+            //    console.log(images[0]._id);
+            console.log(ids);
+            res.send(ids);
+            // return ids;
+        });
+    });
+}
 
 
 

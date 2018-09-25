@@ -40,6 +40,7 @@ module.exports = (app) => {
     // app.get('/pictures',controller.getPictures);
 
     app.get('/getIDS', controller.getIDS);
+    app.get('/getUserIDS', controller.getUserIDS);
     app.get('/preview', controller.preview);
 
     app.get('/selectProduct/:id/:css', controller.selectProduct);
