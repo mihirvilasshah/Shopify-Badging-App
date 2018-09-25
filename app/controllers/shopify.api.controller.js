@@ -511,7 +511,7 @@ exports.getPicture = (req, res) => {
     // string stored in the variable called url.
     MongoClient.connect(url, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection('badges')
+        dbo.collection('shopify_collection2')
             // perform a mongodb search and return only one result.
             // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
