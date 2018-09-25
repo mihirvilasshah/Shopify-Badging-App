@@ -623,8 +623,8 @@ exports.getProductPriceRange = (req, res) => {
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
-            res.render('selectproducts', { items: titles, pids: pids });
-            // res.send({ "items": titles, "pids": pids });
+            // res.render('selectproducts', { items: titles, pids: pids });
+            res.send({ "items": titles, "pids": pids });
         });
         // res.send({ message: "Found product" });
 
