@@ -18,7 +18,7 @@ export class BadgeService {
     //   'Access-Control-Allow-Origin': '*',
     //   'Content-Type': 'application/json'
     // };
-    let obs = this.http.get("https://d0b7e556.ngrok.io/getProduct/1451088838726.0")
+    let obs = this.http.get("https://042e17ba.ngrok.io/getProduct/1451088838726.0")
     obs.subscribe(data => {
       console.log("here is the response", data)
     })
@@ -56,7 +56,7 @@ export class BadgeService {
   //   })
   // }
 
-  return this.http.get("https://d0b7e556.ngrok.io/getIDS");
+  return this.http.get("https://042e17ba.ngrok.io/getIDS");
 }
 
 }

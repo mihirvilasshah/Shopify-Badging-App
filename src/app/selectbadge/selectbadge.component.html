@@ -1,7 +1,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-<<<<<<< HEAD
 <ngx-spinner
   bdColor="rgba(51,51,51,0.8)"
   size="medium"
@@ -10,12 +9,12 @@
  <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <form>
-<mat-tab-group (selectedTabChange)="onLinkClick($event)"  >
+<mat-tab-group  >
   <mat-tab label="Library" id="lib">
       <!-- <div id="libImageContainer"> -->
       <div id="libImageContainer"  *ngFor="let pic of LibPictures; let i= index" >
           <label>
-              <input id="pic" type="radio" name="pictures" [(ngModel)]="radioSelected" (click)="selectedPic(i,0)">
+              <input id="pic" type="radio" (click)="selectedPic(i,0)">
               <img src={{pic}} height="200px" width="200px" alt="Badges">
             </label>
         </div>
@@ -25,33 +24,10 @@
   <mat-tab label="My Badges" >
       <div id="UserImageContainer"  *ngFor="let pic of UserPictures; let i= index" >
           <label>
-              <input id="pic" type="radio" name="pictures" [(ngModel)]="radioSelected" (click)="selectedPic(i,1)">
+              <input id="pic" type="radio" (click)="selectedPic(i,1)">
               <img src={{pic}} height="200px" width="200px" alt="Badges">
             </label>
         </div>
-=======
-
-<mat-tab-group>
-  <mat-tab label="Library">
-    <!-- to do add images to mongo do and fetch it from db through a call -->
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://209f9b2b.ngrok.io/picture/5ba4be30ada14a2834c9bc0f">
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://209f9b2b.ngrok.io/picture/5ba4be4cada14a2834c9bc10">
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://209f9b2b.ngrok.io/picture/5ba4bdf861cdb33194053923">
-
-  </mat-tab>
-
-  <mat-tab label="My Badges">
-    <!-- the pics that are uploaded will be displayed here   -->
-
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://209f9b2b.ngrok.io/picture/5ba3c89daf159422685ba06e">
-    <img id="mybadge" alt="my badge" height="200px" width="200px" src="https://209f9b2b.ngrok.io/picture/5ba47ea97bc38f2b9cbd88e6">
-
-    
-    <div id="imageContainer" >
-        
-    </div>
-
->>>>>>> f8c99b58446172437a3908d20cf5d1d0c3dc9a1f
   </mat-tab>
 
   <mat-tab label="Upload">

@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { BadgeService } from '../badge.service';
+import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
+import { NgxSpinnerService } from 'ngx-spinner';
 
 export interface filter {
   name: string;
@@ -26,6 +29,8 @@ export class SelectProductsComponent implements OnInit {
   selectedEntry;
   titles;
   pids;
+  selected_image_src="";
+  badgeCss="";
 
 
   filterControl = new FormControl('', [Validators.required]);
@@ -35,7 +40,18 @@ export class SelectProductsComponent implements OnInit {
     { name: 'Title' },
   ];
 
-  constructor(private http: HttpClient) {
+ 
+  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient) {
+    this.badge.getProduct();
+    this.route.queryParams.subscribe(params => {
+      if( params["picName"])
+      this.selected_image_src = params["picName"];
+      if(params["badgeCss"])
+      this.badgeCss=params["badgeCss"];
+   
+      console.log(this.selected_image_src);
+      console.log(this.badgeCss);
+  });
 
   }
 

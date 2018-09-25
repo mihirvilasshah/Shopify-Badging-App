@@ -41,21 +41,21 @@ export class SelectBadgeComponent implements OnInit {
     };
     
     var count = 0;
-    var ids = this.http.get("https://d0b7e556.ngrok.io/getIDS");
+    var ids = this.http.get("https://042e17ba.ngrok.io/getIDS");
     ids.subscribe(val => { console.log(val);
       var temp=Object.values(val);
       temp.forEach(pic =>
       {
-        this.LibPictures.push("https://d0b7e556.ngrok.io/picture/"+pic);
+        this.LibPictures.push("https://042e17ba.ngrok.io/picture/"+pic);
       })
     });
 
-    var ids = this.http.get("https://d0b7e556.ngrok.io/getUserIDS");
+    var ids = this.http.get("https://042e17ba.ngrok.io/getUserIDS");
     ids.subscribe(val => { console.log(val);
       var temp=Object.values(val);
       temp.forEach(pic =>
       {
-        this.UserPictures.push("https://d0b7e556.ngrok.io/picture/"+pic);
+        this.UserPictures.push("https://042e17ba.ngrok.io/picture/"+pic);
       })
     }
       
@@ -88,7 +88,7 @@ export class SelectBadgeComponent implements OnInit {
 
   public onTap() {
     console.log("inside on tap");
-    var cursor = this.http.get("https://d0b7e556.ngrok.io/picture/");
+    var cursor = this.http.get("https://042e17ba.ngrok.io/picture/");
     console.log(cursor);
 
   }
