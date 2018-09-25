@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { BadgeService } from '../badge.service';
 import { HttpClient } from '@angular/common/http';
-import {ActivatedRoute, Router, NavigationExtras} from "@angular/router";
-import {  FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
+import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
+import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { MatTabChangeEvent } from '@angular/material';
 
 @Component({
   selector: 'app-selectbadge',
@@ -11,54 +13,100 @@ import {  FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upl
 })
 export class SelectBadgeComponent implements OnInit {
 
-  public uploader: FileUploader = new FileUploader({url: "http://localhost:3000/api/upload", itemAlias: 'photo'});
+  libTab = true;
+  UserTab = true;
+  selectedIndex = 0;
+  LibPictures=[];
+  UserPictures=[];
+  libCount=0;
+  userCount=0;
 
-  constructor(private badge: BadgeService, private http: HttpClient, private router: Router) {
+  public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
+
+  constructor(private badge: BadgeService, private http: HttpClient, private router: Router, private spinner: NgxSpinnerService) {
   }
-  
+ 
   ngOnInit() {
     console.log("ngonInit");
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
     this.uploader.onCompleteItem = (item: any, response: any, status: any, headers: any) => {
-      if(status){
-        console.log('item', item,'status', status,'response', response);
-         alert('File uploaded successfully');
+      if (status) {
+        console.log('item', item, 'status', status, 'response', response);
+        alert('File uploaded successfully');
       }
-      else{
+      else {
         alert("Error uploading a file");
-      }   
-     };
+      }
+
+    };
+    
+    var count = 0;
+    var ids = this.http.get("https://d0b7e556.ngrok.io/getIDS");
+    ids.subscribe(val => { console.log(val);
+      var temp=Object.values(val);
+      temp.forEach(pic =>
+      {
+        this.LibPictures.push("https://d0b7e556.ngrok.io/picture/"+pic);
+      })
+    });
+
+    var ids = this.http.get("https://d0b7e556.ngrok.io/getUserIDS");
+    ids.subscribe(val => { console.log(val);
+      var temp=Object.values(val);
+      temp.forEach(pic =>
+      {
+        this.UserPictures.push("https://d0b7e556.ngrok.io/picture/"+pic);
+      })
+    }
+      
+  );
+
   };
 
-
+ 
   count1: number = 0;
   pic_name = "";
-  customizeBadge():void {
-     this.count1 = this.count1 + 1; 
-     console.log(this.pic_name);
-     
-     let navigationExtras: NavigationExtras = {
-      queryParams: {
-         picName:this.pic_name
-      }
-  };
-  this.router.navigate(["/customize"], navigationExtras);
+  customizeBadge(): void {
+    console.log("inside customise badge");
+    this.spinner.show();
+    setTimeout(() => {
+      this.count1 = this.count1 + 1;
+
+      console.log("pic name" + this.pic_name);
+      // console.log("ids"+this.ids);
+      let navigationExtras: NavigationExtras = {
+        queryParams: {
+          picName: this.pic_name
+
+        }
+      };
+      this.router.navigate(["/customize"], navigationExtras);
+      this.spinner.hide();
+    }, 1000);
   }
 
 
   public onTap() {
     console.log("inside on tap");
-    var cursor = this.http.get("https://2db78424.ngrok.io/picture/");
+    var cursor = this.http.get("https://d0b7e556.ngrok.io/picture/");
     console.log(cursor);
-    
+
   }
 
-  // uploadPic(name){
+  selectedPic(index:number,from:number): void {
+    // debugger;
+    if(!from){this.pic_name = this.LibPictures[index];
  
+      console.log(this.pic_name);}
+      else{
+        this.pic_name = this.UserPictures[index];
  
-  //   console.log('inside submit type of name'+name);
-  //   this.http.post("https://5b326143.ngrok.io/uploadPic/",name);
-  //   //this.badge.getProduct();
-  // }
+      console.log(this.pic_name);
+      }
+    
 
+
+  }
+
+ 
 }
