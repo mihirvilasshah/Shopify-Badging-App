@@ -31,26 +31,26 @@
     <div *ngIf="selectedFilter=='Price'">
         <input type="text" id="p1" [(ngModel)]="price1">
         <input type="text" id="p2" [(ngModel)]="price2">
-        <input type="radio" name="priceRadio" value="withBadges"> With Badges
-        <input type="radio" name="priceRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="priceRadio" value="all"> All
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" value="withBadges"> With Badges
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" value="withoutBadges"> Without Badges
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" value="all"> All
         <br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()">Apply</button>
     </div>
     <div *ngIf="selectedFilter=='Date'">
         <input type="date" id="d1" name="bday" [(ngModel)]="date1">
         <input type="date" id="d2" name="bday" [(ngModel)]="date2">
-        <input type="radio" name="dateRadio" value="withBadges"> With Badges
-        <input type="radio" name="dateRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="dateRadio" value="all"> All
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" value="withBadges"> With Badges
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" value="withoutBadges"> Without Badges
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" value="all"> All
         <br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()">Apply</button>
     </div>
     <div *ngIf="selectedFilter=='Title'">
         <input type="text" id="t1" [(ngModel)]="title1">
-        <input type="radio" name="titleRadio" value="withBadges"> With Badges
-        <input type="radio" name="titleRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="titleRadio" value="all"> All
+        <input type="radio" #r1 name="titleRadio" [(ngModel)]="tr" value="withBadges" > With Badges
+        <input type="radio" #r2 name="titleRadio" [(ngModel)]="tr" value="withoutBadges" > Without Badges
+        <input type="radio" #r3 name="titleRadio" [(ngModel)]="tr" value="all" > All
         <br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()">Apply</button>
     </div>
@@ -71,8 +71,10 @@
                     {{title}}
             </label>
         </div>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getAllSelectedProducts()" [disabled]="!titles">Publish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="publish()">Publish</button>
     </div>
+
+    <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
 
 
