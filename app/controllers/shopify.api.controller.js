@@ -380,7 +380,7 @@ exports.getProduct = (req, res) => {
         var myquery = { id: parseInt(req.params.id) };
         // var myquery = { id: 1466289291362 };
         console.log("id: " + req.params.id);
-        dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+        dbo.collection("tricon-dev-store.myshopify.com").findOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product found: " + obj);
             res.send(obj);
@@ -623,8 +623,8 @@ exports.getProductPriceRange = (req, res) => {
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
-            // res.render('selectproducts', { items: titles, pids: pids });
-            res.send({ "items": titles, "pids": pids });
+            res.render('selectproducts', { items: titles, pids: pids });
+            // res.send({ "items": titles, "pids": pids });
         });
         // res.send({ message: "Found product" });
 
