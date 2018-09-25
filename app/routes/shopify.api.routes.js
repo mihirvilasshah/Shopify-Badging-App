@@ -49,15 +49,15 @@ module.exports = (app) => {
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
 
-    app.get('/getProductPriceRange/:p1/:p2', controller.getProductPriceRange);
+    app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
     app.get('/getProductDateRange/:d1/:d2', controller.getProductDateRange);
 
     app.get('/getProductTitle/:t1', controller.getProductTitle);
-    app.post('/ajaxtest',controller.ajaxtest);
+    app.post('/ajaxtest', controller.ajaxtest);
 
     // upload pic using uploader
-    app.post('/api/upload',upload.single('photo'), controller.upload); 
+    app.post('/api/upload', upload.single('photo'), controller.upload);
     // app.get('/api', controller.api );
 
 }
