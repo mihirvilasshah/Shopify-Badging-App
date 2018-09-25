@@ -1,6 +1,13 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
 .flex-container {
-    display: flex;
-    
-  }
+  display: flex;
+}
+
+button {
+  margin: 10px;
+}  
+
+input{
+  margin: 10px;
+}
