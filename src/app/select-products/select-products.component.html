@@ -64,13 +64,14 @@
 
 
     <div class="form-group">
-        <div class="form-check" *ngFor="let title of titles">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll()">Select All
+        <div class="form-check" *ngFor="let title of titles; let i = index" >
             <label class="form-check-label">
-                <input class="form-check-input" *ngFor="let pid of pids"type="checkbox" [value]="pid">
+                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="pids[i]" (click) = "giveid($event.target.checked, box.value)">
                     {{title}}
             </label>
         </div>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles">Publish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getAllSelectedProducts()" [disabled]="!titles">Publish</button>
     </div>
 
 

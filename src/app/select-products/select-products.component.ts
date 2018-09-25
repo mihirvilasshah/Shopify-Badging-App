@@ -26,6 +26,14 @@ export class SelectProductsComponent implements OnInit {
   selectedEntry;
   titles;
   pids;
+  selectedids = [];
+  selectedAll;
+  
+
+  selectedProducts = [];
+
+
+
 
 
   filterControl = new FormControl('', [Validators.required]);
@@ -100,10 +108,50 @@ export class SelectProductsComponent implements OnInit {
     })
   }
 
-  onSelectionChange(entry) {
-    this.selectedEntry = entry;
-    console.log(this.selectedEntry);
+  giveid(flag, value) {
+
+    if (flag) {
+
+      this.selectedids.push(value);
+      console.log(this.selectedids);
+    }
+    else {
+      var index = this.selectedids.indexOf(value);
+      this.selectedids.splice(index, 1);
+      console.log(this.selectedids);
+    }
+
+    console.log(flag);
+    console.log(value);
   }
+
+  selectAll(){
+    for(var i=0;i<this.titles.length;i++){
+      this.titles[i].selected = this.selectedAll;
+      console.log("h");
+    }
+  }
+
+
+  // onSelectionChange(entry) {
+  //   this.selectedEntry = entry;
+  //   console.log(this.selectedEntry);
+  // }
+
+  // getAllSelectedProducts() {
+  //   var selectedProducts = [];
+
+  //   var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
+  //   console.log(selectedCheckboxes);
+  //   var selectedProductscount = selectedCheckboxes.length;
+  //   console.log(selectedProductscount);
+
+  //   for (var i = 0; i < selectedProductscount; i++) {
+  //     console.log(selectedCheckboxes[i]);
+  //     selectedProducts.push(selectedCheckboxes[i]);
+  //     console.log(selectedProducts);
+  //   }
+  // }
 
 
 
