@@ -48,6 +48,13 @@ export class SelectProductsComponent implements OnInit {
 
   oneDeselect;
 
+  applyTitle = false;
+  countTitle = 0;
+  applyPrice = false;
+  countPrice = 0;
+  applyDate = false;
+  countDate = 0;
+
 
 
 
@@ -88,17 +95,33 @@ export class SelectProductsComponent implements OnInit {
       console.log(this.pr);
 
       var items = Object.values(data);
+      console.log("items:", items)
       this.titles = items[0];
-      console.log("titles:", this.titles)
+      this.structuredTitle = [];
+      this.titles.forEach(title => {
+        this.structuredTitle.push({ name: title, selected: false });
+      });
+      console.log("titles:", this.titles);
+      console.log("structuredTitle:", this.structuredTitle);
 
       this.pids = items[1];
-      console.log("items:", items)
       // var pids = data[pids];
+      this.applyPrice = true;
     })
 
 
 
     // console.log(result);
+  }
+
+  applyPriceFn() {
+    
+    if (this.countPrice == 1) {
+      this.applyPrice = false;  //!(this.applyPrice);
+    }
+    this.countPrice = 1;
+    console.log("count: "+this.countPrice);
+
   }
 
   getDateProd() {
@@ -112,11 +135,28 @@ export class SelectProductsComponent implements OnInit {
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
-      console.log("titles:", this.titles)
+      this.structuredTitle = [];
+      this.titles.forEach(title => {
+        this.structuredTitle.push({ name: title, selected: false });
+      });
+      console.log("titles:", this.titles);
+      console.log("structuredTitle:", this.structuredTitle);
 
       this.pids = items[1];
-      // var pids = data[pids];
+
+      this.applyDate = true;
+      
     })
+  }
+
+  applyDateFn() {
+    
+    if (this.countDate == 1) {
+      this.applyDate = false;  //!(this.applyDate);
+    }
+    this.countDate = 1;
+    console.log("count: "+this.countDate);
+
   }
 
   public mode: string;
@@ -136,6 +176,7 @@ export class SelectProductsComponent implements OnInit {
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.structuredTitle = [];
       this.titles.forEach(title => {
         this.structuredTitle.push({ name: title, selected: false });
       });
@@ -149,7 +190,19 @@ export class SelectProductsComponent implements OnInit {
       // this.mode = 'CheckBox';
       // this.selectAllText = 'Select All';
 
+      this.applyTitle = true;
+
     })
+  }
+
+  applyTitleFn() {
+    
+    if (this.countTitle == 1) {
+      this.applyTitle = false;  //!(this.applyTitle);
+    }
+    this.countTitle = 1;
+    console.log("count: "+this.countTitle);
+
   }
 
   giveid(flag, value) {
@@ -158,7 +211,7 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < this.structuredTitle.length; i++) {
         this.structuredTitle[i].selected = this.selectedAll;
       }
-      this.counter=this.structuredTitle.length;
+      this.counter = this.structuredTitle.length;
       var index = this.selectedids.indexOf(value);
       console.log("value if: " + value);
       this.selectedids = [];
@@ -172,28 +225,29 @@ export class SelectProductsComponent implements OnInit {
 
 
     }
-    if (!this.selectedAll && this.counter==this.structuredTitle.length) {
+    if (!this.selectedAll && this.counter == this.structuredTitle.length) {
       for (var i = 0; i < this.structuredTitle.length; i++) {
         this.structuredTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
-      this.counter=0;
+      this.counter = 0;
       console.log("selectedIDS (deselected all): " + this.selectedids);
 
     }
     else if (flag) {
-      this.counter=this.counter+1;
+      this.counter = this.counter + 1;
 
       // this.selectedids.push(value);
       this.selectedids.push(this.pids[value]);
       console.log("flag true:" + this.selectedids);
       // console.log("pid value esle if: " + this.pids);
     }
-    if(flag==false) {
-      this.counter=this.counter-1;
+    if (flag == false) {
+      this.counter = this.counter - 1;
 
-      // var index = this.selectedids.indexOf(value);
-      this.selectedids.splice(value, 1);
+      var index = this.selectedids.indexOf(this.pids[value]);
+      // this.selectedids.splice(value, 1);
+      console.log("spliced: " + this.selectedids.splice(index, 1));
       console.log("if flag false:" + this.selectedids);
       // console.log("pid value else: " + this.pids);
     }
@@ -201,11 +255,11 @@ export class SelectProductsComponent implements OnInit {
     console.log("flag: " + flag);
     console.log("value: " + value);
 
-    console.log("COUNTER:"+this.counter)
-    if(this.counter==this.structuredTitle.length)
-    this.selectedAll=true;
+    console.log("COUNTER:" + this.counter)
+    if (this.counter == this.structuredTitle.length)
+      this.selectedAll = true;
     else
-    this.selectedAll=false;
+      this.selectedAll = false;
   }
 
   // selectAllProd() {
