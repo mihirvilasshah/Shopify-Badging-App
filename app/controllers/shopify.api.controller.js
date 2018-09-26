@@ -112,7 +112,7 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        MongoClient.connect(url, function (err, db) {
+                        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
                             var dbo = db.db("shopifydbclone");
                             dbo.listCollections({ name: globalShop })
                                 .next(function (err, collinfo) {
@@ -509,7 +509,7 @@ exports.getPicture = (req, res) => {
     var filename = req.params.picture;
     // open the mongodb connection with the connection
     // string stored in the variable called url.
-    MongoClient.connect(url, function (err, db) {
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
         dbo.collection('shopify_collection2')
             // perform a mongodb search and return only one result.
