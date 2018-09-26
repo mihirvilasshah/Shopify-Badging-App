@@ -734,7 +734,7 @@ exports.getProductTitle = (req, res) => {
         }
 
         //  var myquery ={"title" :t};
-        //  console.log(myquery);   
+        console.log(myquery);   
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
 
