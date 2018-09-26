@@ -417,7 +417,7 @@ exports.upload = (req, res) => {
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
                 src: picname,
-                default : 'false' // not name, it should be id
+                default: 'false' // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -736,7 +736,7 @@ exports.getProductTitle = (req, res) => {
         }
 
         //  var myquery ={"title" :t};
-        console.log(myquery);   
+        console.log(myquery);
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
 
@@ -825,7 +825,55 @@ exports.getIDS = (req, res) => {
     console.log("inside get IDS");
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection("badges").find({default:true}, { projection: { _id: 1 } }).toArray(function (err, result) {
+        dbo.collection("badges").find({ default: true }, { projection: { _id: 1 } }).toArray(function (err, result) {
+            if (err) throw err;
+
+            images = result;
+            //var ids = result[0];
+            var ids = [];
+            for (var i = 0; i < images.length; i++) {
+                ids[i] = images[i]._id;
+            }
+
+            //    console.log(images[0]._id);
+            console.log(ids);
+            res.send(ids);
+            // return ids;
+        });
+    });
+}
+
+exports.unpublishBadges = (req, res) => {
+
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+
+        // console.log(req.body.pid);
+
+        for (var i = 0; i < req.body.pid.length; i++) {
+            var myquery = {
+                "_id": ObjectId(req.body.pid[i])
+            };
+            console.log("pids: " + req.body.pid[i]);
+            var newvalues = { $unset: { "ABid": 1 } };
+
+            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                if (err) throw err;
+                console.log("removed ABid from product: " + obj);
+            });
+        }
+
+
+    });
+};
+
+exports.getIDS = (req, res) => {
+    console.log("inside get IDS");
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection("badges").find({ default: true }, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
 
             images = result;
@@ -847,7 +895,7 @@ exports.getUserIDS = (req, res) => {
     console.log("inside get User IDS");
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection("badges").find({default:false}, { projection: { _id: 1 } }).toArray(function (err, result) {
+        dbo.collection("badges").find({ default: false }, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
 
             images = result;
