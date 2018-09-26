@@ -30,7 +30,8 @@ export class CustomizeComponent {
 
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router) {
-    this.badge.getProduct();
+    // this.badge.getProduct();
+    console.log("inside constructor:"+this.selected_image_src);
     this.route.queryParams.subscribe(params => {
       if( params["picName"])
       this.selected_image_src = params["picName"];

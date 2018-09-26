@@ -30,7 +30,7 @@ export class SelectProductsComponent implements OnInit {
   titles;
   pids;
   selected_image_src="";
-  badgeCss="";
+  badgeCss="top-left";
 
 
   filterControl = new FormControl('', [Validators.required]);
@@ -42,7 +42,7 @@ export class SelectProductsComponent implements OnInit {
 
  
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient) {
-    this.badge.getProduct();
+    // this.badge.getProduct();
     this.route.queryParams.subscribe(params => {
       if( params["picName"])
       this.selected_image_src = params["picName"];
