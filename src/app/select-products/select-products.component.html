@@ -29,8 +29,8 @@
     </div>
 
     <div *ngIf="selectedFilter=='Price'">
-        <input type="text" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()">
-        <input type="text" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()">
+        <input type="number" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()">
+        <input type="number" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()">
         <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withBadges"> With Badges
         <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withoutBadges"> Without Badges
         <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="all"> All

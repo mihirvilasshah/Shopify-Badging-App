@@ -21,8 +21,8 @@ export class SelectProductsComponent implements OnInit {
 
   // filters = ["Price","Date","Title"];
 
-  price1: string;
-  price2: string;
+  price1;
+  price2;
   date1: string;
   date2: string;
   title1: string;
@@ -122,6 +122,9 @@ export class SelectProductsComponent implements OnInit {
     this.countPrice = 1;
     console.log("count: "+this.countPrice);
 
+    if(this.price1 == 0){
+      this.price1 = 0.01;
+    }
   }
 
   getDateProd() {
