@@ -13,6 +13,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const router = express.Router();
 
+
+
 const scopes = 'read_products';
 // const scopes = 'read_products,read_themes,write_themes';
 
@@ -380,7 +382,7 @@ exports.getProduct = (req, res) => {
         var myquery = { id: parseInt(req.params.id) };
         // var myquery = { id: 1466289291362 };
         console.log("id: " + req.params.id);
-        dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+        dbo.collection("tricon-dev-store.myshopify.com").findOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product found: " + obj);
             res.send(obj);
@@ -415,7 +417,7 @@ exports.upload = (req, res) => {
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
                 src: picname,
-                default : 'false' // not name, it should be id
+                default: 'false' // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -511,7 +513,7 @@ exports.getPicture = (req, res) => {
     // string stored in the variable called url.
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection('shopify_collection2')
+        dbo.collection('badges')
             // perform a mongodb search and return only one result.
             // convert the variable called filename into a valid objectId.
             .findOne({ '_id': ObjectId(filename) }, function (err, results) {
@@ -574,6 +576,7 @@ exports.getProductPriceRange = (req, res) => {
         // var myquery=req.params.query;
 
         pr = req.params.pr;
+        console.log("pr: " + pr);
         var myquery;
         // var myquery=req.params.query;
 
@@ -631,6 +634,7 @@ exports.getProductPriceRange = (req, res) => {
 
     });
 };
+
 exports.getProductDateRange = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
@@ -638,15 +642,33 @@ exports.getProductDateRange = (req, res) => {
         var dbo = db.db("shopifydbclone");
 
         console.log("inside getProdPrice");
-        // var myquery = { _id: ObjectId(req.params.id) };
-        // var myquery = { "variants.0.price":{$gte:"100"} };
+
+        var myquery;
         d1 = req.params.d1;
-        console.log("p1: " + d1);
+        console.log("d1: " + d1);
         d2 = req.params.d2;
-        console.log("p2: " + d2);
+        console.log("d2: " + d2);
+        dr = req.params.dr;
+        console.log("dr: " + dr);
         // var myquery=req.params.query;
 
-        var myquery = { "created_at": { "$gte": d1, "$lte": d2 } };
+        if (dr == "all") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 }
+            }
+        } else if (dr == "withBadges") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 },
+                "ABid": { $exists: true }
+            }
+        } else if (dr == "withoutBadges") {
+            myquery = {
+                "created_at": { "$gte": d1, "$lte": d2 },
+                "ABid": { $exists: false }
+            }
+        }
+
+
         console.log(myquery);
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
@@ -654,7 +676,7 @@ exports.getProductDateRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("tricon-dev-store.myshopify.com").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
             var products = obj;
@@ -688,23 +710,40 @@ exports.getProductTitle = (req, res) => {
 
         var dbo = db.db("shopifydbclone");
 
-        console.log("inside getProdPrice");
+        console.log("inside getProdTitle");
         // var myquery = { _id: ObjectId(req.params.id) };
         // var myquery = { "variants.0.price":{$gte:"100"} };
-        t1 = req.params.t1;
+        var myquery;
+        var t1 = req.params.t1;
+        var tr = req.params.tr;
         console.log("t1: " + t1);
+        console.log("tr: " + tr);
         //    var t = "/"+t1+"/i";
-        // var myquery=req.params.query;
+        if (tr == "all") {
+            myquery = {
+                'title': new RegExp(t1, 'i')
+            }
+        } else if (tr == "withBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: true }
+            }
+        } else if (tr == "withoutBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: false }
+            }
+        }
 
         //  var myquery ={"title" :t};
-        //  console.log(myquery);   
+        console.log(myquery);
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
 
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("tricon-dev-store.myshopify.com").find({ 'title': new RegExp(t1, 'i') }, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -724,17 +763,24 @@ exports.getProductTitle = (req, res) => {
                 // console.log(pids[i]);
             }
 
+            // var prod = [];
+            // for (var i = 0; i < products.length; i++) {
+            //     prod[i] = {"pid":products[i]._id,"title":products[i].title};
+            // }
+
             console.log("product found: " + titles);
             //console.log("product found: " + );
             // res.send(obj);
             // res.render('selectproducts', { items: titles, pids: pids });
+            // res.send(prod);
             res.send({ "items": titles, "pids": pids });
         });
         // res.send({ message: "Found product" });
 
     });
 };
-exports.ajaxtest = (req, res) => {
+
+exports.publishBadges = (req, res) => {
 
     var map = 0;
     var abid;
@@ -765,7 +811,7 @@ exports.ajaxtest = (req, res) => {
                 };
                 console.log("pids: " + req.body.pid[i]);
 
-                dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
                 });
@@ -779,7 +825,55 @@ exports.getIDS = (req, res) => {
     console.log("inside get IDS");
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection("shopify_collection2").find({default:'true'}, { projection: { _id: 1 } }).toArray(function (err, result) {
+        dbo.collection("badges").find({ default: true }, { projection: { _id: 1 } }).toArray(function (err, result) {
+            if (err) throw err;
+
+            images = result;
+            //var ids = result[0];
+            var ids = [];
+            for (var i = 0; i < images.length; i++) {
+                ids[i] = images[i]._id;
+            }
+
+            //    console.log(images[0]._id);
+            console.log(ids);
+            res.send(ids);
+            // return ids;
+        });
+    });
+}
+
+exports.unpublishBadges = (req, res) => {
+
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+
+        // console.log(req.body.pid);
+
+        for (var i = 0; i < req.body.pid.length; i++) {
+            var myquery = {
+                "_id": ObjectId(req.body.pid[i])
+            };
+            console.log("pids: " + req.body.pid[i]);
+            var newvalues = { $unset: { "ABid": 1 } };
+
+            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                if (err) throw err;
+                console.log("removed ABid from product: " + obj);
+            });
+        }
+
+
+    });
+};
+
+exports.getIDS = (req, res) => {
+    console.log("inside get IDS");
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection("badges").find({ default: true }, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
 
             images = result;
@@ -801,7 +895,7 @@ exports.getUserIDS = (req, res) => {
     console.log("inside get User IDS");
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         var dbo = db.db("shopifydbclone");
-        dbo.collection("shopify_collection2").find({default:'false'}, { projection: { _id: 1 } }).toArray(function (err, result) {
+        dbo.collection("badges").find({ default: false }, { projection: { _id: 1 } }).toArray(function (err, result) {
             if (err) throw err;
 
             images = result;
