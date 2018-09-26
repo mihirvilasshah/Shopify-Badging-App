@@ -13,6 +13,8 @@ const bodyParser = require('body-parser');
 const app = express();
 const router = express.Router();
 
+
+
 const scopes = 'read_products';
 // const scopes = 'read_products,read_themes,write_themes';
 
@@ -809,7 +811,7 @@ exports.publishBadges = (req, res) => {
                 };
                 console.log("pids: " + req.body.pid[i]);
 
-                dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
                 });
