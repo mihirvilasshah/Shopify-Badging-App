@@ -26,6 +26,7 @@ export class SelectProductsComponent implements OnInit {
   date1: string;
   date2: string;
   title1: string;
+  counter: number = 0;
 
   tr;
   dr;
@@ -42,6 +43,10 @@ export class SelectProductsComponent implements OnInit {
 
   selected_image_src = "";
   badgeCss = "";
+
+  structuredTitle = [];
+
+  oneDeselect;
 
 
 
@@ -99,7 +104,7 @@ export class SelectProductsComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
-    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2+ "/" + this.dr)
+    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/" + this.dr)
     obs.subscribe(data => {
       console.log("here is the response", data);
       console.log(this.dr);
@@ -131,7 +136,11 @@ export class SelectProductsComponent implements OnInit {
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.titles.forEach(title => {
+        this.structuredTitle.push({ name: title, selected: false });
+      });
       console.log("titles:", this.titles);
+      console.log("structuredTitle:", this.structuredTitle);
 
       this.pids = items[1];
       // var pids = data[pids];
@@ -145,27 +154,113 @@ export class SelectProductsComponent implements OnInit {
 
   giveid(flag, value) {
 
-    if (flag) {
-
-      this.selectedids.push(value);
-      console.log(this.selectedids);
-    }
-    else {
+    if (this.selectedAll) {
+      for (var i = 0; i < this.structuredTitle.length; i++) {
+        this.structuredTitle[i].selected = this.selectedAll;
+      }
+      this.counter=this.structuredTitle.length;
       var index = this.selectedids.indexOf(value);
-      this.selectedids.splice(index, 1);
-      console.log(this.selectedids);
+      console.log("value if: " + value);
+      this.selectedids = [];
+      for (var i = 0; i < this.pids.length; i++) {
+        this.selectedids.push(this.pids[i]);
+      }
+      // this.selectedids.splice(index, 1);
+      console.log("selectedIDS(selected all): " + this.selectedids);
+      console.log("selectedAll value: " + this.selectedAll);
+      // console.log("pid value if: " + this.pids);
+
+
+    }
+    if (!this.selectedAll && this.counter==this.structuredTitle.length) {
+      for (var i = 0; i < this.structuredTitle.length; i++) {
+        this.structuredTitle[i].selected = this.selectedAll;
+      }
+      this.selectedids = [];
+      this.counter=0;
+      console.log("selectedIDS (deselected all): " + this.selectedids);
+
+    }
+    else if (flag) {
+      this.counter=this.counter+1;
+
+      // this.selectedids.push(value);
+      this.selectedids.push(this.pids[value]);
+      console.log("flag true:" + this.selectedids);
+      // console.log("pid value esle if: " + this.pids);
+    }
+    if(flag==false) {
+      this.counter=this.counter-1;
+
+      // var index = this.selectedids.indexOf(value);
+      this.selectedids.splice(value, 1);
+      console.log("if flag false:" + this.selectedids);
+      // console.log("pid value else: " + this.pids);
     }
 
-    console.log(flag);
-    console.log(value);
+    console.log("flag: " + flag);
+    console.log("value: " + value);
+
+    console.log("COUNTER:"+this.counter)
+    if(this.counter==this.structuredTitle.length)
+    this.selectedAll=true;
+    else
+    this.selectedAll=false;
   }
 
-  selectAll() {
-    for (var i = 0; i < this.titles.length; i++) {
-      this.titles[i].selected = this.selectedAll;
-      console.log("h");
-    }
-  }
+  // selectAllProd() {
+
+  //   // if (this.selectedAll) {
+  //   //   this.selectedids = this.pids;
+  //   //   console.log("selectedids if (All):" + this.selectedids);
+
+  //   // }
+  //   // else {
+  //   //   // var len = this.selectedids.length;
+  //   //   // console.log("length: "+len);
+  //   //   // this.selectedids.splice(0, len);
+  //   //   this.selectedids = [];
+  //   //   console.log("selectedids else (Deselect all):" + this.selectedids);
+  //   //   console.log("pid value else(Deselect all): " + this.pids);
+  //   // }
+
+  //   // if(this.oneDeselect){
+
+  //   for (var i = 0; i < this.structuredTitle.length; i++) {
+  //     this.structuredTitle[i].selected = this.selectedAll;
+  //   }
+
+  //   if (this.selectedAll) {
+  //     this.selectedids = [];
+  //     for (var i = 0; i < this.pids.length; i++) {
+  //       this.selectedids.push(this.pids[i]);
+  //     }
+
+  //   } else {
+  //     this.selectedids = [];
+  //   }
+  // // }
+  // }
+
+  // selector(){
+  //   this.counter=0;
+  //   for(var i =0; i<this.structuredTitle.length;i++){
+  //     if(this.structuredTitle[i].selected==true){
+  //       this.counter=this.counter+1;}
+  //   }
+  //   console.log("COUNTER:"+this.counter)
+  //   if(this.counter==this.structuredTitle.length)
+  //   this.selectedAll=true;
+  //   else
+  //   this.selectedAll=false;
+  // }
+
+  // selectAll() {
+  //   for (var i = 0; i < this.titles.length; i++) {
+  //     this.titles[i].selected = this.selectedAll;
+  //     console.log("h");
+  //   }
+  // }
 
   publish() {
     var id = this.selected_image_src.split("picture/");

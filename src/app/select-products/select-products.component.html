@@ -47,7 +47,7 @@
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()">Apply</button>
     </div>
     <div *ngIf="selectedFilter=='Title'">
-        <input type="text" id="t1" [(ngModel)]="title1">
+        <input type="text" id="t1" [(ngModel)]="title1" (keyup.enter)="getTitleProd()">
         <input type="radio" #r1 name="titleRadio" [(ngModel)]="tr" value="withBadges" > With Badges
         <input type="radio" #r2 name="titleRadio" [(ngModel)]="tr" value="withoutBadges" > Without Badges
         <input type="radio" #r3 name="titleRadio" [(ngModel)]="tr" value="all" > All
@@ -64,11 +64,11 @@
 
 
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="selectAll()">Select All
-        <div class="form-check" *ngFor="let title of titles; let i = index" >
+        <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="giveid()">Select All
+        <div class="form-check" *ngFor="let title of structuredTitle; let i = index" >
             <label class="form-check-label">
-                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="pids[i]" (click) = "giveid($event.target.checked, box.value)">
-                    {{title}}
+                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="i" (click) = "giveid($event.target.checked, box.value)">
+                    {{title.name}}
             </label>
         </div>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="publish()">Publish</button>
