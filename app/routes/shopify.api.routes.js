@@ -57,6 +57,7 @@ module.exports = (app) => {
 
     app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
     app.post('/publishBadges', controller.publishBadges);
+    app.post('/unpublishBadges', controller.unpublishBadges);
 
     // upload pic using uploader
     app.post('/api/upload', upload.single('photo'), controller.upload);

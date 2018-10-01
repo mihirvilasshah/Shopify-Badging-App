@@ -23,7 +23,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = undefined;
+var globalShop = "tricon-dev-store.myshopify.com";
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -974,7 +974,7 @@ exports.getProductTitle = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("tricon-dev-store.myshopify.com").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -1011,7 +1011,7 @@ exports.getProductTitle = (req, res) => {
     });
 };
 
-exports.publishBadges = (req, res) => {
+exports.publishBadges = (req, res) => { 
 
     var map = 0;
     var abid;
@@ -1042,13 +1042,39 @@ exports.publishBadges = (req, res) => {
                 };
                 console.log("pids: " + req.body.pid[i]);
 
-                dbo.collection("shopify_collection").updateOne(myquery, newvalues, function (err, obj) {
+                dbo.collection("tricon-dev-store.myshopify.com").updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
                 });
             }
 
         });
+    });
+};
+
+exports.unpublishBadges = (req, res) => {
+
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+
+        // console.log(req.body.pid);
+
+        for (var i = 0; i < req.body.pid.length; i++) {
+            var myquery = {
+                "_id": ObjectId(req.body.pid[i])
+            };
+            console.log("pids: " + req.body.pid[i]);
+            var newvalues = { $unset: { "ABid": 1 } };
+
+            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                if (err) throw err;
+                console.log("removed ABid from product: " + obj);
+            });
+        }
+
+
     });
 };
 
