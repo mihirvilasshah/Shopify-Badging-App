@@ -11,37 +11,23 @@
 <form>
 <mat-tab-group  >
   <mat-tab label="Library" id="lib">
-<<<<<<< HEAD
       <!-- <div id="libImageContainer"> -->
       <div id="libImageContainer" >
           <label  *ngFor="let pic of LibPictures; let i= index" >
               <input id="pic" type="radio" name="lib" (click)="selectedPic(i,0)" >
               <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&lib ? 'active' : 'not-active'">
-=======
-      <div id="libImageContainer">
-          <label *ngFor="let pic of LibPictures; let i= index" >
-              <input id="pic" type="radio" name="lib" (click)="selectedPic(i,0)">
-              <img  src={{pic}} height="200px" width="200px" alt="Badges">
->>>>>>> f9de2876c88c677e7304eb02ab753b72fdada2ac
             </label>
-            
         </div>
   </mat-tab>
 
   <mat-tab label="My Badges" >
       <div id="UserImageContainer"  >
-<<<<<<< HEAD
-          <label *ngFor="let pic of UserPictures; let i= index">
+          <label *ngFor="let pic of UserPictures; let i= index" class="img-wrap">
               <input id="pic" type="radio" name="user" (click)="selectedPic(i,1)" >
               <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&!lib ? 'active' : 'not-active'">
-=======
-          <label class="img-wrap" *ngFor="let pic of UserPictures; let i= index" [style.border]="hover ? '5px solid yellow' : '3px solid green'">
-              <input class="UserRadio" id="pic" type="radio" name="user" (click)="selectedPic(i,1,$event.target.checked)">
-              <img src={{pic}} height="200px" width="200px" alt="Badges">
               <span class="close" (click)="deleteBadge()">&times;</span>
->>>>>>> f9de2876c88c677e7304eb02ab753b72fdada2ac
             </label>
-            <span class="close" (click)="deleteBadge()">&times;</span>
+            
         </div>
   </mat-tab>
 

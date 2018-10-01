@@ -23,6 +23,7 @@ export class SelectBadgeComponent implements OnInit {
   userCount=0;
   selectedindex=-1;
   lib=true;
+  sel=false;
 
   public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
 
@@ -114,7 +115,7 @@ export class SelectBadgeComponent implements OnInit {
     this.selectedindex=index;
     console.log("selected"+this.selectedindex);
 
-
+      this.sel=true;
   }
 
   checkSelected(index:number): string {
@@ -124,6 +125,11 @@ export class SelectBadgeComponent implements OnInit {
     return "green";
     else return "black";
       }
+
+      deleteBadge(index:number): void {
+        // debugger;
+    console.log("delete in progress");
+          }
     
     
   
