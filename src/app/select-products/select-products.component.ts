@@ -116,6 +116,8 @@ export class SelectProductsComponent implements OnInit {
       // var pids = data[pids];
       this.applyPrice = true;
 
+      this.show = true;
+
     })
 
 
@@ -163,6 +165,7 @@ export class SelectProductsComponent implements OnInit {
       if(this.pids.length>0){
         this.msg = ""
       }
+      this.show = true;
       
     })
   }
