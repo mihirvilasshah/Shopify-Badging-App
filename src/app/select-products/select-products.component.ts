@@ -55,6 +55,7 @@ export class SelectProductsComponent implements OnInit {
   applyDate = false;
   countDate = 0;
   msg="";
+  show=false;
 
 
 
@@ -109,8 +110,12 @@ export class SelectProductsComponent implements OnInit {
       if(this.pids.length==0){
         this.msg = "No matches found."
       }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
       // var pids = data[pids];
       this.applyPrice = true;
+
     })
 
 
@@ -154,6 +159,9 @@ export class SelectProductsComponent implements OnInit {
       this.applyDate = true;
       if(this.pids.length==0){
         this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
       }
       
     })
@@ -205,6 +213,11 @@ export class SelectProductsComponent implements OnInit {
       if(this.pids.length==0){
         this.msg = "No matches found."
       }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
+
+      this.show = true;
 
     })
   }

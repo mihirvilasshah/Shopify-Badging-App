@@ -57,6 +57,7 @@
         <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
     </div>
 
+    <div #noShow *ngIf="show">
     <h1>List Of Products</h1>
     <!--<div>
         <input type="checkbox" *ngFor="let title of titles" [value]="title" [id]="title">
@@ -96,6 +97,6 @@
 
     <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
-
+    </div>
 
 </div>
