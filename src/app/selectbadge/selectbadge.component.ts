@@ -97,12 +97,8 @@ export class SelectBadgeComponent implements OnInit {
 
   }
 
-  selectedPic(index:number,from:number,event): void {
+  selectedPic(index:number,from:number): void {
     // debugger;
-    console.log("event:"+event);
-    if(event){
-      console.log("event:"+event);
-    }
     
     if(!from){this.pic_name = this.LibPictures[index];
       this.lib=true;
