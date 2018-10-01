@@ -26,6 +26,7 @@ export class CustomizeComponent {
   selected_image_src="";
   pic_name="";
   badge_css="";
+  pos=false;
 
 
 
@@ -51,8 +52,9 @@ export class CustomizeComponent {
       if (event == "top-right") {
           document.getElementById("image1").style.position = "relative";
           document.getElementById("image1").style.top = "0px";
-          document.getElementById("image1").style.left = "450px";
+          document.getElementById("image1").style.left = "350px";
           this.badge_css="top-right";
+          this.pos = true;
       
       } else if (event == "top-left") {
           document.getElementById("image1").style.position = "relative";
@@ -60,19 +62,22 @@ export class CustomizeComponent {
           document.getElementById("image1").style.left = "0px";
           // document.getElementById("imagediv").style.float = "right";
           this.badge_css="top-left";
+          this.pos = true;
 
       } else if (event == "bottom-right") {
           document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "450px";
-          document.getElementById("image1").style.left = "450px";
+          document.getElementById("image1").style.top = "350px";
+          document.getElementById("image1").style.left = "350px";
           // document.getElementById("imagediv").style.float = "right";
           this.badge_css="bottom-right";
+          this.pos = true;
 
       } else if (event == "bottom-left") {
           document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "450px";
+          document.getElementById("image1").style.top = "350px";
           document.getElementById("image1").style.left = "0px";
           this.badge_css="bottom-left";
+          this.pos = true;
 
       }
   }

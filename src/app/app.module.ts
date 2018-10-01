@@ -16,7 +16,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { NgxSpinnerModule } from 'ngx-spinner';
-import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
+// import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
+
 
 
 @NgModule({
@@ -27,8 +28,8 @@ import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
     CustomizeComponent,
     SelectProductsComponent,
     RemoveBadgesComponent,
-    FileSelectDirective,
-    MultiSelectComponent
+    FileSelectDirective
+    // MultiSelectComponent
   ],
   imports: [
     BrowserModule,
