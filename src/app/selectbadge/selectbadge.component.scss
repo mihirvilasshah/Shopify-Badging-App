@@ -1,8 +1,63 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+
+$button-active: green;
+
 .example-icon {
   padding: 0 14px;
 }
 
 .example-spacer {
   flex: 1 1 auto;
+}
+
+img[_ngcontent-c2] {
+  vertical-align: middle;
+  
+  // margin: 5%;
+  padding: 1%;
+  border-style: solid;
+  // border-width: thin;
+}
+
+.badge{
+  padding: 10 px;
+  margin: 10px;
+  border: 10px black;
+}
+
+.active {
+  border-color: #006600;
+  border-width: 7px;
+}
+
+.not-active {
+  border-color: #990000;
+  border-width: 5px;
+}
+
+.img-wrap {
+  position: relative;
+  display: inline-block;
+  border: 1px red solid;
+  font-size: 0;
+}
+.close {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  // left:195;
+  z-index: 100;
+  background-color: #FFF;
+  padding: 5px 2px 2px;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+  opacity: .2;
+  text-align: center;
+  font-size: 22px;
+  line-height: 10px;
+  border-radius: 50%;
+}
+.img-wrap:hover .close {
+  opacity: 1;
 }

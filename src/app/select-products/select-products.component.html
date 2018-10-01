@@ -29,30 +29,32 @@
     </div>
 
     <div *ngIf="selectedFilter=='Price'">
-        <input type="text" id="p1" [(ngModel)]="price1">
-        <input type="text" id="p2" [(ngModel)]="price2">
-        <input type="radio" name="priceRadio" value="withBadges"> With Badges
-        <input type="radio" name="priceRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="priceRadio" value="all"> All
+        <input type="number" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()">
+        <input type="number" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()">
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withBadges"> With Badges
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withoutBadges"> Without Badges
+        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="all"> All
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2&&pr)&&applyPrice)||((!(price1&&price2&&pr))&&!applyPrice)">Apply</button>
     </div>
     <div *ngIf="selectedFilter=='Date'">
-        <input type="date" id="d1" name="bday" [(ngModel)]="date1">
-        <input type="date" id="d2" name="bday" [(ngModel)]="date2">
-        <input type="radio" name="dateRadio" value="withBadges"> With Badges
-        <input type="radio" name="dateRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="dateRadio" value="all"> All
+        <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
+        <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="withBadges"> With Badges
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="withoutBadges"> Without Badges
+        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="all"> All
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2&&dr)&&applyDate)||((!(date1&&date2&&dr))&&!applyDate)">Apply</button>
     </div>
     <div *ngIf="selectedFilter=='Title'">
-        <input type="text" id="t1" [(ngModel)]="title1">
-        <input type="radio" name="titleRadio" value="withBadges"> With Badges
-        <input type="radio" name="titleRadio" value="withoutBadges"> Without Badges
-        <input type="radio" name="titleRadio" value="all"> All
+        <input type="text" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()">
+        <!-- (keyup.enter)="getTitleProd()" -->
+        <input type="radio" #r1 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="withBadges" > With Badges
+        <input type="radio" #r2 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="withoutBadges" > Without Badges
+        <input type="radio" #r3 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="all" > All
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1&&tr)&&applyTitle)||((!(title1&&tr))&&!applyTitle)">Apply</button>
+        <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
     </div>
 
     <h1>List Of Products</h1>
@@ -64,14 +66,17 @@
 
 
     <div class="form-group">
-        <div class="form-check" *ngFor="let title of titles">
+        <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="giveid()">Select All
+        <div class="form-check" *ngFor="let title of structuredTitle; let i = index" >
             <label class="form-check-label">
-                <input class="form-check-input" *ngFor="let pid of pids"type="checkbox" [value]="pid">
-                    {{title}}
+                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="i" (click) = "giveid($event.target.checked, box.value)">
+                    {{title.name}}
             </label>
         </div>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles">Publish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="publish()">Publish</button>
     </div>
+
+    <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
 
 
