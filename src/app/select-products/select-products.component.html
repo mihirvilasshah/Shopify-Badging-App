@@ -64,10 +64,18 @@
         <p>hdghdf</p>
     </div>-->
 
-    <table>
+    
     <div class="form-group">
         <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="giveid()">Select All
-        
+        <br>
+        <span><h1>{{msg}}</h1></span>
+        <table>
+            <tr>
+                <th>Title</th>
+                <th>ID</th>
+                <th>Created at</th>
+                <th>Badge</th>
+            </tr>
         <div class="form-check" *ngFor="let title of structuredTitle; let i = index" >
             <tr [ngClass]="i % 2 == 0? 'even' : 'odd'">
             <td>    
@@ -76,12 +84,15 @@
                     {{title.name}}
             </label>
             </td>
+            <td>
+                {{pids[i]}}
+            </td>
             </tr>
         </div>
-        
+        </table>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="publish()">Publish</button>
     </div>
-    </table>
+    
 
     <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 

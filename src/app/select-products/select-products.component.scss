@@ -12,6 +12,11 @@ input{
   margin: 10px;
 }
 
+span{
+  text-align: center;
+  color : red; 
+}
+
 table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
@@ -22,11 +27,11 @@ table {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
-    width: 500px;
+    width: 100px;
   }
 
   .even {
-    background-color: #999999;
+    background-color: #aaaaaa;
   }
 }
 

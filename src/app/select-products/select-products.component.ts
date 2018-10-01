@@ -54,6 +54,7 @@ export class SelectProductsComponent implements OnInit {
   countPrice = 0;
   applyDate = false;
   countDate = 0;
+  msg="";
 
 
 
@@ -105,6 +106,9 @@ export class SelectProductsComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
 
       this.pids = items[1];
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
       // var pids = data[pids];
       this.applyPrice = true;
     })
@@ -148,6 +152,9 @@ export class SelectProductsComponent implements OnInit {
       this.pids = items[1];
 
       this.applyDate = true;
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
       
     })
   }
@@ -194,6 +201,10 @@ export class SelectProductsComponent implements OnInit {
       // this.selectAllText = 'Select All';
 
       this.applyTitle = true;
+
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
 
     })
   }
