@@ -17,7 +17,7 @@
 
 
         <mat-form-field>
-          <mat-select placeholder="Position" id="selectPosition" (selectionChange)="changeFunc($event.value)"> 
+          <mat-select placeholder="Position" id="selectPosition" (selectionChange)="changeFunc($event.value)" [(value)]="selected">  
             <mat-option *ngFor="let position of positions" [value]="position.name">
               {{position.name}}
             </mat-option>
@@ -42,7 +42,7 @@
       <br>
       <div class="divp">
 
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()" [disabled]="!pos"> NEXT
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()"> NEXT
 </button>
 </div>
 
