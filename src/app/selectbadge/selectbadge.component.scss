@@ -38,7 +38,7 @@ img[_ngcontent-c2] {
 .img-wrap {
   position: relative;
   display: inline-block;
-  border: 1px red solid;
+  // border: 1px red solid;
   font-size: 0;
 }
 .close {
@@ -62,9 +62,9 @@ img[_ngcontent-c2] {
   opacity: 1;
 }
 
-.UserRadio{
+.UserRadio,.LibRadio{
   // visibility: hidden; 
-  display: block;
+  display: none;
 }
 
 .activated{
