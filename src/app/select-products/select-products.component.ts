@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
+// import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
   name: string;

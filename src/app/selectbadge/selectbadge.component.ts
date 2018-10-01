@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatTabChangeEvent } from '@angular/material';
+// import { AngularFileUploaderModule } from "angular-file-uploader";
 
 @Component({
   selector: 'app-selectbadge',
@@ -20,6 +21,7 @@ export class SelectBadgeComponent implements OnInit {
   UserPictures=[];
   libCount=0;
   userCount=0;
+  sel=false;
 
   public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
 
@@ -93,8 +95,13 @@ export class SelectBadgeComponent implements OnInit {
 
   }
 
-  selectedPic(index:number,from:number): void {
+  selectedPic(index:number,from:number,event): void {
     // debugger;
+    console.log("event:"+event);
+    if(event){
+      console.log("event:"+event);
+    }
+    
     if(!from){this.pic_name = this.LibPictures[index];
  
       console.log(this.pic_name);}
@@ -104,7 +111,13 @@ export class SelectBadgeComponent implements OnInit {
       console.log(this.pic_name);
       }
     
+    this.sel = true;  
+    
+  }
 
+  deleteBadge(){
+    console.log("deleted");
+    // this.hide = true;
 
   }
 
