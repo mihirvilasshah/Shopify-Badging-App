@@ -77,7 +77,7 @@
                 <th>Created at</th>
                 <th>Badge</th>
             </tr>
-        <div class="form-check" *ngFor="let title of structuredTitle; let i = index" >
+        <div class="form-check" *ngFor="let title of structuredTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " >
             <tr [ngClass]="i % 2 == 0? 'even' : 'odd'">
             <td>    
             <label class="form-check-label">
@@ -91,6 +91,8 @@
             </tr>
         </div>
         </table>
+        <pagination-controls (pageChange)="p = $event"  autoHide="true">
+        </pagination-controls>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="publish()">Publish</button>
     </div>
     

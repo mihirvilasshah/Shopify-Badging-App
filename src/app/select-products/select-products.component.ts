@@ -57,9 +57,7 @@ export class SelectProductsComponent implements OnInit {
   msg="";
   show=false;
 
-
-
-
+  p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
