@@ -14,7 +14,7 @@
       <!-- <div id="libImageContainer"> -->
       <div id="libImageContainer" >
           <label  *ngFor="let pic of LibPictures; let i= index" >
-              <input id="pic" type="radio" name="lib" (click)="selectedPic(i,0)" >
+              <input id="pic" type="radio" class="LibRadio" name="lib" (click)="selectedPic(i,0)" >
               <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&lib ? 'active' : 'not-active'">
             </label>
         </div>
@@ -23,7 +23,7 @@
   <mat-tab label="My Badges" >
       <div id="UserImageContainer"  >
           <label *ngFor="let pic of UserPictures; let i= index" class="img-wrap">
-              <input id="pic" type="radio" name="user" (click)="selectedPic(i,1)" >
+              <input id="pic" type="radio" class="UserRadio" name="user" (click)="selectedPic(i,1)" >
               <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&!lib ? 'active' : 'not-active'">
               <span class="close" (click)="deleteBadge(i)">&times;</span>
               
@@ -32,16 +32,18 @@
         </div>
   </mat-tab>
 
-  <mat-tab label="Upload">
+  <!-- <mat-tab label="Upload">
     
     <input type="file" name="photo" ng2FileSelect [uploader]="uploader" id="pic_name" [(ngModel)]="pic_name" />
     <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
       Upload an Image
     </button>
 
-  </mat-tab>
+  </mat-tab> -->
 
 </mat-tab-group>
+<button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"(click)="ngxSmartModalService.getModal('myModal').open()"> UPLOAD
+</button>
 </form>
 <!-- <script>
   localStorage.setItem('whatever', 'something');
@@ -55,9 +57,18 @@
 <br>
 <br>
 
+
 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="customizeBadge()" [disabled]="!sel"> NEXT
   </button>
 <!-- 
 <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" [routerLink]="['/customize']">
   NEXT
 </button> -->
+
+<ngx-smart-modal #myModal identifier="myModal">
+    <h1>Select an image...</h1>
+    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" id="pic_name" [(ngModel)]="pic_name" />
+    <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll()" [disabled]="!uploader.getNotUploadedItems().length">
+      Upload an Image
+    </button>
+</ngx-smart-modal>

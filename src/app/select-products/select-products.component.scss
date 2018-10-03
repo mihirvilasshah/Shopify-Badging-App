@@ -11,3 +11,34 @@ button {
 input{
   margin: 10px;
 }
+
+span{
+  text-align: center;
+  color : red; 
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  // width: 100%;
+  margin: 10px;
+
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    width: 100px;
+  }
+
+  .even {
+    background-color: #aaaaaa;
+  }
+}
+
+.current{
+  background-color: red;
+}
+
+span{
+  color:black;
+}

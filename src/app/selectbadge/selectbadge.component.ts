@@ -5,6 +5,7 @@ import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { FileUploader, FileSelectDirective } from 'ng2-file-upload/ng2-file-upload';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { MatTabChangeEvent } from '@angular/material';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 // import { AngularFileUploaderModule } from "angular-file-uploader";
 
 @Component({
@@ -27,7 +28,7 @@ export class SelectBadgeComponent implements OnInit {
 
   public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
 
-  constructor(private badge: BadgeService, private http: HttpClient, private router: Router, private spinner: NgxSpinnerService) {
+  constructor(private badge: BadgeService, private http: HttpClient, private router: Router, private spinner: NgxSpinnerService,public ngxSmartModalService: NgxSmartModalService) {
   }
 
   ngOnInit() {
@@ -142,7 +143,11 @@ export class SelectBadgeComponent implements OnInit {
       debugger;
       // console.log(val);
       if(val)
-      this.loadBadges();
+      {
+        alert("badge deleted");
+        this.loadBadges();
+      }
+      
     }
     );
   }

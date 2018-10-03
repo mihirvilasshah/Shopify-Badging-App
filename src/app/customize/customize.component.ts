@@ -25,8 +25,9 @@ export class CustomizeComponent {
 
   selected_image_src="";
   pic_name="";
-  badge_css="";
-  pos=false;
+  badge_css="top-left";
+  pos=false; // [disabled]="!pos" for NEXT
+  selected='top-left';
 
 
 

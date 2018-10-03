@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
+import { NgxSmartModalService } from 'ngx-smart-modal';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
@@ -54,10 +55,10 @@ export class SelectProductsComponent implements OnInit {
   countPrice = 0;
   applyDate = false;
   countDate = 0;
+  msg="";
+  show=false;
 
-
-
-
+  p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
@@ -67,7 +68,7 @@ export class SelectProductsComponent implements OnInit {
   ];
 
 
-  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient) {
+  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient,public ngxSmartModalService: NgxSmartModalService) {
     // this.badge.getProduct();
     this.route.queryParams.subscribe(params => {
       if (params["picName"])
@@ -105,8 +106,17 @@ export class SelectProductsComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
 
       this.pids = items[1];
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
       // var pids = data[pids];
       this.applyPrice = true;
+
+      this.show = true;
+
     })
 
 
@@ -148,6 +158,13 @@ export class SelectProductsComponent implements OnInit {
       this.pids = items[1];
 
       this.applyDate = true;
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
+      this.show = true;
       
     })
   }
@@ -194,6 +211,15 @@ export class SelectProductsComponent implements OnInit {
       // this.selectAllText = 'Select All';
 
       this.applyTitle = true;
+
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
+
+      this.show = true;
 
     })
   }
