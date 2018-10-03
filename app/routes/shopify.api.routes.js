@@ -8,25 +8,27 @@ module.exports = (app) => {
 
     // Auth
     app.get('/shopify/callback', controller.auth);
+    app.get('/shopify/:appname', controller.App);
 
     // Product Page --temp
     app.get('/product', controller.productPage);
 
     // Copy Shopify DB to our DB
     app.get('/copyDB', controller.copyDB);
+    app.get('/shopdet', controller.shopdet);
 
     // Create Webhooks
     app.get('/createWebhooks', controller.createWebhooks);
 
     // APIs to be triggered by webhook 
     // Delete product from our DB when triggered by webhook
-    app.post('/deleteProduct', controller.deleteProduct);
+    app.post('/deleteProduct/:shopname', controller.deleteProduct);
 
     // Update product from our DB when triggered by webhook
-    app.post('/updateProduct', controller.updateProduct);
+    app.post('/updateProduct/:shopname', controller.updateProduct);
 
     // Create product in our DB when triggered by webhook
-    app.post('/createProduct', controller.createProduct);
+    app.post('/createProduct/:shopname', controller.createProduct);
 
     //Read product in our DB
     app.get('/getProduct/:id', controller.getProduct);

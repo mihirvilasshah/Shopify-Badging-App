@@ -13,8 +13,6 @@ const bodyParser = require('body-parser');
 const app = express();
 const router = express.Router();
 
-
-
 const scopes = 'read_products';
 // const scopes = 'read_products,read_themes,write_themes';
 
@@ -25,7 +23,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = undefined;
+var globalShop = "tricon-dev-store.myshopify.com";
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -37,21 +35,92 @@ console.log('Entered Shopify Controller');
 
 exports.install = (req, res) => {
     const shop = req.query.shop;
+    console.log(shop);
     if (shop) {
         const state = nonce();
         const redirectUri = forwardingAddress + '/shopify/callback';
+        const AppUri = forwardingAddress + '/shopify/' + shop;
         const installUrl = 'https://' + shop +
             '/admin/oauth/authorize?client_id=' + apiKey +
             '&scope=' + scopes +
             '&state=' + state +
             '&redirect_uri=' + redirectUri;
+        const appUrl = 'https://' + shop +
+            '/admin/oauth/authorize?client_id=' + apiKey +
+            '&scope=' + scopes +
+            '&state=' + state +
+            '&redirect_uri=' + AppUri;
 
         res.cookie('state', state);
-        res.redirect(installUrl);
+
+        MongoClient.connect(url, function (err, db) {
+            var dbo = db.db("shopifydbclone");
+            dbo.listCollections({ name: shop })
+                .next(function (err, collinfo) {
+                    if (!collinfo) {
+
+                        res.redirect(installUrl);
+                    }
+                    else {
+
+                        res.redirect(appUrl);
+                    }
+                });
+        });
     } else {
         return res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your request');
     }
 };
+exports.App = (req, res) => {
+
+
+    console.log("Entered app");
+
+    var images;
+    var flag = 0;
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection("badges").find({ "default": false }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
+            if (err) throw err;
+
+            images = result;
+            //var ids = result[0];
+            var ids = [];
+            for (var i = 0; i < images.length; i++) {
+                ids[i] = images[i]._id;
+            }
+
+            //    console.log(images[0]._id);
+            console.log(ids);
+
+            dbo.collection("badges").find({ "default": true }, { projection: { contentType: 0, size: 0, img: 0 } }).toArray(function (err, result) {
+                if (err) throw err;
+
+                images = result;
+                //var ids = result[0];
+                var lids = [];
+                for (var i = 0; i < images.length; i++) {
+                    lids[i] = images[i]._id;
+                }
+
+                //    console.log(images[0]._id);
+                console.log(lids);
+
+
+                res.render('selectbadge', {
+                    apiKey: process.env.SHOPIFY_API_KEY,
+                    shopOrigin: 'https://' + globalShop,
+                    ids: ids,
+                    lids: lids,
+
+
+                    forwardingAddress: process.env.FORWARDING_ADDRESS
+                });
+
+            });
+        });
+    });
+}
 
 // Auth - HMAC,accessToken,cookie
 exports.auth = (req, res) => {
@@ -114,7 +183,9 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                        request.get(forwardingAddress + '/shopdet');
+
+                        MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
                             dbo.listCollections({ name: globalShop })
                                 .next(function (err, collinfo) {
@@ -197,7 +268,42 @@ exports.auth = (req, res) => {
     }
 };
 
+exports.shopdet = (req, res) => {
+    const shopRequestUrl = 'https://' + globalShop + '/admin/shop.json';
+    const shopRequestHeaders = {
+        'X-Shopify-Access-Token': globalToken,
+    };
+    var shopdetails;
 
+    request.get(shopRequestUrl, { headers: shopRequestHeaders })
+        .then((shopResponse) => {
+            shopdetails = JSON.parse(shopResponse).shop;
+
+            console.log(shopdetails.id);
+
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                if (err) throw err;
+
+                var dbo = db.db("shopifydbclone");
+
+                // if (flag == 0) {
+                var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken };
+
+                dbo.collection("shopdetails").insert(myquey, function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of documents inserted: " + result.insertedCount);
+                });
+
+
+                // }
+                res.send({ message: "shopdet copied to DB" });
+                db.close();
+            });
+        }).catch((err) => {
+            console.log(err);
+            res.send(err);
+        });
+};
 
 // Create Webhooks 
 exports.createWebhooks = (req, res) => {
@@ -205,7 +311,7 @@ exports.createWebhooks = (req, res) => {
     const Webhookjson = {
         webhook: {
             topic: "products/create",
-            address: forwardingAddress + "/createProduct",
+            address: forwardingAddress + "/createProduct/" + globalShop,
             format: "json",
         }
     };
@@ -231,7 +337,7 @@ exports.createWebhooks = (req, res) => {
     const Webhookjson2 = {
         webhook: {
             topic: "products/update",
-            address: forwardingAddress + "/updateProduct",
+            address: forwardingAddress + "/updateProduct/" + globalShop,
             format: "json",
         }
     };
@@ -249,7 +355,7 @@ exports.createWebhooks = (req, res) => {
     const Webhookjson3 = {
         webhook: {
             topic: "products/delete",
-            address: forwardingAddress + "/deleteProduct",
+            address: forwardingAddress + "/deleteProduct/" + globalShop,
             format: "json",
         }
     };
@@ -280,6 +386,7 @@ exports.productPage = (req, res) => {
 };
 
 exports.copyDB = (req, res) => {
+    var flag = 0;
     // console.log("Shop Response: "+globalShopResponse);
     console.log('Entered copyDB');
 
@@ -296,17 +403,66 @@ exports.copyDB = (req, res) => {
             dbo.collection(globalShop).insertOne(item, function (err, result) {
                 if (err) throw err;
                 console.log("Number of documents inserted: " + result.insertedCount);
+
             });
+            flag = 1;
         });
 
+        console.log("before: " + flag);
+        if (flag == 1) {
+            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                if (doc.variants[0].compare_at_price != null) {
+                    var newComparePrice = Number(doc.variants[0].compare_at_price.replace(/[^0-9\.]+/g, ""));
+                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newComparePrice } }
+
+                }
+                else {
+                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newPrice } }
+                }
+
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+
+
+        }
         // }
         res.send({ message: "Products copied to DB" });
-        db.close();
+        //db.close();
     });
 };
 
+
 exports.deleteProduct = (req, res) => {
     console.log('Entered deleteProduct');
+    var shopname = req.params.shopname;
+    console.log(shopname);
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
@@ -317,7 +473,7 @@ exports.deleteProduct = (req, res) => {
         // var myquery = { _id: ObjectId(req.params.id) };
         var myquery = { id: prod_id };
 
-        dbo.collection(globalShop).deleteOne(myquery, function (err, obj) {
+        dbo.collection(shopname).deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product deleted:" + obj.deletedCount);
         });
@@ -334,39 +490,114 @@ exports.updateProduct = (req, res) => {
         var dbo = db.db("shopifydbclone");
 
         console.log("inside updateProd");
-
+        var shopname = req.params.shopname;
+        var flag = 0;
+        // var myquery = { _id: ObjectId(req.params.id) };
+        // var prod_id = parseInt(JSON.parse(req).id);
         var prod_id = parseInt(req.body.id);
 
+        // var myquery = { id: parseInt(req.params.id) };
         var myquery = { id: prod_id };
-
+        // console.log("id: " + req.params.id);
         console.log("id: " + prod_id);
 
         var newvalues = { $set: req.body };
 
-        dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+        dbo.collection(shopname).updateOne(myquery, newvalues, function (err, obj) {
             if (err) throw err;
             console.log("product updated:" + obj);
+
         });
+        flag = 1;
+        if (flag == 1) {
+            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+                var n = { "$set": { "variants.0.price": newPrice } }
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+        }
         res.send({ message: "Product updated" });
-        db.close();
+        // db.close();
     });
 };
 
 // Create product in our DB when triggered by webhook
 exports.createProduct = (req, res) => {
+    var flag = 0;
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
 
         console.log("inside createProd");
+        var shopname = req.params.shopname;
         var myquery = req.body;
+        console.log(globalShop);
         dbo.collection(globalShop).insertOne(myquery, function (err, obj) {
             if (err) throw err;
             console.log("product created/added: " + obj.insertedCount);
         });
+
+        flag = 1;
+        if (flag == 1) {
+            var cursor = dbo.collection(shopname).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+            // bulkUpdateOps = [];
+
+            cursor.forEach(function (doc) {
+                // var price = "variants.price";
+                // for (var i = 0; i < doc.variants.length; i++) {
+                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+
+                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                console.log("before: " + doc.variants[0].price);
+                console.log("after: " + newPrice);
+                // bulkUpdateOps.push(
+                var q = { "_id": doc._id };
+                var n = { "$set": { "variants.0.price": newPrice } }
+                // }
+
+
+                // );
+                // console.log("push: " + doc.published_at);
+                // console.log(bulkUpdateOps);
+
+                // if (bulkUpdateOps.length == 1000) {
+                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
+                    if (err) throw err;
+                    console.log("set newPrice done : " + obj);
+                    // console.log(obj);
+                });
+                // bulkUpdateOps = [];
+                // }
+            });
+        }
         res.send({ message: "Product created/added" });
-        db.close();
+        // db.close();
     });
 };
 
@@ -736,14 +967,14 @@ exports.getProductTitle = (req, res) => {
         }
 
         //  var myquery ={"title" :t};
-        console.log(myquery);
+        //  console.log(myquery);   
         //var queryObj = JSON.parse(myquery);
         //console.log(queryObj); 
 
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
+        dbo.collection("tricon-dev-store.myshopify.com").find(myquery, { projection: { _id: 1, title: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -780,7 +1011,7 @@ exports.getProductTitle = (req, res) => {
     });
 };
 
-exports.publishBadges = (req, res) => {
+exports.publishBadges = (req, res) => { 
 
     var map = 0;
     var abid;
@@ -811,7 +1042,7 @@ exports.publishBadges = (req, res) => {
                 };
                 console.log("pids: " + req.body.pid[i]);
 
-                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                dbo.collection("tricon-dev-store.myshopify.com").updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
                 });
@@ -820,28 +1051,6 @@ exports.publishBadges = (req, res) => {
         });
     });
 };
-
-exports.getIDS = (req, res) => {
-    console.log("inside get IDS");
-    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-        var dbo = db.db("shopifydbclone");
-        dbo.collection("badges").find({ default: true }, { projection: { _id: 1 } }).toArray(function (err, result) {
-            if (err) throw err;
-
-            images = result;
-            //var ids = result[0];
-            var ids = [];
-            for (var i = 0; i < images.length; i++) {
-                ids[i] = images[i]._id;
-            }
-
-            //    console.log(images[0]._id);
-            console.log(ids);
-            res.send(ids);
-            // return ids;
-        });
-    });
-}
 
 exports.unpublishBadges = (req, res) => {
 
