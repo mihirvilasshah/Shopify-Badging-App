@@ -38,6 +38,8 @@ export class SelectBadgeComponent implements OnInit {
       if (status) {
         console.log('item', item, 'status', status, 'response', response);
         alert('File uploaded successfully');
+        this.UserPictures=[];
+        this.loadBadges();
       }
       else {
         alert("Error uploading a file");
@@ -145,9 +147,13 @@ export class SelectBadgeComponent implements OnInit {
       if(val)
       {
         alert("badge deleted");
-        this.loadBadges();
+        this.UserPictures=[];
+        this.selectedindex = -1;
+       this.loadBadges();
       }
-      
+//       this.router.navigateByUrl('/badge', {skipLocationChange: false}).then(()=>
+// this.router.navigate(["SelectBadgeComponent"]));
+// debugger;
     }
     );
   }

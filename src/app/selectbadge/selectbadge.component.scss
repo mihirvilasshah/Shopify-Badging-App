@@ -2,18 +2,11 @@
 
 $button-active: green;
 
-.example-icon {
-  padding: 0 14px;
-}
-
-.example-spacer {
-  flex: 1 1 auto;
-}
 
 img[_ngcontent-c2] {
   vertical-align: middle;
   
-  // margin: 5%;
+  // margin: 0.5%;
   padding: 2%;
   border-style: solid;
   // border-width: thin;
@@ -33,11 +26,12 @@ img[_ngcontent-c2] {
 .not-active {
   border-color: #990000;
   border-width: 5px;
-  opacity: 0.4;
+  opacity: 0.7;
 }
 
 .img-wrap {
   position: relative;
+  // margin: 0.5%;
   // display: inline-block;
   // border: 1px red solid;
   // font-size: 0;
