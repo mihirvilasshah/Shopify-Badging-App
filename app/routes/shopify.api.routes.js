@@ -60,5 +60,6 @@ module.exports = (app) => {
     // upload pic using uploader
     app.post('/api/upload', upload.single('photo'), controller.upload);
     // app.get('/api', controller.api )
+    app.post('/deleteUserBadge/',controller.deleteBadge);
 
 }

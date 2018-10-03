@@ -417,7 +417,7 @@ exports.upload = (req, res) => {
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
                 src: picname,
-                default: 'false' // not name, it should be id
+                default: false // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -913,6 +913,26 @@ exports.getUserIDS = (req, res) => {
     });
 }
 
+
+exports.deleteBadge = (req, res) => {
+    console.log('Entered delete badge');
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("shopifydbclone");
+        var myquery = { _id: ObjectId(req.body.id)};
+        console.log(myquery);
+        dbo.collection("badges").deleteOne(myquery, function (err, obj) {
+            if (err) throw err;
+            if( obj.deletedCount){
+                console.log(obj);
+                res.send(true);
+            }
+            else{
+                res.send(false);
+            }
+        });
+    });
+};
 
 
 
