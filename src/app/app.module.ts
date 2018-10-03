@@ -17,6 +17,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FileSelectDirective } from 'ng2-file-upload';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
+import { NgxSmartModalModule } from 'ngx-smart-modal';
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -42,7 +43,8 @@ import {NgxPaginationModule} from 'ngx-pagination';
     MatSelectModule,
     HttpClientModule,
     NgxSpinnerModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    NgxSmartModalModule.forRoot()
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // )

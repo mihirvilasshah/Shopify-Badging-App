@@ -2,6 +2,9 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
+@import "~ngx-smart-modal/ngx-smart-modal";
+@import "app/app.component";
+
 body {
      margin: 0;
      background: #F2F2F2;
