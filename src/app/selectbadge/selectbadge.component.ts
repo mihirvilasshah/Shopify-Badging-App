@@ -130,6 +130,7 @@ export class SelectBadgeComponent implements OnInit {
   }
 
   deleteBadge(index: number): void {
+    if(confirm("Are You sure you want to delete?")){
     console.log("deletebadge front end");
     var x =this.UserPictures[index].split("http://localhost:3000/picture/");
     var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":x[1]});
@@ -153,5 +154,6 @@ export class SelectBadgeComponent implements OnInit {
     }
     );
   }
+}
 
 }
