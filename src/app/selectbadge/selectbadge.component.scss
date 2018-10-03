@@ -37,9 +37,9 @@ img[_ngcontent-c2] {
 
 .img-wrap {
   position: relative;
-  display: inline-block;
-  border: 1px red solid;
-  font-size: 0;
+  // display: inline-block;
+  // border: 1px red solid;
+  // font-size: 0;
 }
 .close {
   position: absolute;
@@ -56,17 +56,20 @@ img[_ngcontent-c2] {
   text-align: center;
   font-size: 22px;
   line-height: 10px;
-  border-radius: 50%;
+  border-radius: 10%;
+ 
 }
+
 .img-wrap:hover .close {
   opacity: 1;
+  background-color: #990000;
 }
 
-.UserRadio{
-  // visibility: hidden; 
-  display: block;
-}
+// .UserRadio{
+//   // visibility: hidden; 
+//   display: block;
+// }
 
-.activated{
-  border: 1px blue solid;
-}
+// .activated{
+//   border: 1px blue solid;
+// }

@@ -17,19 +17,19 @@ export class SelectBadgeComponent implements OnInit {
   libTab = true;
   UserTab = true;
   selectedIndex = 0;
-  LibPictures=[];
-  UserPictures=[];
-  libCount=0;
-  userCount=0;
-  selectedindex=-1;
-  lib=true;
-  sel=false;
+  LibPictures = [];
+  UserPictures = [];
+  libCount = 0;
+  userCount = 0;
+  selectedindex = -1;
+  lib = true;
+  sel = false;
 
   public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
 
   constructor(private badge: BadgeService, private http: HttpClient, private router: Router, private spinner: NgxSpinnerService) {
   }
- 
+
   ngOnInit() {
     console.log("ngonInit");
     this.uploader.onAfterAddingFile = (file) => { file.withCredentials = false; };
@@ -43,31 +43,36 @@ export class SelectBadgeComponent implements OnInit {
       }
 
     };
-    
+
     var count = 0;
     var ids = this.http.get("http://localhost:3000/getIDS");
-    ids.subscribe(val => { console.log(val);
-      var temp=Object.values(val);
-      temp.forEach(pic =>
-      {
-        this.LibPictures.push("http://localhost:3000/picture/"+pic);
+    ids.subscribe(val => {
+      console.log(val);
+      var temp = Object.values(val);
+      temp.forEach(pic => {
+        this.LibPictures.push("http://localhost:3000/picture/" + pic);
       })
     });
 
-    var ids = this.http.get("http://localhost:3000/getUserIDS");
-    ids.subscribe(val => { console.log(val);
-      var temp=Object.values(val);
-      temp.forEach(pic =>
-      {
-        this.UserPictures.push("http://localhost:3000/picture/"+pic);
-      })
-    }
-      
-  );
+  this.loadBadges();
 
   };
 
- 
+
+
+  loadBadges(): void {
+    
+    var ids = this.http.get("http://localhost:3000/getUserIDS");
+    ids.subscribe(val => {
+      console.log(val);
+      var temp = Object.values(val);
+      temp.forEach(pic => {
+        this.UserPictures.push("http://localhost:3000/picture/" + pic);
+      })
+    })
+  };
+
+
   count1: number = 0;
   pic_name = "";
   customizeBadge(): void {
@@ -87,7 +92,7 @@ export class SelectBadgeComponent implements OnInit {
       this.router.navigate(["/customize"], navigationExtras);
       this.spinner.hide();
     }, 1000);
-  }
+  };
 
 
   public onTap() {
@@ -95,44 +100,51 @@ export class SelectBadgeComponent implements OnInit {
     var cursor = this.http.get("http://localhost:3000/picture/");
     console.log(cursor);
 
-  }
+  };
 
-  selectedPic(index:number,from:number,event): void {
+  selectedPic(index: number, from: number): void {
     // debugger;
-    console.log("event:"+event);
-    if(event){
-      console.log("event:"+event);
-    }
-    
-    if(!from){this.pic_name = this.LibPictures[index];
-      this.lib=true;
-      console.log(this.pic_name);}
-      else{
-        this.pic_name = this.UserPictures[index];
-        this.lib= false;
+    if (!from) {
+    this.pic_name = this.LibPictures[index];
+      this.lib = true;
       console.log(this.pic_name);
-      }
-    this.selectedindex=index;
-    console.log("selected"+this.selectedindex);
-
-      this.sel=true;
+    }
+    else {
+      this.pic_name = this.UserPictures[index];
+      this.lib = false;
+      console.log(this.pic_name);
+    }
+    // debugger;
+    this.selectedindex = index;
+    console.log("selected" + this.selectedindex);
+    // debugger;
+    this.sel = true;
   }
 
-  checkSelected(index:number): string {
+  checkSelected(index: number): string {
     // debugger;
 
-    if(index==this.selectedindex)
-    return "green";
+    if (index == this.selectedindex)
+      return "green";
     else return "black";
-      }
+  }
 
-      deleteBadge(index:number): void {
-        // debugger;
-    console.log("delete in progress");
-          }
+  deleteBadge(index: number): void {
+    // debugger;
+    // debugger;
+    console.log("deletebadge front end");
+    var x =this.UserPictures[index].split("http://localhost:3000/picture/");
+    var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":x[1]});
+    // var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":"5ba4c859767a3337741a66e8"});
     
-    
-  
+    deleted.subscribe(val => {
+      console.log(val);
+      debugger;
+      // console.log(val);
+      if(val)
+      this.loadBadges();
+    }
+    );
+  }
 
- 
 }
