@@ -32,10 +32,14 @@ export class SelectProductsComponent implements OnInit {
   tr;
   dr;
   pr;
+  pr1;
+  wb = "false";
+  wob = "false";
 
   selectedEntry;
   titles;
   pids;
+  badges;
   selectedids = [];
   selectedAll;
   prodData;
@@ -46,6 +50,7 @@ export class SelectProductsComponent implements OnInit {
   badgeCss = "";
 
   structuredTitle = [];
+  showTitle = [];
 
   oneDeselect;
 
@@ -83,14 +88,105 @@ export class SelectProductsComponent implements OnInit {
   }
 
   ngOnInit() {
+    
   }
 
+  withbadgeFn(flag){
+    if(flag){
+      this.wb= "true";
+
+    }
+    else{
+      this.wb = "false";
+    }
+    console.log("wb:  "+ this.wb);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+
+  
+   
+  }
+  withoutbadgeFn(flag){
+    if(flag){
+      this.wob= "true";
+
+    }
+    else{
+      this.wob = "false";
+    }
+    console.log("wob:  "+ this.wob);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
+        
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+
+
+
+
+
+  }
   getPriceProd() {
 
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
+    
 
-    let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/" + this.pr)
+    let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
     obs.subscribe(data => {
       console.log("here is the response", data);
       console.log(this.pr);
@@ -98,14 +194,25 @@ export class SelectProductsComponent implements OnInit {
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
+    
       if(this.pids.length==0){
         this.msg = "No matches found."
       }
@@ -118,6 +225,7 @@ export class SelectProductsComponent implements OnInit {
       this.show = true;
 
     })
+   
 
 
 
@@ -140,30 +248,42 @@ export class SelectProductsComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
-    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/" + this.dr)
+    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
     obs.subscribe(data => {
       console.log("here is the response", data);
-      console.log(this.dr);
+      console.log(this.pr);
 
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
-
-      this.applyDate = true;
+    
       if(this.pids.length==0){
         this.msg = "No matches found."
       }
       if(this.pids.length>0){
         this.msg = ""
       }
+      // var pids = data[pids];
+      this.applyDate = true;
+
       this.show = true;
       
     })
@@ -187,37 +307,41 @@ export class SelectProductsComponent implements OnInit {
   getTitleProd() {
 
     console.log(this.title1);
-    let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/" + this.tr);
+    let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
     obs.subscribe(data => {
       console.log("here is the response", data);
-      console.log(this.tr);
-
+      console.log(this.pr);
 
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
-      // var pids = data[pids];
-
-      // this.prodData = data;
-      // this.mode = 'CheckBox';
-      // this.selectAllText = 'Select All';
-
-      this.applyTitle = true;
-
+    
       if(this.pids.length==0){
         this.msg = "No matches found."
       }
       if(this.pids.length>0){
         this.msg = ""
       }
+      // var pids = data[pids];
+      this.applyTitle = true;
 
       this.show = true;
 
@@ -237,10 +361,10 @@ export class SelectProductsComponent implements OnInit {
   giveid(flag, value) {
 
     if (this.selectedAll) {
-      for (var i = 0; i < this.structuredTitle.length; i++) {
-        this.structuredTitle[i].selected = this.selectedAll;
+      for (var i = 0; i < this.showTitle.length; i++) {
+        this.showTitle[i].selected = this.selectedAll;
       }
-      this.counter = this.structuredTitle.length;
+      this.counter = this.showTitle.length;
       var index = this.selectedids.indexOf(value);
       console.log("value if: " + value);
       this.selectedids = [];
@@ -254,9 +378,9 @@ export class SelectProductsComponent implements OnInit {
 
 
     }
-    if (!this.selectedAll && this.counter == this.structuredTitle.length) {
-      for (var i = 0; i < this.structuredTitle.length; i++) {
-        this.structuredTitle[i].selected = this.selectedAll;
+    if (!this.selectedAll && this.counter == this.showTitle.length) {
+      for (var i = 0; i < this.showTitle.length; i++) {
+        this.showTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
       this.counter = 0;
@@ -267,7 +391,8 @@ export class SelectProductsComponent implements OnInit {
       this.counter = this.counter + 1;
 
       // this.selectedids.push(value);
-      this.selectedids.push(this.pids[value]);
+      // var index = this.selectedids.indexOf(value);
+      this.selectedids.push(value);
       console.log("flag true:" + this.selectedids);
       // console.log("pid value esle if: " + this.pids);
     }
@@ -285,7 +410,7 @@ export class SelectProductsComponent implements OnInit {
     console.log("value: " + value);
 
     console.log("COUNTER:" + this.counter)
-    if (this.counter == this.structuredTitle.length)
+    if (this.counter == this.showTitle.length)
       this.selectedAll = true;
     else
       this.selectedAll = false;
