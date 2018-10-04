@@ -18,6 +18,8 @@ import { FileSelectDirective } from 'ng2-file-upload';
 import { NgxSpinnerModule } from 'ngx-spinner';
 import {NgxPaginationModule} from 'ngx-pagination';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
+import { DragndropDirective } from './dragndrop.directive';
+import { ImageUploadModule } from "angular2-image-upload";
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -30,7 +32,8 @@ import { NgxSmartModalModule } from 'ngx-smart-modal';
     CustomizeComponent,
     SelectProductsComponent,
     RemoveBadgesComponent,
-    FileSelectDirective
+    FileSelectDirective,
+    DragndropDirective
     // MultiSelectComponent
   ],
   imports: [
@@ -44,7 +47,8 @@ import { NgxSmartModalModule } from 'ngx-smart-modal';
     HttpClientModule,
     NgxSpinnerModule,
     NgxPaginationModule,
-    NgxSmartModalModule.forRoot()
+    NgxSmartModalModule.forRoot(),
+    ImageUploadModule.forRoot()
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // )

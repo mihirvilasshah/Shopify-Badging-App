@@ -24,6 +24,7 @@
     "@angular/router": "^6.1.0",
     "@syncfusion/ej2-ng-dropdowns": "^16.2.50",
     "angular-file-uploader": "^4.1.3",
+    "angular2-image-upload": "^1.0.0-rc.1",
     "bootstrap": "^4.1.3",
     "core-js": "^2.5.4",
     "hammerjs": "^2.0.8",
