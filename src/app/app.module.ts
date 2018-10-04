@@ -20,6 +20,7 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import { NgxSmartModalModule } from 'ngx-smart-modal';
 import { DragndropDirective } from './dragndrop.directive';
 import { ImageUploadModule } from "angular2-image-upload";
+import { AngularDraggableModule } from 'angular2-draggable';
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -48,7 +49,8 @@ import { ImageUploadModule } from "angular2-image-upload";
     NgxSpinnerModule,
     NgxPaginationModule,
     NgxSmartModalModule.forRoot(),
-    ImageUploadModule.forRoot()
+    ImageUploadModule.forRoot(),
+    AngularDraggableModule
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // )
