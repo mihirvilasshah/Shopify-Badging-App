@@ -838,7 +838,7 @@ exports.getProductPriceRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("tricon-jewel-store.myshopify.com").find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
@@ -999,7 +999,7 @@ exports.getProductTitle = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection("tricon-jewel-store.myshopify.com").find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
             if (err) throw err;
 
 
