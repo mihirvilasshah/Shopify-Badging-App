@@ -12,19 +12,14 @@
       <h4>
         POSITION:
       </h4>
-      <div>
-     
-
-
-        <mat-form-field>
-          <mat-select placeholder="Position" id="selectPosition" (selectionChange)="changeFunc($event.value)" [(value)]="selected">  
-            <mat-option *ngFor="let position of positions" [value]="position.name">
-              {{position.name}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-
-      </div>
+  <div class="alert alert-secondary" role="alert">
+           px from left: {{endOffset.x}}<br>
+           px from top: {{endOffset.y}}
+        </div>
+      <div class="slidecontainer">
+            <input type="range"  #slider max="100"  class="slider" id="myRange" [(ngModel)]="opvalue" (input) = "slidervalue(slider.value)">
+            
+          </div>
     </div>
 
     <div class="divp">
@@ -32,8 +27,15 @@
         PREVIEW:
       </h4>
 
-      <div style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg'); height: 400px; width: 400px; border: 1px solid black; background-size:cover ">
-        <img #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="50" width="50" />
+      <div class="drag-boundary" #myBounds style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg'); width: 400px;height: 400px;  border: 1px solid black; background-size:cover ">
+        
+       
+
+         <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" (movingOffset)="onMoving($event)"
+         [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" (edge)="checkEdge($event)" [bounds]="myBounds" [inBounds]="inBounds"  #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="50" width="50" /> 
+        
+
+        
       </div>
 
       <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
