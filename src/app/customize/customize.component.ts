@@ -28,6 +28,15 @@ export class CustomizeComponent {
   badge_css="top-left";
   pos=false; // [disabled]="!pos" for NEXT
   selected='top-left';
+   opvalue;
+  inBounds = true;
+  edge = {
+    top: true,
+    bottom: true,
+    left: true,
+    right: true
+  };
+  endOffset = { x: 0, y: 0 };
 
 
 
@@ -42,46 +51,33 @@ export class CustomizeComponent {
   });
 
   }
+  onStart(event) {
+    console.log('started output:', event);
+  }
+
+  onStop(event) {
+    console.log('stopped output:', event);
+  }
+
+ 
+
+  onMoveEnd(event) {
+    this.endOffset.x = event.x;
+    this.endOffset.y = event.y;
+  }
 
 
 
   nextFunc(){
     console.log("in next func");
   }
+  
+   checkEdge(event) {
+    this.edge = event;
+    console.log('edge:', event);
+  } 
+  
 
-  changeFunc(event){
-      if (event == "top-right") {
-          document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "0px";
-          document.getElementById("image1").style.left = "350px";
-          this.badge_css="top-right";
-          this.pos = true;
-      
-      } else if (event == "top-left") {
-          document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "0px";
-          document.getElementById("image1").style.left = "0px";
-          // document.getElementById("imagediv").style.float = "right";
-          this.badge_css="top-left";
-          this.pos = true;
-
-      } else if (event == "bottom-right") {
-          document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "350px";
-          document.getElementById("image1").style.left = "350px";
-          // document.getElementById("imagediv").style.float = "right";
-          this.badge_css="bottom-right";
-          this.pos = true;
-
-      } else if (event == "bottom-left") {
-          document.getElementById("image1").style.position = "relative";
-          document.getElementById("image1").style.top = "350px";
-          document.getElementById("image1").style.left = "0px";
-          this.badge_css="bottom-left";
-          this.pos = true;
-
-      }
-  }
 
   positionControl = new FormControl('', [Validators.required]);
   positions: position[] = [
