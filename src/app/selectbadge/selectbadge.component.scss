@@ -64,6 +64,7 @@ img[_ngcontent-c2] {
 .img-wrap:hover .close {
   opacity: 1;
   background-color: #990000;
+  color:white;
 }
 
 .UserRadio,.LibRadio{
@@ -74,3 +75,7 @@ img[_ngcontent-c2] {
 // .activated{
 //   border: 1px blue solid;
 // }
+
+form{
+  display: flex;
+}

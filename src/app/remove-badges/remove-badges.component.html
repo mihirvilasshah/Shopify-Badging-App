@@ -65,7 +65,7 @@
                     {{title.name}}
             </label>
         </div>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="unpublish()">Unpublish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="unpublish()">Unpublish</button>
     </div>
 
     <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->

@@ -93,7 +93,7 @@
         </table>
         <pagination-controls (pageChange)="p = $event"  autoHide="true">
         </pagination-controls>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
     </div>
     
 
