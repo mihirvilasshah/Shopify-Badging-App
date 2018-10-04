@@ -46,3 +46,7 @@ span{
 .form-check-input{
   margin-left: -23px;
 }
+
+.mdl-button--colored[disabled]{
+  color: rgba(0,0,0,.9) !important;
+} 
