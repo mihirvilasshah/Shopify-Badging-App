@@ -29,32 +29,38 @@
     </div>
 
     <div *ngIf="selectedFilter=='Price'">
-        <input type="number" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()">
-        <input type="number" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()">
-        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withBadges"> With Badges
-        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="withoutBadges"> Without Badges
-        <input type="radio" name="priceRadio" [(ngModel)]="pr" (change)="applyPriceFn()" value="all"> All
+      <form>
+        <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder = "starting price">
+        <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()"placeholder = "Ending price">
+    
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2&&pr)&&applyPrice)||((!(price1&&price2&&pr))&&!applyPrice)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
+      </form>
     </div>
     <div *ngIf="selectedFilter=='Date'">
-        <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
-        <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
-        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="withBadges"> With Badges
-        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="withoutBadges"> Without Badges
-        <input type="radio" name="dateRadio" [(ngModel)]="dr" (change)="applyDateFn()" value="all"> All
+        <form>
+        <label for = "d1">From:
+        <input type="date" id="d1" name="bday" [(ngModel)]="date1"  (input)="applyDateFn()">
+        </label>
+        <label for="d2">To:
+        <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()"></label>
+
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2&&dr)&&applyDate)||((!(date1&&date2&&dr))&&!applyDate)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
+        </form>
     </div>
     <div *ngIf="selectedFilter=='Title'">
-        <input type="text" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()">
+        <form>
+        <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder ="Search by title">
         <!-- (keyup.enter)="getTitleProd()" -->
-        <input type="radio" #r1 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="withBadges" > With Badges
-        <input type="radio" #r2 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="withoutBadges" > Without Badges
-        <input type="radio" #r3 name="titleRadio" [(ngModel)]="tr" (change)="applyTitleFn()" value="all" > All
+        
         <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1&&tr)&&applyTitle)||((!(title1&&tr))&&!applyTitle)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)">Apply</button>
         <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
+        </form>
     </div>
 
     <div #noShow *ngIf="show">
@@ -77,23 +83,30 @@
                 <th>Created at</th>
                 <th>Badge</th>
             </tr>
-        <div class="form-check" *ngFor="let title of structuredTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " >
+        <div class="form-check" *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " >
             <tr [ngClass]="i % 2 == 0? 'even' : 'odd'">
             <td>    
             <label class="form-check-label">
-                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="i" (click) = "giveid($event.target.checked, box.value)">
+                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click) = "giveid($event.target.checked, box.value)">
                     {{title.name}}
             </label>
             </td>
             <td>
-                {{pids[i]}}
+                {{title.pids}}
+            </td>
+            <td>
+                {{title.badges}}
             </td>
             </tr>
         </div>
         </table>
         <pagination-controls (pageChange)="p = $event"  autoHide="true">
         </pagination-controls>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!titles" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
+
+        <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
+        <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
+        
     </div>
     
 

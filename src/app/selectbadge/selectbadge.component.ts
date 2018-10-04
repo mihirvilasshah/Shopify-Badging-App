@@ -38,13 +38,14 @@ export class SelectBadgeComponent implements OnInit {
       if (status) {
         console.log('item', item, 'status', status, 'response', response);
         alert('File uploaded successfully');
+        this.UserPictures=[];
+        this.loadBadges();
+        this.selectedindex=-1;
       }
       else {
         alert("Error uploading a file");
       }
-
     };
-
     var count = 0;
     var ids = this.http.get("http://localhost:3000/getIDS");
     ids.subscribe(val => {
@@ -54,9 +55,7 @@ export class SelectBadgeComponent implements OnInit {
         this.LibPictures.push("http://localhost:3000/picture/" + pic);
       })
     });
-
   this.loadBadges();
-
   };
 
 
@@ -131,8 +130,7 @@ export class SelectBadgeComponent implements OnInit {
   }
 
   deleteBadge(index: number): void {
-    // debugger;
-    // debugger;
+    if(confirm("Are You sure you want to delete?")){
     console.log("deletebadge front end");
     var x =this.UserPictures[index].split("http://localhost:3000/picture/");
     var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":x[1]});
@@ -140,16 +138,22 @@ export class SelectBadgeComponent implements OnInit {
     
     deleted.subscribe(val => {
       console.log(val);
-      debugger;
+      // debugger;
       // console.log(val);
       if(val)
       {
         alert("badge deleted");
-        this.loadBadges();
+        // this.UserPictures=[];
+        this.UserPictures.splice(index,1);
+        this.selectedindex = -1;
+        this.sel=false;
+      //  this.loadBadges();
+
       }
-      
+
     }
     );
   }
+}
 
 }
