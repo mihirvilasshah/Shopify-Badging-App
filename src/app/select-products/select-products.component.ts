@@ -71,19 +71,28 @@ export class SelectProductsComponent implements OnInit {
     { name: 'Date' },
     { name: 'Title' },
   ];
+  opvalue;
+  endOffset;
 
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient,public ngxSmartModalService: NgxSmartModalService) {
     // this.badge.getProduct();
-    this.route.queryParams.subscribe(params => {
-      if (params["picName"])
-        this.selected_image_src = params["picName"];
-      if (params["badgeCss"])
-        this.badgeCss = params["badgeCss"];
-
-      console.log(this.selected_image_src);
-      console.log(this.badgeCss);
-    });
+    // this.route.queryParams.subscribe(params => {
+    //   if (params["picName"])
+    //     this.selected_image_src = params["picName"];
+    //   if (params["badgeCss"])
+    //     this.badgeCss = params["badgeCss"];
+    this.endOffset = badge.getCoor();
+    this.opvalue=badge.getOpval();
+    this.selected_image_src=badge.getBadgePic();
+    // this.badgeCss=badge.getBadgeCss();
+    console.log("select products badge name"+ this.selected_image_src);
+    console.log("select products x "+this.endOffset.x+" and y value "+this.endOffset.y);
+    console.log("select products opval"+this.opvalue);
+  
+    // console.log("select products badge css"+ this.badgeCss);
+      
+    // });
 
   }
 

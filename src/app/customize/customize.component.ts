@@ -26,6 +26,10 @@ export class CustomizeComponent {
   selected_image_src="";
   pic_name="";
   badge_css="top-left";
+  top='200px';
+  left='0px';
+  css="top-left";
+  top1=true;
   pos=false; // [disabled]="!pos" for NEXT
   selected='top-left';
    opvalue;
@@ -36,19 +40,30 @@ export class CustomizeComponent {
     left: true,
     right: true
   };
-  endOffset = { x: 0, y: 0 };
+  endOffset;
+  
 
 
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router) {
     // this.badge.getProduct();
-    console.log("inside constructor:"+this.selected_image_src);
-    this.route.queryParams.subscribe(params => {
-      if( params["picName"])
-      this.selected_image_src = params["picName"];
+    this.selected_image_src=badge.getBadgePic();
+    this.endOffset = badge.getCoor();
+    this.opvalue=badge.getOpval();
+    // this.badge_css=badge.getBadgeCss();
+    // console.log("inside constructor:"+this.selected_image_src);
+    // this.route.queryParams.subscribe(params => {
+    //   if( params["picName"])
+    //   this.selected_image_src = params["picName"];
    
-      console.log(this.selected_image_src);
-  });
+    //   console.log(this.selected_image_src);
+  // });
+  console.log("customize badge pic "+this.selected_image_src);
+  console.log("customize x and y value"+this.endOffset.x+" "+this.endOffset.y);
+  console.log("customize opval"+this.opvalue);
+
+      // console.log("customize badge css "+this.badge_css);
+      // console.log("position"+this.css);
 
   }
   onStart(event) {
@@ -64,18 +79,20 @@ export class CustomizeComponent {
   onMoveEnd(event) {
     this.endOffset.x = event.x;
     this.endOffset.y = event.y;
+
   }
 
 
 
-  nextFunc(){
-    console.log("in next func");
-  }
+  // nextFunc(){
+  //   console.log("in next func");
+  // }
   
    checkEdge(event) {
     this.edge = event;
     console.log('edge:', event);
   } 
+  
   
 
 
@@ -92,17 +109,29 @@ export class CustomizeComponent {
     this.spinner.show();
     setTimeout(() => {
 
-      console.log("pic name" + this.selected_image_src);
-      // console.log("ids"+this.ids);
-      let navigationExtras: NavigationExtras = {
-        queryParams: {
-          picName: this.selected_image_src,
-          badgeCss:this.badge_css
-        }
-      };
-      this.router.navigate(["/products"], navigationExtras);
+      // console.log("pic name" + this.selected_image_src);
+      // // console.log("ids"+this.ids);
+      // let navigationExtras: NavigationExtras = {
+      //   queryParams: {
+      //     picName: this.selected_image_src,
+      //     badgeCss:this.badge_css
+      //   }
+      // };
+      // this.router.navigate(["/products"], navigationExtras);
+      this.router.navigate(["/products"]);
       this.spinner.hide();
     }, 1000);
+  }
+
+  slidervalue(value){
+    this.opvalue = value/100;
+
+document.getElementById("image1").style.opacity = this.opvalue;
+
+this.badge.setOpval(value);
+console.log("in slidervalue"+this.opvalue);
+
+
   }
 
 

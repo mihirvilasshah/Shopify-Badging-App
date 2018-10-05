@@ -9,17 +9,31 @@
         SELECTED BADGE
       </h4>
       <img src={{selected_image_src}} height="200px" width="200px">
+      <br>
       <h4>
         POSITION:
       </h4>
-  <div class="alert alert-secondary" role="alert">
+  <div class="alert alert-secondary" role="alert" >
            px from left: {{endOffset.x}}<br>
            px from top: {{endOffset.y}}
         </div>
-      <div class="slidecontainer">
+        <br>
+        <h4>
+          OPACITY:
+        </h4>
+    
+      <div class="slidecontainer" >
             <input type="range"  #slider max="100"  class="slider" id="myRange" [(ngModel)]="opvalue" (input) = "slidervalue(slider.value)">
             
           </div>
+          <br>
+          <br>
+          <br>
+          <div >
+
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()"> NEXT
+    </button>
+    </div>
     </div>
 
     <div class="divp">
@@ -42,11 +56,7 @@
 
       <br>
       <br>
-      <div class="divp">
-
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()"> NEXT
-</button>
-</div>
+      
 
 </div>
 </DIV>

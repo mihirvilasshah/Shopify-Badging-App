@@ -7,6 +7,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { MatTabChangeEvent } from '@angular/material';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 // import { AngularFileUploaderModule } from "angular-file-uploader";
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-selectbadge',
@@ -24,6 +25,8 @@ export class SelectBadgeComponent implements OnInit {
   selectedindex = -1;
   lib = true;
   sel = false;
+  count1: number = 0;
+  pic_name = "";
 
   public uploader: FileUploader = new FileUploader({ url: "http://localhost:3000/api/upload", itemAlias: 'photo' });
 
@@ -61,6 +64,8 @@ export class SelectBadgeComponent implements OnInit {
       })
     });
     this.loadBadges();
+    console.log("select badge"+this.badge.getBadgePic);
+
   };
 
 
@@ -78,34 +83,35 @@ export class SelectBadgeComponent implements OnInit {
   };
 
 
-  count1: number = 0;
-  pic_name = "";
+
   customizeBadge(): void {
     console.log("inside customise badge");
     this.spinner.show();
     setTimeout(() => {
       this.count1 = this.count1 + 1;
 
-      console.log("pic name" + this.pic_name);
-      // console.log("ids"+this.ids);
-      let navigationExtras: NavigationExtras = {
-        queryParams: {
-          picName: this.pic_name
+      // console.log("pic name" + this.pic_name);
+      // // console.log("ids"+this.ids);
+      // let navigationExtras: NavigationExtras = {
+      //   queryParams: {
+      //     picName: this.pic_name
 
-        }
-      };
-      this.router.navigate(["/customize"], navigationExtras);
+      //   }
+      // };
+      // this.router.navigate(["/customize"], navigationExtras);
+      // this.spinner.hide();
+      this.router.navigate(["/customize"]);
       this.spinner.hide();
     }, 1000);
   };
 
 
-  public onTap() {
-    console.log("inside on tap");
-    var cursor = this.http.get("http://localhost:3000/picture/");
-    console.log(cursor);
+  // public onTap() {
+  //   console.log("inside on tap");
+  //   var cursor = this.http.get("http://localhost:3000/picture/");
+  //   console.log(cursor);
 
-  };
+  // };
 
   selectedPic(index: number, from: number): void {
     // debugger;
@@ -113,11 +119,15 @@ export class SelectBadgeComponent implements OnInit {
       this.pic_name = this.LibPictures[index];
       this.lib = true;
       console.log(this.pic_name);
+      this.badge.changeBadge(this.pic_name);
+
     }
     else {
       this.pic_name = this.UserPictures[index];
       this.lib = false;
       console.log(this.pic_name);
+      this.badge.changeBadge(this.pic_name);
+
     }
     // debugger;
     this.selectedindex = index;
@@ -126,13 +136,13 @@ export class SelectBadgeComponent implements OnInit {
     this.sel = true;
   }
 
-  checkSelected(index: number): string {
-    // debugger;
+  // checkSelected(index: number): string {
+  //   // debugger;
 
-    if (index == this.selectedindex)
-      return "green";
-    else return "black";
-  }
+  //   if (index == this.selectedindex)
+  //     return "green";
+  //   else return "black";
+  // }
 
   deleteBadge(index: number): void {
     if (confirm("Are You sure you want to delete?")) {

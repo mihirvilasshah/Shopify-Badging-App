@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 // import { HttpClient } from '../../node_modules/@types/selenium-webdriver/http';
 import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject } from 'rxjs';
 
 
 
@@ -9,6 +10,12 @@ import { HttpClient } from '@angular/common/http';
 })
 export class BadgeService {
 
+  // private badgePic = new BehaviorSubject('http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png');
+  // currentpic = this.badgePic.asObservable();
+  private badgePic="http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
+  private badgeCss="top-left";
+  private coord={ x: 0, y: 0 };
+  private opval=0;
 
   constructor(private http: HttpClient) { }
 
@@ -24,10 +31,38 @@ export class BadgeService {
     })
   }
 
-  /*uploadPic(){
-    this.http.post("https://3c7c6d64.ngrok.io/getProduct/1451088838726.0", {});
+  changeBadge(message: string) {
+    this.badgePic=message;
+  }
 
-  }*/
+  getBadgePic(): string{
+    return this.badgePic;
+  }
+
+  changeBadgeCss(message: string) {
+    this.badgeCss=message;
+  }
+
+  getBadgeCss(): string{
+    return this.badgeCss;
+  }
+
+  setCoor(x,y){
+    this.coord.x=x;
+    this.coord.y=y;
+  }
+
+  getCoor(){
+    return this.coord;
+  }
+
+  getOpval(){
+    return this.opval;
+  }
+
+  setOpval(val){
+    this.opval=val;
+  }
 
   showBadges() {
    
