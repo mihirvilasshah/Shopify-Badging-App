@@ -234,15 +234,17 @@ exports.auth = (req, res) => {
                                     console.log(lids);
 
 
-                                    res.render('selectbadge', {
-                                        apiKey: process.env.SHOPIFY_API_KEY,
-                                        shopOrigin: 'https://' + globalShop,
-                                        ids: ids,
-                                        lids: lids,
+                                    // res.render('selectbadge', {
+                                    //     apiKey: process.env.SHOPIFY_API_KEY,
+                                    //     shopOrigin: 'https://' + globalShop,
+                                    //     ids: ids,
+                                    //     lids: lids,
 
 
-                                        forwardingAddress: process.env.FORWARDING_ADDRESS
-                                    });
+                                    //     forwardingAddress: process.env.FORWARDING_ADDRESS
+                                    // });
+
+                                    res.redirect('/static/welcome.html');
 
                                 });
                             });
@@ -863,11 +865,11 @@ exports.getProductPriceRange = (req, res) => {
             for (var i = 0; i < products.length; i++) {
                 console.log(products[i].ABid);
                 if( products[i].ABid){
-                    badge[i] = "true";
+                    badge[i] = "yes";
                     
                 }
                 else{
-                    badge[i] = "false";
+                    badge[i] = "no";
                 }
               
             }
@@ -943,10 +945,10 @@ exports.getProductDateRange = (req, res) => {
             var badge = [];
             for (var i = 0; i < products.length; i++) {
                 if( products[i].ABid){
-                    badge[i] = "true";
+                    badge[i] = "yes";
                 }
                 else{
-                    badge[i] = "false";
+                    badge[i] = "no";
                 }
               
             }
@@ -1028,10 +1030,10 @@ exports.getProductTitle = (req, res) => {
             var badge = [];
             for (var i = 0; i < products.length; i++) {
                 if( products[i].ABid){
-                    badge[i] = "true";
+                    badge[i] = "yes";
                 }
                 else{
-                    badge[i] = "false";
+                    badge[i] = "no";
                 }
               
             }
