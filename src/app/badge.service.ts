@@ -15,7 +15,7 @@ export class BadgeService {
   private badgePic="http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
   private badgeCss="top-left";
   private coord={ x: 0, y: 0 };
-  private opval=0;
+  private opval;
 
   constructor(private http: HttpClient) { }
 

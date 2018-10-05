@@ -60,7 +60,7 @@ export class CustomizeComponent {
   // });
   console.log("customize badge pic "+this.selected_image_src);
   console.log("customize x and y value"+this.endOffset.x+" "+this.endOffset.y);
-  console.log("customize opval"+this.opvalue);
+  console.log("customize opval "+this.opvalue);
 
       // console.log("customize badge css "+this.badge_css);
       // console.log("position"+this.css);
@@ -128,8 +128,9 @@ export class CustomizeComponent {
 
 document.getElementById("image1").style.opacity = this.opvalue;
 
-this.badge.setOpval(value);
+this.badge.setOpval(this.opvalue);
 console.log("in slidervalue"+this.opvalue);
+console.log("get val"+this.badge.getOpval());
 
 
   }
