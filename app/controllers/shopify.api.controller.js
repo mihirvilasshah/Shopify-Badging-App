@@ -108,15 +108,17 @@ exports.App = (req, res) => {
                 console.log(lids);
 
 
-                res.render('selectbadge', {
-                    apiKey: process.env.SHOPIFY_API_KEY,
-                    shopOrigin: 'https://' + globalShop,
-                    ids: ids,
-                    lids: lids,
+                // res.render('selectbadge', {
+                //     apiKey: process.env.SHOPIFY_API_KEY,
+                //     shopOrigin: 'https://' + globalShop,
+                //     ids: ids,
+                //     lids: lids,
 
 
-                    forwardingAddress: process.env.FORWARDING_ADDRESS
-                });
+                //     forwardingAddress: process.env.FORWARDING_ADDRESS
+                // });
+
+                res.redirect('/static/welcome.html');
 
             });
         });
