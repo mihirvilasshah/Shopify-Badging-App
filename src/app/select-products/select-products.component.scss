@@ -37,6 +37,7 @@ table {
 
 .current{
   background-color: red;
+
 }
 
 span{
@@ -85,4 +86,16 @@ input[type="date"], focus {
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
+}
+
+h1{
+  color: rgb(63,81,181);
+}
+
+h2{
+  color: red;
+}
+
+/deep/ .ngx-pagination .current{
+  background: rgb(63,81,181) !important;
 }

@@ -67,7 +67,7 @@
     </div>
 
     <div #noShow *ngIf="show">
-    <h1>List Of Products</h1>
+    <h1 style="margin-top:50px;">List Of Products</h1>
     <!--<div>
         <input type="checkbox" *ngFor="let title of titles" [value]="title" [id]="title">
         <label for="title" *ngFor="let title of titles">{{title}}</label>
@@ -78,7 +78,7 @@
     <div class="form-group">
         <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="giveid()">Select All
         <br>
-        <span><h1>{{msg}}</h1></span>
+        <span><h2>{{msg}}</h2></span>
         <table>
             <!-- <tr>
                 <th>Title</th>
