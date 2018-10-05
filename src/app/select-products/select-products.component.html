@@ -1,7 +1,7 @@
 <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>-->
-<h1>Filters</h1>
+<h1>Apply Rule Conditions</h1>
 <div>
     <!--<select name="filter" [(ngModel)]="selectedFilter" placeholder="Position">
         <option *ngFor="let filter of filters" value={{filter}}>{{filter}}</option>
@@ -30,7 +30,7 @@
 
     <div *ngIf="selectedFilter=='Price'">
       <form>
-        <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder = "starting price">
+        <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder = "Starting price">
         <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()"placeholder = "Ending price">
     
         <br>
@@ -67,7 +67,7 @@
     </div>
 
     <div #noShow *ngIf="show">
-    <h1>List Of Products</h1>
+    <h1 style="margin-top:50px;">List Of Products</h1>
     <!--<div>
         <input type="checkbox" *ngFor="let title of titles" [value]="title" [id]="title">
         <label for="title" *ngFor="let title of titles">{{title}}</label>
@@ -76,9 +76,10 @@
 
     
     <div class="form-group">
-        <input class="form-check-input" type="checkbox" [(ngModel)]="selectedAll" (change)="giveid()">Select All
+        <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()" style="margin-left: 10px;">
+        <label for="all" style="margin-left: 34px;">Select All</label>
         <br>
-        <span><h1>{{msg}}</h1></span>
+        <span><h2>{{msg}}</h2></span>
         <table>
             <!-- <tr>
                 <th>Title</th>

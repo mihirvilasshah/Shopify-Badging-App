@@ -37,6 +37,7 @@ table {
 
 .current{
   background-color: red;
+
 }
 
 span{
@@ -74,7 +75,7 @@ input[type="date"] {
   font-family: "Helvetica", arial, sans-serif;
   font-size: 18px;
   border:1px solid #ecf0f1;
-  background:#ecf0f1;
+  background:white;
   padding:5px;
   display: inline-block !important;
   visibility: visible !important;
@@ -85,4 +86,16 @@ input[type="date"], focus {
   box-shadow: none;
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
+}
+
+h1{
+  color: rgb(63,81,181);
+}
+
+h2{
+  color: red;
+}
+
+/deep/ .ngx-pagination .current{
+  background: rgb(63,81,181) !important;
 }
