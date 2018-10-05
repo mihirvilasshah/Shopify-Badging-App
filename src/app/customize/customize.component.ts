@@ -105,7 +105,11 @@ export class CustomizeComponent {
     }, 1000);
   }
 
-
-
+  
+slidervalue(value){
+  this.opvalue = value/100;
+  document.getElementById("image1").style.opacity = this.opvalue;
+  console.log("opvalue", this.opvalue);
+  }
 
 }

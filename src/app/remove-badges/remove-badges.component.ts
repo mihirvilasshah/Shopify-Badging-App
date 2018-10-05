@@ -4,18 +4,19 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
+import { NgxSmartModalService } from 'ngx-smart-modal';
+// import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
   name: string;
 }
-
 
 @Component({
   selector: 'app-remove-badges',
   templateUrl: './remove-badges.component.html',
   styleUrls: ['./remove-badges.component.scss']
 })
+
 export class RemoveBadgesComponent implements OnInit {
 
   // filters = ["Price","Date","Title"];
@@ -30,10 +31,14 @@ export class RemoveBadgesComponent implements OnInit {
   tr;
   dr;
   pr;
+  pr1;
+  wb = "false";
+  wob = "false";
 
   selectedEntry;
   titles;
   pids;
+  badges;
   selectedids = [];
   selectedAll;
   prodData;
@@ -44,6 +49,7 @@ export class RemoveBadgesComponent implements OnInit {
   badgeCss = "";
 
   structuredTitle = [];
+  showTitle = [];
 
   oneDeselect;
 
@@ -53,10 +59,10 @@ export class RemoveBadgesComponent implements OnInit {
   countPrice = 0;
   applyDate = false;
   countDate = 0;
+  msg="";
+  show=false;
 
-
-
-
+  p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
@@ -66,8 +72,8 @@ export class RemoveBadgesComponent implements OnInit {
   ];
 
 
-  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient) {
-    this.badge.getProduct();
+  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient,public ngxSmartModalService: NgxSmartModalService) {
+    // this.badge.getProduct();
     this.route.queryParams.subscribe(params => {
       if (params["picName"])
         this.selected_image_src = params["picName"];
@@ -81,12 +87,103 @@ export class RemoveBadgesComponent implements OnInit {
   }
 
   ngOnInit() {
+    
   }
 
+  withbadgeFn(flag){
+    if(flag){
+      this.wb= "true";
+
+    }
+    else{
+      this.wb = "false";
+    }
+    console.log("wb:  "+ this.wb);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+
+  
+   
+  }
+  withoutbadgeFn(flag){
+    if(flag){
+      this.wob= "true";
+
+    }
+    else{
+      this.wob = "false";
+    }
+    console.log("wob:  "+ this.wob);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
+        
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+      
+        }
+      }
+
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
+
+    }
+
+
+
+
+
+  }
   getPriceProd() {
 
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
+    
 
     let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
     obs.subscribe(data => {
@@ -96,17 +193,38 @@ export class RemoveBadgesComponent implements OnInit {
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
+    
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
       // var pids = data[pids];
       this.applyPrice = true;
+
+      this.show = true;
+
     })
+   
 
 
 
@@ -114,17 +232,16 @@ export class RemoveBadgesComponent implements OnInit {
   }
 
   applyPriceFn() {
-
+    
     if (this.countPrice == 1) {
       this.applyPrice = false;  //!(this.applyPrice);
     }
     this.countPrice = 1;
-    console.log("count: " + this.countPrice);
+    console.log("count: "+this.countPrice);
 
     if(this.price1 == 0){
       this.price1 = 0.01;
     }
-
   }
 
   getDateProd() {
@@ -133,32 +250,51 @@ export class RemoveBadgesComponent implements OnInit {
     let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
     obs.subscribe(data => {
       console.log("here is the response", data);
-      console.log(this.dr);
+      console.log(this.pr);
 
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
-
+    
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
+      // var pids = data[pids];
       this.applyDate = true;
 
+      this.show = true;
+      
     })
   }
 
   applyDateFn() {
-
+    
     if (this.countDate == 1) {
       this.applyDate = false;  //!(this.applyDate);
     }
     this.countDate = 1;
-    console.log("count: " + this.countDate);
+    console.log("count: "+this.countDate);
 
   }
 
@@ -173,48 +309,61 @@ export class RemoveBadgesComponent implements OnInit {
     let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/withBadges");
     obs.subscribe(data => {
       console.log("here is the response", data);
-      console.log(this.tr);
-
+      console.log(this.pr);
 
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
+      this.badges = items[2];
+      this.pids = items[1];
+      console.log("badhes:"+ this.badges);
+      console.log("pids:"+ this.pids);
+
+
       this.structuredTitle = [];
-      this.titles.forEach(title => {
-        this.structuredTitle.push({ name: title, selected: false });
-      });
+      
+        for (var i= 0;i<+this.titles.length;i++){
+        
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+        }
+        this.showTitle = this.structuredTitle;
+      
       console.log("titles:", this.titles);
       console.log("structuredTitle:", this.structuredTitle);
+      
 
-      this.pids = items[1];
+    
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+      }
       // var pids = data[pids];
-
-      // this.prodData = data;
-      // this.mode = 'CheckBox';
-      // this.selectAllText = 'Select All';
-
       this.applyTitle = true;
+
+      this.show = true;
 
     })
   }
 
   applyTitleFn() {
-
+    
     if (this.countTitle == 1) {
       this.applyTitle = false;  //!(this.applyTitle);
     }
     this.countTitle = 1;
-    console.log("count: " + this.countTitle);
+    console.log("count: "+this.countTitle);
 
   }
 
   giveid(flag, value) {
 
     if (this.selectedAll) {
-      for (var i = 0; i < this.structuredTitle.length; i++) {
-        this.structuredTitle[i].selected = this.selectedAll;
+      for (var i = 0; i < this.showTitle.length; i++) {
+        this.showTitle[i].selected = this.selectedAll;
       }
-      this.counter = this.structuredTitle.length;
+      this.counter = this.showTitle.length;
       var index = this.selectedids.indexOf(value);
       console.log("value if: " + value);
       this.selectedids = [];
@@ -228,9 +377,9 @@ export class RemoveBadgesComponent implements OnInit {
 
 
     }
-    if (!this.selectedAll && this.counter == this.structuredTitle.length) {
-      for (var i = 0; i < this.structuredTitle.length; i++) {
-        this.structuredTitle[i].selected = this.selectedAll;
+    if (!this.selectedAll && this.counter == this.showTitle.length) {
+      for (var i = 0; i < this.showTitle.length; i++) {
+        this.showTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
       this.counter = 0;
@@ -241,7 +390,8 @@ export class RemoveBadgesComponent implements OnInit {
       this.counter = this.counter + 1;
 
       // this.selectedids.push(value);
-      this.selectedids.push(this.pids[value]);
+      // var index = this.selectedids.indexOf(value);
+      this.selectedids.push(value);
       console.log("flag true:" + this.selectedids);
       // console.log("pid value esle if: " + this.pids);
     }
@@ -259,11 +409,65 @@ export class RemoveBadgesComponent implements OnInit {
     console.log("value: " + value);
 
     console.log("COUNTER:" + this.counter)
-    if (this.counter == this.structuredTitle.length)
+    if (this.counter == this.showTitle.length)
       this.selectedAll = true;
     else
       this.selectedAll = false;
   }
+
+  // selectAllProd() {
+
+  //   // if (this.selectedAll) {
+  //   //   this.selectedids = this.pids;
+  //   //   console.log("selectedids if (All):" + this.selectedids);
+
+  //   // }
+  //   // else {
+  //   //   // var len = this.selectedids.length;
+  //   //   // console.log("length: "+len);
+  //   //   // this.selectedids.splice(0, len);
+  //   //   this.selectedids = [];
+  //   //   console.log("selectedids else (Deselect all):" + this.selectedids);
+  //   //   console.log("pid value else(Deselect all): " + this.pids);
+  //   // }
+
+  //   // if(this.oneDeselect){
+
+  //   for (var i = 0; i < this.structuredTitle.length; i++) {
+  //     this.structuredTitle[i].selected = this.selectedAll;
+  //   }
+
+  //   if (this.selectedAll) {
+  //     this.selectedids = [];
+  //     for (var i = 0; i < this.pids.length; i++) {
+  //       this.selectedids.push(this.pids[i]);
+  //     }
+
+  //   } else {
+  //     this.selectedids = [];
+  //   }
+  // // }
+  // }
+
+  // selector(){
+  //   this.counter=0;
+  //   for(var i =0; i<this.structuredTitle.length;i++){
+  //     if(this.structuredTitle[i].selected==true){
+  //       this.counter=this.counter+1;}
+  //   }
+  //   console.log("COUNTER:"+this.counter)
+  //   if(this.counter==this.structuredTitle.length)
+  //   this.selectedAll=true;
+  //   else
+  //   this.selectedAll=false;
+  // }
+
+  // selectAll() {
+  //   for (var i = 0; i < this.titles.length; i++) {
+  //     this.titles[i].selected = this.selectedAll;
+  //     console.log("h");
+  //   }
+  // }
 
   unpublish() {
     var id = this.selected_image_src.split("picture/");
@@ -284,8 +488,35 @@ export class RemoveBadgesComponent implements OnInit {
     })
     console.log("done");
   }
-
   
+
+  // with(value){
+
+  //    this.tr = value
+
+  // }
+
+
+  // onSelectionChange(entry) {
+  //   this.selectedEntry = entry;
+  //   console.log(this.selectedEntry);
+  // }
+
+  // getAllSelectedProducts() {
+  //   var selectedProducts = [];
+
+  //   var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
+  //   console.log(selectedCheckboxes);
+  //   var selectedProductscount = selectedCheckboxes.length;
+  //   console.log(selectedProductscount);
+
+  //   for (var i = 0; i < selectedProductscount; i++) {
+  //     console.log(selectedCheckboxes[i]);
+  //     selectedProducts.push(selectedCheckboxes[i]);
+  //     console.log(selectedProducts);
+  //   }
+  // }
+
 
 
 }
