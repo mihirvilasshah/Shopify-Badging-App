@@ -1,7 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "~bootstrap/dist/css/bootstrap.min.css";
-
 @import "~ngx-smart-modal/ngx-smart-modal";
 @import "app/app.component";
 
@@ -10,6 +9,7 @@ body {
      background: #F2F2F2;
      font-family: 'Montserrat', sans-serif;
      height: 100vh;
+     font-family: 'K2D', sans-serif;
 }
 
 #container {

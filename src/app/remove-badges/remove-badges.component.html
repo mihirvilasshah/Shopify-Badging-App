@@ -55,8 +55,10 @@
     </div>
     <div *ngIf="selectedFilter=='Title'">
         <form>
-        <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder ="Search by title">
-        <!-- (keyup.enter)="getTitleProd()" -->
+                <div class="mdl-textfield mdl-js-textfield">
+                        <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title">
+                        <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+                    </div>
         
         <br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
@@ -80,7 +82,7 @@
         <label for="all" style="margin-left: 34px;">Select All</label>
         <br>
         <span><h2>{{msg}}</h2></span>
-        <table>
+        <table class="mdl-data-table">
             <!-- <tr>
                 <th>Title</th>
                 <th>ID</th>
@@ -89,16 +91,16 @@
             </tr> -->
         <div class="form-check" *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " >
             <tr [ngClass]="i % 2 == 0? 'even' : 'odd'">
-            <td>    
-            <label class="form-check-label">
+            <td style="width: 300px; text-align: left">    
+            <label class="form-check-label; ">
                 <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click) = "giveid($event.target.checked, box.value)">
                     {{title.name}}
             </label>
             </td>
-            <td>
+            <td style="width: 300px; text-align: left">
                 {{title.pids}}
             </td>
-            <td>
+            <td style="width: 300px; text-align: left">
                 {{title.badges}}
             </td>
             </tr>

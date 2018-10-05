@@ -17,22 +17,38 @@ span{
   color : red; 
 }
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  // width: 100%;
-  margin: 10px;
+// table {
+//   font-family: arial, sans-serif;
+//   border-collapse: collapse;
+//   // width: 100%;
+//   margin: 10px;
 
-  td, th {
-    border: 1px solid #dddddd;
-    text-align: left;
-    padding: 8px;
-    width: 100px;
-  }
+//   td, th {
+//     border: 1px solid #dddddd;
+//     text-align: left;
+//     padding: 8px;
+//     width: 100px;
+//   }
 
-  .even {
-    background-color: #aaaaaa;
-  }
+//   .even {
+//     background-color: #aaaaaa;
+//   }
+// }
+// .even {
+//   background-color: rgba(0,0,0,.26);
+// }
+
+// .even:hover {
+//   background-color: rgba(0,0,0,.4);
+// }
+
+// .odd:hover{
+//   background-color:  rgba(0,0,0,.1);
+// }
+
+td,th{
+  width: 300px;
+  text-align: left;
 }
 
 .current{

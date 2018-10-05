@@ -62,6 +62,7 @@ export class SelectProductsComponent implements OnInit {
   countDate = 0;
   msg="";
   show=false;
+  head=['Title','ID','Badge Applied'];
 
   p: number = 1;
 
