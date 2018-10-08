@@ -225,14 +225,16 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyPrice = true;
 
-      this.show = true;
+      
 
     })
    
@@ -287,14 +289,16 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyDate = true;
 
-      this.show = true;
+     
       
     })
   }
@@ -346,14 +350,16 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyTitle = true;
 
-      this.show = true;
+     
 
     })
   }

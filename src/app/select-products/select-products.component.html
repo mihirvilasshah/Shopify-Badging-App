@@ -78,8 +78,14 @@
         </form>
     </div>
 
+    <span>
+        <h2>{{msg}}</h2>
+    </span>
+
     <div #noShow *ngIf="show">
         <h1 style="margin-top:50px;">List Of Products</h1>
+        <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
+        <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
         <!--<div>
         <input type="checkbox" *ngFor="let title of titles" [value]="title" [id]="title">
         <label for="title" *ngFor="let title of titles">{{title}}</label>
@@ -91,16 +97,13 @@
             <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()" style="margin-left: 10px;">
             <label for="all" style="margin-left: 34px;">Select All</label>
             <br>
-            <span>
-                <h2>{{msg}}</h2>
-            </span>
+            
             <table class="mdl-data-table">
-                <!-- <tr>
-                <th>Title</th>
-                <th>ID</th>
-                <th>Created at</th>
-                <th>Badge</th>
-            </tr> -->
+                <tr>
+                 <th>Title</th>
+                
+                  <th>Badge</th>
+                </tr> 
                 <!-- <div > -->
                 <!-- <thead>
                     <tr>
@@ -109,29 +112,32 @@
                         </th>
                     </tr>
                 </thead> -->
-                <tbody>
-                    <tr class="form-check" *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " [ngClass]="i % 2 == 0? 'even' : 'odd'">
-                        <label class="form-check-label; ">
+                <!-- <label class="form-check-label; "> -->
+                    <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " [ngClass]="i % 2 == 0? 'even' : 'odd'">
+                        
                             <td style="text-align: left">
                                 <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
                             <!-- <td>{{title.pids}}</td> -->
                             <td>{{title.badges}}</td>
-                        </label>
+    
+
+                        
                     </tr>
-                </tbody>
+                <!-- </label> -->
+                
                 <!-- </div> -->
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="width:180px; height:60px; background-color: green">Publish</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" height="60px" width="180px">Publish</button>
+            
+            
 
-            <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
-            <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
+            
 
         </div>
 
-
-        <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
+    <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
     </div>
 

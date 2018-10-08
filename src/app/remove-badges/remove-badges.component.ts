@@ -32,8 +32,6 @@ export class RemoveBadgesComponent implements OnInit {
   dr;
   pr;
   pr1;
-  wb = "false";
-  wob = "false";
 
   selectedEntry;
   titles;
@@ -61,7 +59,8 @@ export class RemoveBadgesComponent implements OnInit {
   countDate = 0;
   msg="";
   show=false;
-
+  wb;
+  wob;
   p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
