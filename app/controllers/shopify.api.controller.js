@@ -23,7 +23,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='';
+var globalShop='tricon-dev-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
