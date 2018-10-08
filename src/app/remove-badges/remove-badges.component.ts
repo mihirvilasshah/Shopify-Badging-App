@@ -27,7 +27,7 @@ export class RemoveBadgesComponent implements OnInit {
   date2: string;
   title1: string;
   counter: number = 0;
-
+  unpublishedNo: number =0;
   tr;
   dr;
   pr;
@@ -483,11 +483,15 @@ export class RemoveBadgesComponent implements OnInit {
 
     let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids });
     obs.subscribe(data => {
-      console.log("here is the response", data);
-
-    })
-    console.log("done");
+      if(data.hasOwnProperty('pid')){
+        console.log("in unpublish");
+        this.unpublishedNo=data['pid'].length;
+        }})
+  
+        console.log("publish", this.unpublishedNo);
   }
+};
+
   
 
   // with(value){
@@ -519,4 +523,4 @@ export class RemoveBadgesComponent implements OnInit {
 
 
 
-}
+

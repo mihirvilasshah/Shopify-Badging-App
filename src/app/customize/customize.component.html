@@ -47,8 +47,8 @@
         
        
 
-         <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" (movingOffset)="onMoving($event)"
-         [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" (edge)="checkEdge($event)" [bounds]="myBounds" [inBounds]="inBounds"  #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="50" width="50" /> 
+         <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" style=`position:relative``top:{{top}}``left:{{left}}` id='badge'
+         [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" [bounds]="myBounds" [inBounds]="inBounds"  #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="50" width="50" /> 
         
 
         

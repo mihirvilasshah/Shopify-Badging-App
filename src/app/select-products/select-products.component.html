@@ -35,7 +35,7 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)" style="width:180px; height:60px; background-color: green">Apply</button>
 
         </form>
     </div>
@@ -72,7 +72,7 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)" style="width:180px;">Apply</button>
             <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
 
         </form>
@@ -123,7 +123,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="width:180px; height:60px; background-color: green">Publish</button>
 
             <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
             <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
@@ -138,6 +138,6 @@
 </div>
 
 <ngx-smart-modal #myModal identifier="myModal">
-    <h1>Published badges</h1>
+    <h1>Published {{publishedNo}} badges</h1>
     <!-- <button (click)="myModal.close()">Close</button> -->
 </ngx-smart-modal>

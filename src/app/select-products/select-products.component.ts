@@ -28,7 +28,7 @@ export class SelectProductsComponent implements OnInit {
   date2: string;
   title1: string;
   counter: number = 0;
-
+  publishedNo: number=0;
   tr;
   dr;
   pr;
@@ -208,7 +208,7 @@ export class SelectProductsComponent implements OnInit {
       this.pids = items[1];
       console.log("badhes:"+ this.badges);
       console.log("pids:"+ this.pids);
-
+      // this.publishedNo=this.pids.length;
 
       this.structuredTitle = [];
       
@@ -494,7 +494,12 @@ export class SelectProductsComponent implements OnInit {
 
     let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
     obs.subscribe(data => {
-      console.log("here is the response", data);
+      if(data.hasOwnProperty('pid')){
+      this.publishedNo=data['pid'].length;
+      };
+
+      console.log("publish", this.publishedNo);
+      // this.publishedNo=data
 
     })
     console.log("done");
