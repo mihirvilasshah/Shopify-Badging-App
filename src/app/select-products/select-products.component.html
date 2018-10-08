@@ -136,8 +136,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" height="60px" width="180px" background-color>Publish</button>
-            
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="height:60px; width:180px; background-color:green">Publish</button>          
             
 
             
@@ -152,5 +151,6 @@
 
 <ngx-smart-modal #myModal identifier="myModal">
     <h1>Successfully published {{selectedids.length}} badges</h1>
-    <!-- <button (click)="myModal.close()">Close</button> -->
+
+    <button (click)="myModal.close()">Okay</button>
 </ngx-smart-modal>

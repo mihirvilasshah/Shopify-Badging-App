@@ -183,7 +183,9 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
     
-
+    this.spinner.show();
+    setTimeout(() => {
+      
     let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -210,22 +212,24 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyPrice = true;
 
-      this.show = true;
+      // this.show = true;
 
     })
    
 
-
+    this.spinner.hide();
+  }, 4000);
 
     // console.log(result);
   }
@@ -246,6 +250,10 @@ export class RemoveBadgesComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
+
+    this.spinner.show();
+    setTimeout(() => {
+
     let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -272,19 +280,22 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyDate = true;
 
-      this.show = true;
+      // this.show = true;
       
     })
+    this.spinner.hide();
+  }, 4000);
   }
 
   applyDateFn() {
@@ -305,6 +316,11 @@ export class RemoveBadgesComponent implements OnInit {
   getTitleProd() {
 
     console.log(this.title1);
+
+    this.spinner.show();
+    setTimeout(() => {
+
+
     let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/withBadges");
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -331,19 +347,22 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
+        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
+        this.show = true;
       }
       // var pids = data[pids];
       this.applyTitle = true;
 
-      this.show = true;
+      // this.show = true;
 
     })
+    this.spinner.hide();
+  }, 4000);
   }
 
   applyTitleFn() {
