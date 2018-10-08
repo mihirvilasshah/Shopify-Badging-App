@@ -33,8 +33,8 @@ export class SelectProductsComponent implements OnInit {
   dr;
   pr;
   pr1;
-  wb = "false";
-  wob = "false";
+  wb = "no";
+  wob = "no";
 
   selectedEntry;
   titles;
@@ -103,39 +103,39 @@ export class SelectProductsComponent implements OnInit {
 
   withbadgeFn(flag){
     if(flag){
-      this.wb= "true";
+      this.wb= "yes";
 
     }
     else{
-      this.wb = "false";
+      this.wb = "no";
     }
     console.log("wb:  "+ this.wb);
-    if(this.wb=="true"&&this.wob=="true"){
+    if(this.wb=="yes"&&this.wob=="yes"){
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
     }
-    if(this.wb=="true"&&this.wob=="false"){
+    if(this.wb=="yes"&&this.wob=="no"){
       this.showTitle = [];
       for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="true"){
+        if(this.structuredTitle[i].badges=="yes"){
           this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
-      
+          console.log(this.showTitle);
         }
       }
 
     }
-    if(this.wb=="false"&&this.wob=="true"){
+    if(this.wb=="no"&&this.wob=="yes"){
       this.showTitle = [];
       for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="false"){
+        if(this.structuredTitle[i].badges=="no"){
           this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
         }
       }
 
     }
-    if(this.wb=="false"&&this.wob=="false"){
+    if(this.wb=="no"&&this.wob=="no"){
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
@@ -146,22 +146,22 @@ export class SelectProductsComponent implements OnInit {
   }
   withoutbadgeFn(flag){
     if(flag){
-      this.wob= "true";
+      this.wob= "yes";
 
     }
     else{
-      this.wob = "false";
+      this.wob = "no";
     }
     console.log("wob:  "+ this.wob);
-    if(this.wb=="true"&&this.wob=="true"){
+    if(this.wb=="yes"&&this.wob=="yes"){
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
     }
-    if(this.wb=="true"&&this.wob=="false"){
+    if(this.wb=="yes"&&this.wob=="no"){
       this.showTitle = [];
       for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="true"){
+        if(this.structuredTitle[i].badges=="yes"){
         
           this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
@@ -169,17 +169,17 @@ export class SelectProductsComponent implements OnInit {
       }
 
     }
-    if(this.wb=="false"&&this.wob=="true"){
+    if(this.wb=="no"&&this.wob=="yes"){
       this.showTitle = [];
       for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="false"){
+        if(this.structuredTitle[i].badges=="no"){
           this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
       
         }
       }
 
     }
-    if(this.wb=="false"&&this.wob=="false"){
+    if(this.wb=="no"&&this.wob=="no"){
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 

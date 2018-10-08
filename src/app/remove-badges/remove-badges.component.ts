@@ -90,95 +90,92 @@ export class RemoveBadgesComponent implements OnInit {
     
   }
 
-  withbadgeFn(flag){
-    if(flag){
-      this.wb= "true";
+  // withbadgeFn(flag){
+  //   if(flag){
+  //     this.wb= "true";
 
-    }
-    else{
-      this.wb = "false";
-    }
-    console.log("wb:  "+ this.wb);
-    if(this.wb=="true"&&this.wob=="true"){
-      this.showTitle = [];
-      this.showTitle = this.structuredTitle;
+  //   }
+  //   else{
+  //     this.wb = "false";
+  //   }
+  //   console.log("wb:  "+ this.wb);
+  //   if(this.wb=="true"&&this.wob=="true"){
+  //     this.showTitle = [];
+  //     this.showTitle = this.structuredTitle;
 
-    }
-    if(this.wb=="true"&&this.wob=="false"){
-      this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="true"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+  //   }
+  //   if(this.wb=="true"&&this.wob=="false"){
+  //     this.showTitle = [];
+  //     for(var i= 0;i<+this.structuredTitle.length;i++){
+  //       if(this.structuredTitle[i].badges=="true"){
+  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
       
-        }
-      }
+  //       }
+  //     }
 
-    }
-    if(this.wb=="false"&&this.wob=="true"){
-      this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="false"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+  //   }
+  //   if(this.wb=="false"&&this.wob=="true"){
+  //     this.showTitle = [];
+  //     for(var i= 0;i<+this.structuredTitle.length;i++){
+  //       if(this.structuredTitle[i].badges=="false"){
+  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
-        }
-      }
+  //       }
+  //     }
 
-    }
-    if(this.wb=="false"&&this.wob=="false"){
-      this.showTitle = [];
-      this.showTitle = this.structuredTitle;
+  //   }
+  //   if(this.wb=="false"&&this.wob=="false"){
+  //     this.showTitle = [];
+  //     this.showTitle = this.structuredTitle;
 
-    }
+  //   }
 
   
    
-  }
-  withoutbadgeFn(flag){
-    if(flag){
-      this.wob= "true";
+  // }
+  // withoutbadgeFn(flag){
+  //   if(flag){
+  //     this.wob= "true";
 
-    }
-    else{
-      this.wob = "false";
-    }
-    console.log("wob:  "+ this.wob);
-    if(this.wb=="true"&&this.wob=="true"){
-      this.showTitle = [];
-      this.showTitle = this.structuredTitle;
+  //   }
+  //   else{
+  //     this.wob = "false";
+  //   }
+  //   console.log("wob:  "+ this.wob);
+  //   if(this.wb=="true"&&this.wob=="true"){
+  //     this.showTitle = [];
+  //     this.showTitle = this.structuredTitle;
 
-    }
-    if(this.wb=="true"&&this.wob=="false"){
-      this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="true"){
+  //   }
+  //   if(this.wb=="true"&&this.wob=="false"){
+  //     this.showTitle = [];
+  //     for(var i= 0;i<+this.structuredTitle.length;i++){
+  //       if(this.structuredTitle[i].badges=="true"){
         
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
-        }
-      }
+  //       }
+  //     }
 
-    }
-    if(this.wb=="false"&&this.wob=="true"){
-      this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="false"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+  //   }
+  //   if(this.wb=="false"&&this.wob=="true"){
+  //     this.showTitle = [];
+  //     for(var i= 0;i<+this.structuredTitle.length;i++){
+  //       if(this.structuredTitle[i].badges=="false"){
+  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
       
-        }
-      }
+  //       }
+  //     }
 
-    }
-    if(this.wb=="false"&&this.wob=="false"){
-      this.showTitle = [];
-      this.showTitle = this.structuredTitle;
+  //   }
+  //   if(this.wb=="false"&&this.wob=="false"){
+  //     this.showTitle = [];
+  //     this.showTitle = this.structuredTitle;
 
-    }
+  //   }
 
+  // }
 
-
-
-
-  }
   getPriceProd() {
 
     console.log(this.price1);
