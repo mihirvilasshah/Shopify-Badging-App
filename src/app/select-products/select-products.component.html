@@ -84,6 +84,8 @@
 
     <div #noShow *ngIf="show">
         <h1 style="margin-top:50px;">List Of Products</h1>
+        <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
+        <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
         <!--<div>
         <input type="checkbox" *ngFor="let title of titles" [value]="title" [id]="title">
         <label for="title" *ngFor="let title of titles">{{title}}</label>
@@ -128,6 +130,8 @@
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()">Publish</button>
+            
+            
 
             
 
