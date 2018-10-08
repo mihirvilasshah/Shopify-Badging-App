@@ -48,7 +48,15 @@ span{
 
 td,th{
   width: 300px;
-  text-align: left;
+}
+
+/deep/ .mdl-data-table th,td{
+  text-align: left !important;
+
+}
+
+/deep/ .mdl-data-table td{
+  padding-left: 37px !important;
 }
 
 .current{
@@ -110,7 +118,9 @@ h1{
 
 h2{
   color: red;
+  margin: 117px;
 }
+
 
 /deep/ .ngx-pagination .current{
   background: rgb(63,81,181) !important;

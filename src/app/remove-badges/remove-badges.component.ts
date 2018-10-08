@@ -32,8 +32,6 @@ export class RemoveBadgesComponent implements OnInit {
   dr;
   pr;
   pr1;
-  wb = "false";
-  wob = "false";
 
   selectedEntry;
   titles;
