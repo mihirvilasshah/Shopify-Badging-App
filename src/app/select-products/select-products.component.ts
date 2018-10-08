@@ -195,6 +195,8 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
     
+    this.spinner.show();
+    setTimeout(() => {
 
     let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
     obs.subscribe(data => {
@@ -225,22 +227,22 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
-        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
-        this.show = true;
       }
       // var pids = data[pids];
       this.applyPrice = true;
 
-      
+      // this.show = true;
 
+      
     })
    
 
 
-
+    this.spinner.hide();
+  }, 4000);
     // console.log(result);
   }
 
@@ -260,6 +262,8 @@ export class SelectProductsComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
+    this.spinner.show();
+    setTimeout(() => {
     let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -289,18 +293,18 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
-        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
-        this.show = true;
       }
       // var pids = data[pids];
       this.applyDate = true;
 
-     
+      // this.show = true;
       
     })
+    this.spinner.hide();
+    }, 1000);
   }
 
   applyDateFn() {
@@ -321,6 +325,8 @@ export class SelectProductsComponent implements OnInit {
   getTitleProd() {
 
     console.log(this.title1);
+    this.spinner.show();
+    setTimeout(() => {
     let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -350,18 +356,19 @@ export class SelectProductsComponent implements OnInit {
     
       if(this.pids.length==0){
         this.msg = "No matches found."
-        this.show = false;
       }
       if(this.pids.length>0){
         this.msg = ""
-        this.show = true;
       }
       // var pids = data[pids];
       this.applyTitle = true;
 
-     
+      // this.show = true;
 
     })
+
+    this.spinner.hide();
+    }, 1000);
   }
 
   applyTitleFn() {
@@ -432,71 +439,13 @@ export class SelectProductsComponent implements OnInit {
       this.selectedAll = false;
   }
 
-  // selectAllProd() {
-
-  //   // if (this.selectedAll) {
-  //   //   this.selectedids = this.pids;
-  //   //   console.log("selectedids if (All):" + this.selectedids);
-
-  //   // }
-  //   // else {
-  //   //   // var len = this.selectedids.length;
-  //   //   // console.log("length: "+len);
-  //   //   // this.selectedids.splice(0, len);
-  //   //   this.selectedids = [];
-  //   //   console.log("selectedids else (Deselect all):" + this.selectedids);
-  //   //   console.log("pid value else(Deselect all): " + this.pids);
-  //   // }
-
-  //   // if(this.oneDeselect){
-
-  //   for (var i = 0; i < this.structuredTitle.length; i++) {
-  //     this.structuredTitle[i].selected = this.selectedAll;
-  //   }
-
-  //   if (this.selectedAll) {
-  //     this.selectedids = [];
-  //     for (var i = 0; i < this.pids.length; i++) {
-  //       this.selectedids.push(this.pids[i]);
-  //     }
-
-  //   } else {
-  //     this.selectedids = [];
-  //   }
-  // // }
-  // }
-
-  // selector(){
-  //   this.counter=0;
-  //   for(var i =0; i<this.structuredTitle.length;i++){
-  //     if(this.structuredTitle[i].selected==true){
-  //       this.counter=this.counter+1;}
-  //   }
-  //   console.log("COUNTER:"+this.counter)
-  //   if(this.counter==this.structuredTitle.length)
-  //   this.selectedAll=true;
-  //   else
-  //   this.selectedAll=false;
-  // }
-
-  // selectAll() {
-  //   for (var i = 0; i < this.titles.length; i++) {
-  //     this.titles[i].selected = this.selectedAll;
-  //     console.log("h");
-  //   }
-  // }
-
   publish() {
     var id = this.selected_image_src.split("picture/");
     console.log(id);
     console.log(this.selectedids);
 
-    // const httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'Content-Type':  'application/json'
-    //     // 'Authorization': 'my-auth-token'
-    //   })
-    // };
+    this.spinner.show();
+    setTimeout(() => {
 
     let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
     obs.subscribe(data => {
@@ -509,35 +458,9 @@ export class SelectProductsComponent implements OnInit {
 
     })
     console.log("done");
-  }
+  
 
-  // with(value){
+  this.spinner.hide();
+    }, 1000);
 
-  //    this.tr = value
-
-  // }
-
-
-  // onSelectionChange(entry) {
-  //   this.selectedEntry = entry;
-  //   console.log(this.selectedEntry);
-  // }
-
-  // getAllSelectedProducts() {
-  //   var selectedProducts = [];
-
-  //   var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
-  //   console.log(selectedCheckboxes);
-  //   var selectedProductscount = selectedCheckboxes.length;
-  //   console.log(selectedProductscount);
-
-  //   for (var i = 0; i < selectedProductscount; i++) {
-  //     console.log(selectedCheckboxes[i]);
-  //     selectedProducts.push(selectedCheckboxes[i]);
-  //     console.log(selectedProducts);
-  //   }
-  // }
-
-
-
-}
+}}

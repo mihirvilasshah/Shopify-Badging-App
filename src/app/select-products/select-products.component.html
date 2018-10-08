@@ -1,6 +1,13 @@
 <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>-->
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+ <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
 <h1>Apply Rule Conditions</h1>
 <div>
     <!--<select name="filter" [(ngModel)]="selectedFilter" placeholder="Position">
@@ -35,7 +42,7 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)" style="width:180px; height:60px; background-color: green">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)" style="width:180px">Apply</button>
 
         </form>
     </div>
@@ -57,7 +64,7 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)" style="width:180px">Apply</button>
 
         </form>
     </div>
@@ -129,7 +136,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" height="60px" width="180px">Publish</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" height="60px" width="180px" background-color>Publish</button>
             
             
 
