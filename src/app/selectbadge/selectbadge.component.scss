@@ -20,8 +20,8 @@ img[_ngcontent-c2] {
 }
 
 #libImageContainer, #UserImageContainer{
-  width: 800px;
-  height: 700px;
+  width: 666px;
+  height: 500px;
   margin-top: 20px;
 }
 
@@ -149,4 +149,13 @@ form{
 .dropzone-list > ul.invalid > li:before {
   content : '-';
   color: #ef000f;
+}
+
+h4{
+  margin: 20px;
+}
+
+
+.btn-s{
+  margin: 20px;
 }

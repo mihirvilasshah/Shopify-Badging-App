@@ -16,8 +16,8 @@
         Position:
       </h4>
   <div class="alert alert-secondary" role="alert" >
-           px from left: {{endOffset.x}}<br>
-           px from top: {{endOffset.y}}
+           Left: {{endOffset.x}} px<br>
+           Top: {{endOffset.y}} px
         </div>
       
         <h4>
@@ -26,7 +26,7 @@
     
       <div class="slidecontainer" >
             <input type="range"  #slider max="100"  class="slider" id="myRange" [(ngModel)]="opvalue" (input) = "slidervalue(slider.value)">
-            
+            <span>Value: {{opvalue}}</span>
           </div>
           <br>
           <br>
@@ -43,7 +43,7 @@
         Preview:
       </h4>
 
-      <div class="drag-boundary" #myBounds style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg'); width: 400px;height: 400px; background-size:cover ">
+      <div class="drag-boundary" #myBounds style="background-image: url('https://images-na.ssl-images-amazon.com/images/I/71G1XO3jZ-L._SL1500_.jpg'); width: 400px;height: 400px; background-size:cover ">
         
        
 

@@ -84,6 +84,7 @@ export class SelectBadgeComponent implements OnInit {
 
 
 
+
   customizeBadge(): void {
     console.log("inside customise badge");
     this.spinner.show();

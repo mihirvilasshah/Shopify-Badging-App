@@ -114,7 +114,7 @@
                         <label class="form-check-label; ">
                             <td style="text-align: left">
                                 <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
-                            <td>{{title.pids}}</td>
+                            <!-- <td>{{title.pids}}</td> -->
                             <td>{{title.badges}}</td>
                         </label>
                     </tr>
@@ -138,6 +138,6 @@
 </div>
 
 <ngx-smart-modal #myModal identifier="myModal">
-    <h1>Published {{publishedNo}} badges</h1>
+    <h1>Successfully published {{selectedids.length}} badges</h1>
     <!-- <button (click)="myModal.close()">Close</button> -->
 </ngx-smart-modal>
