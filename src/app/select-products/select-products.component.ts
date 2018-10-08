@@ -234,7 +234,7 @@ export class SelectProductsComponent implements OnInit {
       // var pids = data[pids];
       this.applyPrice = true;
 
-      this.show = true;
+      
 
     })
    
@@ -298,7 +298,7 @@ export class SelectProductsComponent implements OnInit {
       // var pids = data[pids];
       this.applyDate = true;
 
-      this.show = true;
+     
       
     })
   }
@@ -359,7 +359,7 @@ export class SelectProductsComponent implements OnInit {
       // var pids = data[pids];
       this.applyTitle = true;
 
-      this.show = true;
+     
 
     })
   }
