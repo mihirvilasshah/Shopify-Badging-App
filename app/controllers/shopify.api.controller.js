@@ -276,6 +276,47 @@ exports.auth = (req, res) => {
         res.status(400).send('Required parameters missing');
     }
 };
+var Aid;
+    exports.getSrc = (req, res) => {
+     
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            if (err) throw err;
+    
+            var dbo = db.db("shopifydbclone");
+    
+            console.log("inside getProd");
+            
+            var myquery = { id: parseInt(req.params.pid) };
+           
+            console.log("id: " + req.params.pid);
+            dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+                if (err) throw err;
+                console.log("product Aid " + obj.ABid);
+                Aid = obj.ABid;
+               
+                //res.send(obj.ABid);
+                //console.log("product found: " + Aid);
+                if(Aid){
+                    var myquery1 = { _id: Aid };               
+                
+                    dbo.collection("badge_Product_mapping").findOne(myquery1, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product badge found: " + obj.Bid);
+                        //id = obj.title;
+                       
+                        res.send(obj);
+                    });
+                }              
+            });
+           
+
+            
+            
+        });
+        
+
+
+    };
 
 exports.shopdet = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/shop.json';
