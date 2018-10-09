@@ -34,7 +34,17 @@ module.exports = (app) => {
     app.get('/getProduct/:id', controller.getProduct);
 
     const multer = require('multer')
-    const upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
+    // const upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
+    var storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+          cb(null, '/var/lib/jenkins/workspace/shopify_node/uploads')
+        },
+        filename: function (req, file, cb) {
+          cb(null, file.fieldname + '-' + Date.now())
+        }
+      })
+       
+     var upload = multer({ storage: storage })
 
     // Get picture
     app.get('/picture/:picture', controller.getPicture);
