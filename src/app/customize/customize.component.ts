@@ -49,7 +49,14 @@ export class CustomizeComponent {
     // this.badge.getProduct();
     this.selected_image_src=badge.getBadgePic();
     this.endOffset = badge.getCoor();
+    this.top=this.endOffset.x;
+    this.left=this.endOffset.y;
     this.opvalue=badge.getOpval();
+    // document.getElementById("image12").style.top="200px";
+    // var c = document.getElementById("image12").childNodes.length;
+    // console.log(c);
+    // document.getElementsByName("badge").style.top=this.top;
+    // document.getElementsByName("badge").style.left=this.left;
     // this.badge_css=badge.getBadgeCss();
     // console.log("inside constructor:"+this.selected_image_src);
     // this.route.queryParams.subscribe(params => {
@@ -70,8 +77,10 @@ export class CustomizeComponent {
     console.log('started output:', event);
   }
 
-  onStop(event) {
+  onStop(event,id) {
     console.log('stopped output:', event);
+    console.log("id:"+id);
+    
   }
 
  
@@ -79,7 +88,6 @@ export class CustomizeComponent {
   onMoveEnd(event) {
     this.endOffset.x = event.x;
     this.endOffset.y = event.y;
-
   }
 
 
@@ -88,10 +96,10 @@ export class CustomizeComponent {
   //   console.log("in next func");
   // }
   
-   checkEdge(event) {
-    this.edge = event;
-    console.log('edge:', event);
-  } 
+  //  checkEdge(event) {
+  //   this.edge = event;
+  //   console.log('edge:', event);
+  // } 
   
   
 
@@ -126,13 +134,19 @@ export class CustomizeComponent {
   slidervalue(value){
     this.opvalue = value/100;
 
-document.getElementById("image1").style.opacity = this.opvalue;
+// document.getElementById("image1").style.opacity = this.opvalue;
 
 this.badge.setOpval(this.opvalue);
 console.log("in slidervalue"+this.opvalue);
 console.log("get val"+this.badge.getOpval());
 
 
+  }
+
+  onloadFun(){
+    console.log("onload");
+    document.getElementById("image12").style.top=this.top;
+    document.getElementById("image12").style.left=this.left;
   }
 
 

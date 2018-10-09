@@ -1,6 +1,13 @@
 <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>-->
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+ <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
 <h1>Apply Rule Conditions</h1>
 <div>
     <!--<select name="filter" [(ngModel)]="selectedFilter" placeholder="Position">
@@ -29,42 +36,43 @@
     </div>
 
     <div *ngIf="selectedFilter=='Price'">
-      <form>
-        <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder = "Starting price">
-        <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()"placeholder = "Ending price">
-    
-        <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)">Apply</button>
-        
-      </form>
+        <form>
+            <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder="Starting price">
+            <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()" placeholder="Ending price">
+
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)" style="width:180px">Apply</button>
+
+        </form>
     </div>
     <div *ngIf="selectedFilter=='Date'">
         <form>
-        <label for = "d1">From:
-        <input type="date" id="d1" name="bday" [(ngModel)]="date1"  (input)="applyDateFn()">
-        </label>
-        <label for="d2">To:
-        <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()"></label>
+            <label for="d1">From:
+                <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
+            </label>
+            <label for="d2">To:
+                <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
+            </label>
 
-        <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)">Apply</button>
-        
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)" style="width:180px">Apply</button>
+
         </form>
     </div>
     <div *ngIf="selectedFilter=='Title'">
         <form>
-                <div class="mdl-textfield mdl-js-textfield">
-                        <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title">
-                        <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
-                    </div>
-        
-        <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"type="reset" >Reset</button>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)">Apply</button>
-        <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
-        
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title">
+                <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+            </div>
+
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)" style="width:180px" style="width:180px">Apply</button>
+            <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+
         </form>
     </div>
 
@@ -80,6 +88,7 @@
         <label for="title" *ngFor="let title of titles">{{title}}</label>
         <p>hdghdf</p>
     </div>-->
+<!-- <br> -->
 
 
         <div class="form-group">
@@ -118,13 +127,14 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();unpublish()">Unpublish</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();unpublish()" style="width:180px; height:60px; background:green">Unpublish</button>
 
             
 
         </div>
 
-    <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
+
+        <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
     </div>
 
@@ -132,6 +142,6 @@
 
 <ngx-smart-modal #myModal identifier="myModal">
         <h1>Successfully unpublished {{selectedids.length}} badges</h1>
-        <!-- <button (click)="myModal.close()">Close</button> -->
+        <button (click)="myModal.close()">Okay</button>
 </ngx-smart-modal>
 

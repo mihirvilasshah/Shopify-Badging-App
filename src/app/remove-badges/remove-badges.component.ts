@@ -27,7 +27,7 @@ export class RemoveBadgesComponent implements OnInit {
   date2: string;
   title1: string;
   counter: number = 0;
-
+  unpublishedNo: number =0;
   tr;
   dr;
   pr;
@@ -59,7 +59,8 @@ export class RemoveBadgesComponent implements OnInit {
   countDate = 0;
   msg="";
   show=false;
-
+  wb;
+  wob;
   p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
@@ -88,98 +89,103 @@ export class RemoveBadgesComponent implements OnInit {
     
   }
 
-  // withbadgeFn(flag){
-  //   if(flag){
-  //     this.wb= "true";
+  withbadgeFn(flag){
+    if(flag){
+      this.wb= "true";
 
-  //   }
-  //   else{
-  //     this.wb = "false";
-  //   }
-  //   console.log("wb:  "+ this.wb);
-  //   if(this.wb=="true"&&this.wob=="true"){
-  //     this.showTitle = [];
-  //     this.showTitle = this.structuredTitle;
+    }
+    else{
+      this.wb = "false";
+    }
+    console.log("wb:  "+ this.wb);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
 
-  //   }
-  //   if(this.wb=="true"&&this.wob=="false"){
-  //     this.showTitle = [];
-  //     for(var i= 0;i<+this.structuredTitle.length;i++){
-  //       if(this.structuredTitle[i].badges=="true"){
-  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
       
-  //       }
-  //     }
+        }
+      }
 
-  //   }
-  //   if(this.wb=="false"&&this.wob=="true"){
-  //     this.showTitle = [];
-  //     for(var i= 0;i<+this.structuredTitle.length;i++){
-  //       if(this.structuredTitle[i].badges=="false"){
-  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
-  //       }
-  //     }
+        }
+      }
 
-  //   }
-  //   if(this.wb=="false"&&this.wob=="false"){
-  //     this.showTitle = [];
-  //     this.showTitle = this.structuredTitle;
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
 
-  //   }
+    }
 
   
    
-  // }
-  // withoutbadgeFn(flag){
-  //   if(flag){
-  //     this.wob= "true";
+  }
+  withoutbadgeFn(flag){
+    if(flag){
+      this.wob= "true";
 
-  //   }
-  //   else{
-  //     this.wob = "false";
-  //   }
-  //   console.log("wob:  "+ this.wob);
-  //   if(this.wb=="true"&&this.wob=="true"){
-  //     this.showTitle = [];
-  //     this.showTitle = this.structuredTitle;
+    }
+    else{
+      this.wob = "false";
+    }
+    console.log("wob:  "+ this.wob);
+    if(this.wb=="true"&&this.wob=="true"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
 
-  //   }
-  //   if(this.wb=="true"&&this.wob=="false"){
-  //     this.showTitle = [];
-  //     for(var i= 0;i<+this.structuredTitle.length;i++){
-  //       if(this.structuredTitle[i].badges=="true"){
+    }
+    if(this.wb=="true"&&this.wob=="false"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="true"){
         
-  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
       
-  //       }
-  //     }
+        }
+      }
 
-  //   }
-  //   if(this.wb=="false"&&this.wob=="true"){
-  //     this.showTitle = [];
-  //     for(var i= 0;i<+this.structuredTitle.length;i++){
-  //       if(this.structuredTitle[i].badges=="false"){
-  //         this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+    }
+    if(this.wb=="false"&&this.wob=="true"){
+      this.showTitle = [];
+      for(var i= 0;i<+this.structuredTitle.length;i++){
+        if(this.structuredTitle[i].badges=="false"){
+          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
       
-  //       }
-  //     }
+        }
+      }
 
-  //   }
-  //   if(this.wb=="false"&&this.wob=="false"){
-  //     this.showTitle = [];
-  //     this.showTitle = this.structuredTitle;
+    }
+    if(this.wb=="false"&&this.wob=="false"){
+      this.showTitle = [];
+      this.showTitle = this.structuredTitle;
 
-  //   }
+    }
 
-  // }
 
+
+
+
+  }
   getPriceProd() {
 
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
     
-
+    this.spinner.show();
+    setTimeout(() => {
+      
     let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -206,7 +212,6 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
         this.show = false;
@@ -218,12 +223,13 @@ export class RemoveBadgesComponent implements OnInit {
       // var pids = data[pids];
       this.applyPrice = true;
 
-      
+      // this.show = true;
 
     })
    
 
-
+    this.spinner.hide();
+  }, 4000);
 
     // console.log(result);
   }
@@ -244,6 +250,10 @@ export class RemoveBadgesComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
+
+    this.spinner.show();
+    setTimeout(() => {
+
     let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -270,7 +280,6 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
         this.show = false;
@@ -282,9 +291,11 @@ export class RemoveBadgesComponent implements OnInit {
       // var pids = data[pids];
       this.applyDate = true;
 
-  
+      // this.show = true;
       
     })
+    this.spinner.hide();
+  }, 4000);
   }
 
   applyDateFn() {
@@ -305,6 +316,11 @@ export class RemoveBadgesComponent implements OnInit {
   getTitleProd() {
 
     console.log(this.title1);
+
+    this.spinner.show();
+    setTimeout(() => {
+
+
     let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/withBadges");
     obs.subscribe(data => {
       console.log("here is the response", data);
@@ -331,7 +347,6 @@ export class RemoveBadgesComponent implements OnInit {
       console.log("structuredTitle:", this.structuredTitle);
       
 
-    
       if(this.pids.length==0){
         this.msg = "No matches found."
         this.show = false;
@@ -343,9 +358,11 @@ export class RemoveBadgesComponent implements OnInit {
       // var pids = data[pids];
       this.applyTitle = true;
 
-    
+      // this.show = true;
 
     })
+    this.spinner.hide();
+  }, 4000);
   }
 
   applyTitleFn() {
@@ -484,11 +501,15 @@ export class RemoveBadgesComponent implements OnInit {
 
     let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids });
     obs.subscribe(data => {
-      console.log("here is the response", data);
-
-    })
-    console.log("done");
+      if(data.hasOwnProperty('pid')){
+        console.log("in unpublish");
+        this.unpublishedNo=data['pid'].length;
+        }})
+  
+        console.log("publish", this.unpublishedNo);
   }
+};
+
   
 
   // with(value){
@@ -517,8 +538,7 @@ export class RemoveBadgesComponent implements OnInit {
   //     console.log(selectedProducts);
   //   }
   // }
-  
 
 
 
-}
+
