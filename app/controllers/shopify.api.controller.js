@@ -1106,7 +1106,7 @@ exports.publishBadges = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        var myquery = { Bid: req.body.bid, css: req.body.css };
+        var myquery = { Bid: req.body.bid, x : req.body.xvalue, y: req.body.yvalue, opvalue : req.body.opval  };
 
         // if (flag == 0) {
 
