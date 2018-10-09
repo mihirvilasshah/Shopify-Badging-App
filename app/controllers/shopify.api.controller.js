@@ -23,7 +23,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='';
+var globalShop='tricon-jewel-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -34,10 +34,13 @@ var url = "mongodb://localhost:27017/";
 console.log('Entered Shopify Controller');
 
 exports.install = (req, res) => {
+    console.log("inside install");
     const shop = req.query.shop;
     globalShop = req.query.shop;
     console.log(shop);
     if (shop) {
+        debugger;
+        console.log("shop defined");
         const state = nonce();
         const redirectUri = forwardingAddress + '/shopify/callback';
         const AppUri = forwardingAddress + '/shopify/' + shop;
@@ -127,6 +130,7 @@ exports.App = (req, res) => {
 
 // Auth - HMAC,accessToken,cookie
 exports.auth = (req, res) => {
+    console.log("inside auth");
     const { shop, hmac, code, state } = req.query;
     const stateCookie = cookie.parse(req.headers.cookie).state;
 
