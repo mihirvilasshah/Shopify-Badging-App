@@ -84,6 +84,30 @@
 
         </form>
     </div>
+    <div *ngIf="selectedFilter=='Tag'">
+        <form>
+        <div class="mdl-textfield mdl-js-textfield">
+        <label>Multiselect with custom bindings</label>
+        <ng-select [items]="split"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="true"
+        placeholder="Select Tags"
+        [(ngModel)]="tag"
+        name="tag">
+        </ng-select>
+        <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+        </div>
+        <!-- <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title"> -->
+        <!-- (keyup.enter)="getTitleProd()" -->
+         
+        <br>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)">Apply</button>
+        <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+         
+        </form>
+        </div>
 
     <span>
         <h2>{{msg}}</h2>
