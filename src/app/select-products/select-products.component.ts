@@ -193,12 +193,12 @@ export class SelectProductsComponent implements OnInit {
   getPriceProd() {
 
     console.log(this.price1);
-    // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
+    // var result  =this.http.get("http://172.16.18.189:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
     
     this.spinner.show();
     setTimeout(() => {
 
-    let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
+    let obs = this.http.get("http://172.16.18.189:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
     obs.subscribe(data => {
       console.log("here is the response", data);
       console.log(this.pr);
@@ -268,7 +268,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
+    let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
     obs.subscribe(data => {
       console.log("here is the response", data);
       console.log(this.pr);
@@ -332,7 +332,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-    let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+    let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/all");
     obs.subscribe(data => {
       console.log("here is the response", data);
       console.log(this.pr);
@@ -454,7 +454,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-    let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
+    let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
     obs.subscribe(data => {
       if(data.hasOwnProperty('pid')){
       this.publishedNo=data['pid'].length;
