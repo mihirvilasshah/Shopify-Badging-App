@@ -61,6 +61,7 @@ module.exports = (app) => {
 
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
+    app.get('/getSrc/:pid', controller.getSrc);
 
     app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
