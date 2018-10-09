@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  baseUrl: 'http://172.16.18.189:8080/dist',
+  //baseUrl: 'http://172.16.18.189:8080/dist',
 };
 
 /*
