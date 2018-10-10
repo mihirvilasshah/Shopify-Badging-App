@@ -17,6 +17,7 @@ aren’t available to the outside world. */
     /* Load Script function we may need to load jQuery from the Google's CDN */
     /* That code is world-reknown. */
     /* One source: http://snipplr.com/view/18756/loadscript/ */
+    const forwardingAddress = "https://1a53ddf0.ngrok.io";
     
     var loadScript = function(url, callback){
      
@@ -52,10 +53,11 @@ aren’t available to the outside world. */
       $('body').append('<p>Your app is using jQuery version '+$.fn.jquery+'</p>');
       
       if(window.location.pathname.indexOf('products') > -1){
-       
+        
         var productId = $('#ProductSection-product-template').data('product-id'); 
         $.ajax({
-          url: 'https://0456fb27.ngrok.io/getSrc/' + productId,
+          
+          url: forwardingAddress+'/getSrc/' + productId,
           type: 'GET',
           success: function(data){
             if(data){
@@ -64,7 +66,8 @@ aren’t available to the outside world. */
               var x = data.x;
               var y =  data.y; 
               console.log('in badge image success'+data.Bid);
-               var link = "https://0456fb27.ngrok.io/picture/"+ data.Bid; 
+              
+               var link = forwardingAddress+"/picture/"+ data.Bid; 
                $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
                $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="42" width="42" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
             }           

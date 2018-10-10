@@ -23,7 +23,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='tricon-jewel-store.myshopify.com';
+var globalShop='tricon-dev-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -200,7 +200,7 @@ exports.auth = (req, res) => {
                                     if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
-                                         request.get(forwardingAddress + '/creatscript');
+                                        request.get(forwardingAddress + '/creatscript');
                                         // console.log("Started copying DB");
                                     }
                                 });
