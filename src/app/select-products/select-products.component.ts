@@ -39,6 +39,11 @@ export class SelectProductsComponent implements OnInit {
   selectedEntry;
   titles;
   pids;
+  tags;
+  abid;
+  price;
+  created_At;
+  thumbnail;
   badges;
   selectedids = [];
   selectedAll;
@@ -143,7 +148,7 @@ export class SelectProductsComponent implements OnInit {
 
   
    
-  }
+  } 
   withoutbadgeFn(flag){
     if(flag){
       this.wob= "yes";
@@ -329,33 +334,67 @@ export class SelectProductsComponent implements OnInit {
 
   getTitleProd() {
 
+  
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
     let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
     obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
+      // console.log("here is the response for title products", data);
+      // console.log(this.pr);
 
       var items = Object.values(data);
       console.log("items:", items)
       this.titles = items[0];
       this.badges = items[2];
+
       this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
+      this.tags = items[3];
+      this.created_At =items[4];
+      // this.thumbnail= items[5];
+      // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+
+
+      // console.log("badges:"+ this.badges);
+      // console.log("pids:"+ this.pids);
 
 
       this.structuredTitle = [];
-      
+      var x;
         for (var i= 0;i<+this.titles.length;i++){
+
+          if(this.badges[i]){
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]});
+              obsx.toPromise().then(data1 => {
+
+                this.titles = items[0];
+      this.badges = items[2];
+
+      this.pids = items[1];
+      this.tags = items[3];
+      this.created_At =items[4];
+
+          x=Object.values(data1)[0];
+          // console.log(data1);
+          console.log( "x value:"+x);
+          // console.log(this.titles[i]);
+          this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          console.log("x val:"+x);
+          });
+        // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        //   console.log("x val:"+x);
+        }
+        else{
+           this.structuredTitle.push({ name: this.titles[i], selected: false,badges: null, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        }
         
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
         }
         this.showTitle = this.structuredTitle;
       
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
+      // console.log("titles:", this.titles);
+      // console.log("structuredTitle:", this.structuredTitle);
       
 
     
@@ -396,7 +435,7 @@ export class SelectProductsComponent implements OnInit {
       }
       this.counter = this.showTitle.length;
       var index = this.selectedids.indexOf(value);
-      console.log("value if: " + value);
+      // console.log("value if: " + value);
       this.selectedids = [];
       for (var i = 0; i < this.pids.length; i++) {
         this.selectedids.push(this.pids[i]);
@@ -454,7 +493,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-    let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
+    let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "pid": this.selectedids, "x":this.endOffset.x, "y":this.endOffset.y, "opacity":this.opvalue });
     obs.subscribe(data => {
       if(data.hasOwnProperty('pid')){
       this.publishedNo=data['pid'].length;

@@ -109,7 +109,12 @@
                 <tr>
                  <th>Title</th>
                 
-                  <th>Badge</th>
+                  <th>Badge applied</th>
+
+                  <th> Tags</th>
+                  <th> Created Date </th>
+                  <th> Thumbail</th>
+        
                 </tr> 
                 <!-- <div > -->
                 <!-- <thead>
@@ -120,13 +125,19 @@
                     </tr>
                 </thead> -->
                 <!-- <label class="form-check-label; "> -->
-                    <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index " [ngClass]="i % 2 == 0? 'even' : 'odd'">
+                    <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
                         
                             <td style="text-align: left">
                                 <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
                             <!-- <td>{{title.pids}}</td> -->
-                            <td>{{title.badges}}</td>
-    
+                            <!-- <td > <img height="50px" width="50px" alt="badge applied" src=http://localhost:3000/picture/{{title.badges}}> </td> -->
+
+                            <td><img src={{title.badges}} alt="" border=3 height=50 width=50></td>
+                            <td>{{title.tags}} </td>
+                            <td>{{title.created_at}}</td>
+                            <!-- <td *ngIf="title.thumbnail"> <img height="50px" width="50px" alt="badge applied" src="http://localhost:3000/picture/`{{title.thumbnail}}`"></td> -->
+                            <!-- <td>{{title.thumbnail}}</td> -->
+                            <!-- <td>{{title.badges}}</td> -->
 
                         
                     </tr>
