@@ -87,6 +87,7 @@ export class SelectProductsComponent implements OnInit {
   endOffset;
   tagArray;
   split = [];
+  currency;
 
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient, public ngxSmartModalService: NgxSmartModalService) {
