@@ -29,22 +29,25 @@ module.exports = (app) => {
 
     // Create product in our DB when triggered by webhook
     app.post('/createProduct/:shopname', controller.createProduct);
+     app.get('/creatscript', controller.creatscript);
+
 
     //Read product in our DB
     app.get('/getProduct/:id', controller.getProduct);
 
     const multer = require('multer')
     // const upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
+
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-          cb(null, '/var/lib/jenkins/workspace/shopify_node/uploads')
+          cb(null, '/mih')
         },
         filename: function (req, file, cb) {
           cb(null, file.fieldname + '-' + Date.now())
         }
       })
        
-     var upload = multer({ storage: storage })
+      var upload = multer({ storage: storage })
 
     // Get picture
     app.get('/picture/:picture', controller.getPicture);
@@ -60,12 +63,14 @@ module.exports = (app) => {
 
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
+    app.get('/getSrc/:pid', controller.getSrc);
 
     app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
     app.get('/getProductDateRange/:d1/:d2/:dr', controller.getProductDateRange);
 
     app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
+    app.get('/getProductTag/:tg1/:tr', controller.getProductTag);
     app.post('/publishBadges', controller.publishBadges);
     app.post('/unpublishBadges', controller.unpublishBadges);
 
@@ -73,5 +78,6 @@ module.exports = (app) => {
     app.post('/api/upload', upload.single('photo'), controller.upload);
     // app.get('/api', controller.api )
     app.post('/deleteUserBadge/',controller.deleteBadge);
+    app.get('/tags', controller.tags);
 
 }
