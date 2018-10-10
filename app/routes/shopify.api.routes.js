@@ -67,6 +67,7 @@ module.exports = (app) => {
     app.get('/getProductDateRange/:d1/:d2/:dr', controller.getProductDateRange);
 
     app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
+    app.get('/getProductTag/:tg1/:tr', controller.getProductTag);
     app.post('/publishBadges', controller.publishBadges);
     app.post('/unpublishBadges', controller.unpublishBadges);
 
@@ -74,5 +75,6 @@ module.exports = (app) => {
     app.post('/api/upload', upload.single('photo'), controller.upload);
     // app.get('/api', controller.api )
     app.post('/deleteUserBadge/',controller.deleteBadge);
+    app.get('/tags', controller.tags);
 
 }
