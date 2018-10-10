@@ -333,3 +333,211 @@ exports.getProductTitle = (req, res) => {
           console.log(this.titles[i]);
         this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
           });
+
+
+
+
+          let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+    obs.subscribe(data => {
+      // console.log("here is the response for title products", data);
+      // console.log(this.pr);
+
+      var items = Object.values(data);
+      console.log("items:", items)
+      this.titles = items[0];
+      this.badges = items[2];
+
+      this.pids = items[1];
+      this.tags = items[3];
+      this.created_At =items[4];
+      // this.thumbnail= items[5];
+      // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+
+
+      // console.log("badges:"+ this.badges);
+      // console.log("pids:"+ this.pids);
+
+
+      this.structuredTitle = [];
+      var x;
+        for (var i= 0;i<+this.titles.length;i++){
+
+          if(this.badges[i]){
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]});
+              obsx.toPromise().then(data1 => {
+
+                this.titles = items[0];
+      this.badges = items[2];
+
+      this.pids = items[1];
+      this.tags = items[3];
+      this.created_At =items[4];
+
+          x=Object.values(data1)[0];
+          // console.log(data1);
+          console.log( "x value:"+x);
+          // console.log(this.titles[i]);
+          this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          console.log("x val:"+x);
+          });
+        // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        //   console.log("x val:"+x);
+        }
+        else{
+           this.structuredTitle.push({ name: this.titles[i], selected: false,badges: null, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        }
+        
+
+        }
+        this.showTitle = this.structuredTitle;
+      
+      // console.log("titles:", this.titles);
+      // console.log("structuredTitle:", this.structuredTitle);
+      
+
+    
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+        this.show = false;
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+        this.show = true;
+      }
+      // var pids = data[pids];
+      this.applyTitle = true;
+
+
+      getTitleProd() {
+
+
+    console.log(this.title1);
+    this.spinner.show();
+    setTimeout(() => {
+      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+      obs.subscribe(data => {
+        // console.log("here is the response for title products", data);
+        // console.log(this.pr);
+
+        var items = Object.values(data);
+
+        var self = this;        
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
+
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        // this.thumbnail= items[5];
+        // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+
+
+        // console.log("badges:"+ this.badges);
+        // console.log("pids:"+ this.pids);
+
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+          var isbadge=false;
+         
+
+
+          // if (this.badges[i]) {
+            
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            // let obsx = this.http.post("http://localhost:3000/thumbnail/", { "abid": this.badges[0] });
+            // obsx.subscribe(data1 => {
+             isbadge=true;
+              // console.log("titles1:" + this.titles);
+              // this.titles = items[0];
+              // this.badges = items[2];
+
+              // this.pids = items[1];
+              // this.tags = items[3];
+              // this.created_At = items[4];
+              // console.log("titles2:" + this.titles);
+              // var y = this.titles;
+              // var z = this.pids;
+              // var zz = this.tags;
+              // var x = Object.values(data1)[0];
+              // console.log(data1);
+              // console.log("x value:" + x);
+              // console.log("self"+self["items"][2][i]);
+              // // console.log(this.titles[i]);
+              // if(self["items"][2][i]){
+              //   console.log('***********value is : '+ self["items"][0][i]);
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+              // }
+              // else{
+              //   var a1 = {
+              //     name:items[0][i], selected: false, badges: null, pids: items[1][i], tags: items[3][i], created_at: items[4][i]
+              //   }
+              //   this.structuredTitle.push(a1);
+              // }
+              
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
+
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle)
+              
+            // });
+            // debugger;
+
+            // console.log("x val: " + x);
+            // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+            //   console.log("x val:"+x);
+          // }
+
+          // if(this.badges[i]){
+          //   // let promise=  
+
+          //   this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]}).subscribe(
+          //     suc => {
+          //         console.log(suc);
+          //     },
+          //     err => {
+          //         console.log(err );
+          //     }
+          // );
+          // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          // }
+          // else {
+          //   this.structuredTitle.push({ name: this.titles[i], selected: false, badges: null, pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i] });
+          // }
+
+
+        }
+       
+
+        // console.log("titles:", this.titles);
+        // console.log("structuredTitle:", this.structuredTitle);
+
+
+
+       
+
+      })
+
+      this.spinner.hide();
+    }, 1000);
+  }
