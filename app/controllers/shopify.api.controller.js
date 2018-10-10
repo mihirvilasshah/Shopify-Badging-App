@@ -23,12 +23,12 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='tricon-jewel-store.myshopify.com';
+var globalShop='tricon-dev-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
-var url = "mongodb://172.16.18.189:27017/";
+var url = "mongodb://localhost:27017/";
 
 
 console.log('Entered Shopify Controller');
@@ -200,7 +200,7 @@ exports.auth = (req, res) => {
                                     if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
-                                         request.get(forwardingAddress + '/creatscript');
+                                        request.get(forwardingAddress + '/creatscript');
                                         // console.log("Started copying DB");
                                     }
                                 });
