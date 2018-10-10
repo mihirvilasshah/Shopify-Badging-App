@@ -179,6 +179,7 @@ exports.auth = (req, res) => {
                 globalToken = accessTokenResponse.access_token;
                 globalShop = shop;
                 console.log("Shop: " + shop);
+                console.log("Token: " + globalToken);
 
                 // Use access token to make API call to 'shop' endpoint
                 const shopRequestUrl = 'https://' + shop + '/admin/products.json';
