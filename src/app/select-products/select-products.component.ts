@@ -118,10 +118,10 @@ export class SelectProductsComponent implements OnInit {
         temp = this.tagArray[i].split(',');
         console.log(temp);
         for (var j = 0; j < temp.length; j++) {
-          if(temp[j]!="")
-          this.split.push(temp[j]);
+          if (temp[j] != "")
+            this.split.push(temp[j]);
 
-        } 
+        }
         temp = [];
       }
       console.log(this.split);
@@ -551,14 +551,13 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "css": this.badgeCss, "pid": this.selectedids });
+      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "pid": this.selectedids });
+
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
           this.publishedNo = data['pid'].length;
+          console.log("publish", this.publishedNo);
         };
-
-        console.log("publish", this.publishedNo);
-        // this.publishedNo=data
 
       })
       console.log("done");
