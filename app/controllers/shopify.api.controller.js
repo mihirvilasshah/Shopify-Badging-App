@@ -28,7 +28,7 @@ var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://172.16.18.189:27017/";
 
 
 console.log('Entered Shopify Controller');
