@@ -51,13 +51,7 @@ export class SelectProductsComponent implements OnInit {
   selectedids = [];
   selectedAll;
   prodData;
-  cities2 = [
-    { id: 1, name: 'Vilnius' },
-    { id: 2, name: 'Kaunas' },
-    { id: 3, name: 'Pavilnys', disabled: true },
-    { id: 4, name: 'Pabradė' },
-    { id: 5, name: 'Klaipėda' }
-  ];
+ 
   selectedProducts = [];
 
   selected_image_src = "";
@@ -109,11 +103,11 @@ export class SelectProductsComponent implements OnInit {
     console.log("select products badge name" + this.selected_image_src);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
-    // let cur = this.http.get("http://localhost:3000/shopdet")
-    // cur.subscribe(data => {
-    //   console.log("here is the response", data);
-    //   var currency = data;
-    // });
+   let cur = this.http.get("http://localhost:3000/currency")
+    cur.subscribe(dat => {
+      console.log("here is the response", dat);
+      this.currency = dat[0].currency;
+    });
     let tag = this.http.get("http://localhost:3000/tags")
     tag.subscribe(data => {
       console.log("here is the response", data);
@@ -130,6 +124,11 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
+       let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
+      x(this.split);
+      this.split= x(this.split);
+      console.log(this.split);
+      console.log( x(this.split));
       console.log(this.split);
     });
 
@@ -138,7 +137,7 @@ export class SelectProductsComponent implements OnInit {
     // });
 
   }
-
+   
   ngOnInit() {
 
   }

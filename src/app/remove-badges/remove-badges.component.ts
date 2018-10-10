@@ -32,6 +32,7 @@ export class RemoveBadgesComponent implements OnInit {
   dr;
   pr;
   pr1;
+  tag;
 
   selectedEntry;
   titles;
@@ -53,6 +54,8 @@ export class RemoveBadgesComponent implements OnInit {
 
   applyTitle = false;
   countTitle = 0;
+  applyTag = false;
+  countTag = 0;
   applyPrice = false;
   countPrice = 0;
   applyDate = false;
@@ -61,6 +64,9 @@ export class RemoveBadgesComponent implements OnInit {
   show=false;
   wb;
   wob;
+  currency ;
+  tagArray;
+  split = [];
   p: number = 1;
 
   filterControl = new FormControl('', [Validators.required]);
@@ -68,6 +74,7 @@ export class RemoveBadgesComponent implements OnInit {
     { name: 'Price' },
     { name: 'Date' },
     { name: 'Title' },
+    { name: 'Tag' },
   ];
 
 
@@ -81,6 +88,37 @@ export class RemoveBadgesComponent implements OnInit {
 
       console.log(this.selected_image_src);
       console.log(this.badgeCss);
+      let cur = this.http.get("http://localhost:3000/currency")
+    cur.subscribe(dat => {
+      console.log("here is the response", dat);
+      this.currency = dat[0].currency;
+    });
+    let tag = this.http.get("http://localhost:3000/tags")
+    tag.subscribe(data => {
+      console.log("here is the response", data);
+      this.tagArray = data;
+      console.log(this.tagArray);
+      var temp = [];
+      for (var i = 0; i < this.tagArray.length; i++) {
+        temp = this.tagArray[i].split(',');
+        console.log(temp);
+        for (var j = 0; j < temp.length; j++) {
+          if (temp[j] != "")
+            this.split.push(temp[j]);
+
+        }
+        temp = [];
+      }
+      let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
+      x(this.split);
+      this.split= x(this.split);
+      console.log(this.split);
+      console.log( x(this.split));
+      
+    });
+
+      
+      
     });
 
   }
@@ -372,6 +410,67 @@ export class RemoveBadgesComponent implements OnInit {
     }
     this.countTitle = 1;
     console.log("count: "+this.countTitle);
+
+  }
+  
+  getTagProd() {
+
+    console.log(this.title1);
+    this.spinner.show();
+    setTimeout(() => {
+      let obs = this.http.get("http://localhost:3000/getProductTag/" + this.tag + "/withBadges");
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
+
+        var items = Object.values(data);
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
+        this.pids = items[1];
+        console.log("badhes:" + this.badges);
+        console.log("pids:" + this.pids);
+
+
+        this.structuredTitle = [];
+
+        for (var i = 0; i < +this.titles.length; i++) {
+
+          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+        }
+        this.showTitle = this.structuredTitle;
+
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
+
+
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTag = true;
+
+        // this.show = true;
+
+      })
+
+      this.spinner.hide();
+    }, 1000);
+  }
+
+  applyTagFn() {
+
+    if (this.countTag == 1) {
+      this.applyTag = false;  //!(this.applyTitle);
+    }
+    this.countTag = 1;
+    console.log("count: " + this.countTag);
 
   }
 
