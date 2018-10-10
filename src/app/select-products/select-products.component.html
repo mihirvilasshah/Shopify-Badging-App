@@ -91,10 +91,12 @@
         <ng-select [items]="split"
         bindLabel="name"
         bindValue="id"
-        [multiple]="true"
+        [multiple]="false"
         placeholder="Select Tags"
         [(ngModel)]="tag"
-        name="tag">
+        name="tag"
+        id="tg1"
+        (click)="applyTagFn()">
         </ng-select>
         <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
         </div>
@@ -114,7 +116,7 @@
     </span>
 
     <div #noShow *ngIf="show">
-        <h1 style="margin-top:50px;">List Of Products</h1>
+        <h1 style="margin-top:-51px;">List Of Products</h1>
         <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
         <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
         <!--<div>
@@ -160,7 +162,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="height:60px; width:180px; background-color:green">Publish</button>          
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="height:60px; width:180px; background-color:green">PUBLISH</button>          
             
 
             
@@ -174,7 +176,7 @@
 </div>
 
 <ngx-smart-modal #myModal identifier="myModal">
-    <h1>Successfully published {{selectedids.length}} badges</h1>
+    <h3>Successfully published {{selectedids.length}} badge(s)</h3>
 
-    <button (click)="myModal.close()">Okay</button>
+    <button (click)="myModal.close()" style="text-align: center;height: 40px;width: 94px;position: relative;left: 31%;">Ok</button>
 </ngx-smart-modal>

@@ -429,7 +429,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/tags/" + this.tag + "/all");
+      let obs = this.http.get("http://localhost:3000/getProductTag/" + this.tag + "/all");
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -477,7 +477,7 @@ export class SelectProductsComponent implements OnInit {
 
   applyTagFn() {
 
-    if (this.countTitle == 1) {
+    if (this.countTag == 1) {
       this.applyTag = false;  //!(this.applyTitle);
     }
     this.countTag = 1;
