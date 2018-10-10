@@ -367,7 +367,7 @@ exports.creatscript = (req, res) => {
     };
 
     const Scriptheaders = {
-        'X-Shopify-Access-Token': process.env.TOKEN,
+        'X-Shopify-Access-Token': globalToken,
         // 'X-Shopify-Topic': "products/create",
         // 'X-Shopify-Shop-Domain': globalShop,
         'Content-Type': "application/json"
@@ -397,7 +397,7 @@ exports.createWebhooks = (req, res) => {
     };
 
     const webhookheaders = {
-        'X-Shopify-Access-Token': process.env.TOKEN,
+        'X-Shopify-Access-Token': globalToken,
         // 'X-Shopify-Topic': "products/create",
         // 'X-Shopify-Shop-Domain': globalShop,
         'Content-Type': "application/json"
