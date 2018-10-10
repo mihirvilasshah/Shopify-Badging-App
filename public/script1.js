@@ -55,20 +55,23 @@ aren’t available to the outside world. */
        
         var productId = $('#ProductSection-product-template').data('product-id'); 
         $.ajax({
-          url: 'https://5b8001f0.ngrok.io/getSrc/' + productId,
+          url: 'https://0456fb27.ngrok.io/getSrc/' + productId,
           type: 'GET',
           success: function(data){
             if(data){
               console.log('in badge image success'+data.x);
               console.log('in badge image success'+data.y);
+              var x = data.x;
+              var y =  data.y; 
               console.log('in badge image success'+data.Bid);
-               var link = "https://5b8001f0.ngrok.io/picture/"+ data.Bid; 
+               var link = "https://0456fb27.ngrok.io/picture/"+ data.Bid; 
                $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
-               $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="42" width="42" style="position:absolute; top : 0" >');             
+               $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="42" width="42" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
             }           
           }
           
         })
+        
         
         
         
