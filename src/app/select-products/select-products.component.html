@@ -84,13 +84,39 @@
 
         </form>
     </div>
+    <div *ngIf="selectedFilter=='Tag'">
+        <form>
+        <div class="mdl-textfield mdl-js-textfield">
+        <label>Multiselect with custom bindings</label>
+        <ng-select [items]="split"
+        bindLabel="name"
+        bindValue="id"
+        [multiple]="false"
+        placeholder="Select Tags"
+        [(ngModel)]="tag"
+        name="tag"
+        id="tg1"
+        (click)="applyTagFn()">
+        </ng-select>
+        <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+        </div>
+        <!-- <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title"> -->
+        <!-- (keyup.enter)="getTitleProd()" -->
+         
+        <br>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)">Apply</button>
+        <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+         
+        </form>
+        </div>
 
     <span>
         <h2>{{msg}}</h2>
     </span>
 
     <div #noShow *ngIf="show">
-        <h1 style="margin-top:50px;">List Of Products</h1>
+        <h1 style="margin-top:-51px;">List Of Products</h1>
         <input type="checkbox" name="pricechecked1" #wbadge [(ngModel)]="pr1" (click)="withbadgeFn($event.target.checked)" value="withBadges"> With Badges
         <input type="checkbox" name="pricechecked2" #wobadge [(ngModel)]="pr2" (click)="withoutbadgeFn($event.target.checked)" value="withoutBadges"> Without Badges
         <!--<div>
@@ -109,11 +135,12 @@
                 <tr>
                  <th>Title</th>
                 
-                  <th>Badge applied</th>
+                 
 
                   <th> Tags</th>
                   <th> Created Date </th>
-                  <th> Thumbail</th>
+                  <th>Badge applied</th>
+                  <!-- <th> Thumbail</th> -->
         
                 </tr> 
                 <!-- <div > -->
@@ -132,9 +159,10 @@
                             <!-- <td>{{title.pids}}</td> -->
                             <!-- <td > <img height="50px" width="50px" alt="badge applied" src=http://localhost:3000/picture/{{title.badges}}> </td> -->
 
-                            <td><img src={{title.badges}} alt="" border=3 height=50 width=50></td>
+                            <!-- <td><img src={{title.badges}} alt="" border=3 height=50 width=50></td> -->
                             <td>{{title.tags}} </td>
                             <td>{{title.created_at}}</td>
+                            <td>{{title.isApplied}}</td>
                             <!-- <td *ngIf="title.thumbnail"> <img height="50px" width="50px" alt="badge applied" src="http://localhost:3000/picture/`{{title.thumbnail}}`"></td> -->
                             <!-- <td>{{title.thumbnail}}</td> -->
                             <!-- <td>{{title.badges}}</td> -->
@@ -147,7 +175,7 @@
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="height:60px; width:180px; background-color:green">Publish</button>          
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();publish()" style="height:60px; width:180px; background-color:green">PUBLISH</button>          
             
 
             
@@ -161,7 +189,7 @@
 </div>
 
 <ngx-smart-modal #myModal identifier="myModal">
-    <h1>Successfully published {{selectedids.length}} badges</h1>
+    <h3>Successfully published {{selectedids.length}} badge(s)</h3>
 
-    <button (click)="myModal.close()">Okay</button>
+    <button (click)="myModal.close()" style="text-align: center;height: 40px;width: 94px;position: relative;left: 31%;">Ok</button>
 </ngx-smart-modal>

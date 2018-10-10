@@ -5,6 +5,7 @@ import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
@@ -28,17 +29,19 @@ export class SelectProductsComponent implements OnInit {
   date2: string;
   title1: string;
   counter: number = 0;
-  publishedNo: number=0;
+  publishedNo: number = 0;
   tr;
   dr;
   pr;
   pr1;
   wb = "no";
   wob = "no";
+  tag;
 
   selectedEntry;
   titles;
   pids;
+  isApplied
   tags;
   abid;
   price;
@@ -48,7 +51,13 @@ export class SelectProductsComponent implements OnInit {
   selectedids = [];
   selectedAll;
   prodData;
-
+  cities2 = [
+    { id: 1, name: 'Vilnius' },
+    { id: 2, name: 'Kaunas' },
+    { id: 3, name: 'Pavilnys', disabled: true },
+    { id: 4, name: 'Pabradė' },
+    { id: 5, name: 'Klaipėda' }
+  ];
   selectedProducts = [];
 
   selected_image_src = "";
@@ -61,13 +70,15 @@ export class SelectProductsComponent implements OnInit {
 
   applyTitle = false;
   countTitle = 0;
+  applyTag = false;
+  countTag = 0;
   applyPrice = false;
   countPrice = 0;
   applyDate = false;
   countDate = 0;
-  msg="";
-  show=false;
-  head=['Title','ID','Badge Applied'];
+  msg = "";
+  show = false;
+  head = ['Title', 'ID', 'Badge Applied'];
 
   p: number = 1;
 
@@ -76,12 +87,15 @@ export class SelectProductsComponent implements OnInit {
     { name: 'Price' },
     { name: 'Date' },
     { name: 'Title' },
+    { name: 'Tag' },
   ];
   opvalue;
   endOffset;
+  tagArray;
+  split = [];
 
 
-  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient,public ngxSmartModalService: NgxSmartModalService) {
+  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient, public ngxSmartModalService: NgxSmartModalService) {
     // this.badge.getProduct();
     // this.route.queryParams.subscribe(params => {
     //   if (params["picName"])
@@ -89,102 +103,125 @@ export class SelectProductsComponent implements OnInit {
     //   if (params["badgeCss"])
     //     this.badgeCss = params["badgeCss"];
     this.endOffset = badge.getCoor();
-    this.opvalue=badge.getOpval();
-    this.selected_image_src=badge.getBadgePic();
+    this.opvalue = badge.getOpval();
+    this.selected_image_src = badge.getBadgePic();
     // this.badgeCss=badge.getBadgeCss();
-    console.log("select products badge name"+ this.selected_image_src);
-    console.log("select products x "+this.endOffset.x+" and y value "+this.endOffset.y);
-    console.log("select products opval"+this.opvalue);
-  
+    console.log("select products badge name" + this.selected_image_src);
+    console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
+    console.log("select products opval" + this.opvalue);
+    // let cur = this.http.get("http://localhost:3000/shopdet")
+    // cur.subscribe(data => {
+    //   console.log("here is the response", data);
+    //   var currency = data;
+    // });
+    let tag = this.http.get("http://localhost:3000/tags")
+    tag.subscribe(data => {
+      console.log("here is the response", data);
+      this.tagArray = data;
+      console.log(this.tagArray);
+      var temp = [];
+      for (var i = 0; i < this.tagArray.length; i++) {
+        temp = this.tagArray[i].split(',');
+        console.log(temp);
+        for (var j = 0; j < temp.length; j++) {
+          if (temp[j] != "")
+            this.split.push(temp[j]);
+
+        }
+        temp = [];
+      }
+      console.log(this.split);
+    });
+
     // console.log("select products badge css"+ this.badgeCss);
-      
+
     // });
 
   }
 
   ngOnInit() {
-    
+
   }
 
-  withbadgeFn(flag){
-    if(flag){
-      this.wb= "yes";
+  withbadgeFn(flag) {
+    if (flag) {
+      this.wb = "yes";
 
     }
-    else{
+    else {
       this.wb = "no";
     }
-    console.log("wb:  "+ this.wb);
-    if(this.wb=="yes"&&this.wob=="yes"){
+    console.log("wb:  " + this.wb);
+    if (this.wb == "yes" && this.wob == "yes") {
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
     }
-    if(this.wb=="yes"&&this.wob=="no"){
+    if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="yes"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
+      for (var i = 0; i < +this.structuredTitle.length; i++) {
+        if (this.structuredTitle[i].badges == "yes") {
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
           console.log(this.showTitle);
         }
       }
 
     }
-    if(this.wb=="no"&&this.wob=="yes"){
+    if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="no"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
-      
+      for (var i = 0; i < +this.structuredTitle.length; i++) {
+        if (this.structuredTitle[i].badges == "no") {
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+
         }
       }
 
     }
-    if(this.wb=="no"&&this.wob=="no"){
+    if (this.wb == "no" && this.wob == "no") {
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
     }
 
-  
-   
-  } 
-  withoutbadgeFn(flag){
-    if(flag){
-      this.wob= "yes";
+
+
+  }
+  withoutbadgeFn(flag) {
+    if (flag) {
+      this.wob = "yes";
 
     }
-    else{
+    else {
       this.wob = "no";
     }
-    console.log("wob:  "+ this.wob);
-    if(this.wb=="yes"&&this.wob=="yes"){
+    console.log("wob:  " + this.wob);
+    if (this.wb == "yes" && this.wob == "yes") {
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
     }
-    if(this.wb=="yes"&&this.wob=="no"){
+    if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="yes"){
-        
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i] ,pids: this.pids[i]  });
-      
+      for (var i = 0; i < +this.structuredTitle.length; i++) {
+        if (this.structuredTitle[i].badges == "yes") {
+
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+
         }
       }
 
     }
-    if(this.wb=="no"&&this.wob=="yes"){
+    if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
-      for(var i= 0;i<+this.structuredTitle.length;i++){
-        if(this.structuredTitle[i].badges=="no"){
-          this.showTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i],pids: this.pids[i]   });
-      
+      for (var i = 0; i < +this.structuredTitle.length; i++) {
+        if (this.structuredTitle[i].badges == "no") {
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+
         }
       }
 
     }
-    if(this.wb=="no"&&this.wob=="no"){
+    if (this.wb == "no" && this.wob == "no") {
       this.showTitle = [];
       this.showTitle = this.structuredTitle;
 
@@ -199,71 +236,68 @@ export class SelectProductsComponent implements OnInit {
 
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
-    
+
     this.spinner.show();
     setTimeout(() => {
 
-    let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
-    obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
+      let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
 
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
-      this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
-      // this.publishedNo=this.pids.length;
+        var items = Object.values(data);
+        console.log("items:", items)
+        console.log("items:", items)
+        // this.titles = items[0];
+        // this.badges = items[2];
 
-      this.structuredTitle = [];
+        // this.pids = items[1];
+        // this.tags = items[3];
+        // this.created_At = items[4];
+        // this.isApplied=items[5];
       
-        for (var i= 0;i<+this.titles.length;i++){
-        
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+            
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
         }
-        this.showTitle = this.structuredTitle;
-      
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
-      
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+        }
+      })
 
-       
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
-      }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
- 
-      // var pids = data[pids];
-      this.applyPrice = true;
-
-      // this.show = true;
-
-      
-    })
-   
-
-
-    this.spinner.hide();
-  }, 4000);
-    // console.log(result);
+      this.spinner.hide();
+    }, 4000);
   }
 
   applyPriceFn() {
-    
+
     if (this.countPrice == 1) {
       this.applyPrice = false;  //!(this.applyPrice);
     }
     this.countPrice = 1;
-    console.log("count: "+this.countPrice);
+    console.log("count: " + this.countPrice);
 
-    if(this.price1 == 0){
+    if (this.price1 == 0) {
       this.price1 = 0.01;
     }
   }
@@ -273,57 +307,62 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
-    obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
+      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
 
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
-      this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
+        var items = Object.values(data);
+        console.log("items:", items)
+        console.log("items:", items)
+        // this.titles = items[0];
+        // this.badges = items[2];
 
-
-      this.structuredTitle = [];
+        // this.pids = items[1];
+        // this.tags = items[3];
+        // this.created_At = items[4];
+        // this.isApplied=items[5];
       
-        for (var i= 0;i<+this.titles.length;i++){
-        
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+            
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
         }
-        this.showTitle = this.structuredTitle;
-      
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
-      
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
-      }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
-      // var pids = data[pids];
-      this.applyDate = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+        }
+      })
 
-      // this.show = true;
-      
-    })
-    this.spinner.hide();
+      this.spinner.hide();
     }, 1000);
   }
 
   applyDateFn() {
-    
+
     if (this.countDate == 1) {
       this.applyDate = false;  //!(this.applyDate);
     }
     this.countDate = 1;
-    console.log("count: "+this.countDate);
+    console.log("count: " + this.countDate);
 
   }
 
@@ -334,96 +373,126 @@ export class SelectProductsComponent implements OnInit {
 
   getTitleProd() {
 
-  
+
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-    let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
-    obs.subscribe(data => {
-      // console.log("here is the response for title products", data);
-      // console.log(this.pr);
+      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+      obs.subscribe(data => {
 
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
+        var items = Object.values(data);
 
-      this.pids = items[1];
-      this.tags = items[3];
-      this.created_At =items[4];
-      // this.thumbnail= items[5];
-      // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+        var self = this;        
+        console.log("items:", items)
+        // this.titles = items[0];
+        // this.badges = items[2];
 
-
-      // console.log("badges:"+ this.badges);
-      // console.log("pids:"+ this.pids);
-
-
-      this.structuredTitle = [];
-      var x;
-        for (var i= 0;i<+this.titles.length;i++){
-
-          if(this.badges[i]){
-            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
-            let obsx = this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]});
-              obsx.toPromise().then(data1 => {
-
-                this.titles = items[0];
-      this.badges = items[2];
-
-      this.pids = items[1];
-      this.tags = items[3];
-      this.created_At =items[4];
-
-          x=Object.values(data1)[0];
-          // console.log(data1);
-          console.log( "x value:"+x);
-          // console.log(this.titles[i]);
-          this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
-          console.log("x val:"+x);
-          });
-        // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
-        //   console.log("x val:"+x);
-        }
-        else{
-           this.structuredTitle.push({ name: this.titles[i], selected: false,badges: null, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
-        }
-        
-
-        }
-        this.showTitle = this.structuredTitle;
-      
-      // console.log("titles:", this.titles);
-      // console.log("structuredTitle:", this.structuredTitle);
+        // this.pids = items[1];
+        // this.tags = items[3];
+        // this.created_At = items[4];
+        // this.isApplied=items[5];
       
 
-    
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
-      }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
-      // var pids = data[pids];
-      this.applyTitle = true;
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
 
-      // this.show = true;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+            
+              this.showTitle = this.structuredTitle;
 
-    })
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-    this.spinner.hide();
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+        }
+      })
+
+      this.spinner.hide();
     }, 1000);
   }
 
   applyTitleFn() {
-    
+
     if (this.countTitle == 1) {
       this.applyTitle = false;  //!(this.applyTitle);
     }
     this.countTitle = 1;
-    console.log("count: "+this.countTitle);
+    console.log("count: " + this.countTitle);
+
+  }
+
+  getTagProd() {
+
+    console.log(this.title1);
+    this.spinner.show();
+    setTimeout(() => {
+      let obs = this.http.get("http://localhost:3000/getProductTag/" + this.tag + "/all");
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
+
+        var items = Object.values(data);
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
+        this.pids = items[1];
+        console.log("badhes:" + this.badges);
+        console.log("pids:" + this.pids);
+
+
+        this.structuredTitle = [];
+
+        for (var i = 0; i < +this.titles.length; i++) {
+
+          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+        }
+        this.showTitle = this.structuredTitle;
+
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
+
+
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTag = true;
+
+        // this.show = true;
+
+      })
+
+      this.spinner.hide();
+    }, 1000);
+  }
+
+  applyTagFn() {
+
+    if (this.countTag == 1) {
+      this.applyTag = false;  //!(this.applyTitle);
+    }
+    this.countTag = 1;
+    console.log("count: " + this.countTag);
 
   }
 
@@ -493,20 +562,20 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-    let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "pid": this.selectedids, "x":this.endOffset.x, "y":this.endOffset.y, "opacity":this.opvalue });
-    obs.subscribe(data => {
-      if(data.hasOwnProperty('pid')){
-      this.publishedNo=data['pid'].length;
-      };
+      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "pid": this.selectedids });
 
-      console.log("publish", this.publishedNo);
-      // this.publishedNo=data
+      obs.subscribe(data => {
+        if (data.hasOwnProperty('pid')) {
+          this.publishedNo = data['pid'].length;
+          console.log("publish", this.publishedNo);
+        };
 
-    })
-    console.log("done");
-  
+      })
+      console.log("done");
 
-  this.spinner.hide();
+
+      this.spinner.hide();
     }, 1000);
 
-}}
+  }
+}
