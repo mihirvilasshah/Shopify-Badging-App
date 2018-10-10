@@ -339,7 +339,7 @@ exports.shopdet = (req, res) => {
                 var dbo = db.db("shopifydbclone");
 
                 // if (flag == 0) {
-                var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken };
+                var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken,currency:shopdetails.currency };
 
                 dbo.collection("shopdetails").insert(myquey, function (err, result) {
                     if (err) throw err;
@@ -367,7 +367,7 @@ exports.creatscript = (req, res) => {
     };
 
     const Scriptheaders = {
-        'X-Shopify-Access-Token': process.env.TOKEN,
+        'X-Shopify-Access-Token': globalToken,
         // 'X-Shopify-Topic': "products/create",
         // 'X-Shopify-Shop-Domain': globalShop,
         'Content-Type': "application/json"
@@ -397,7 +397,7 @@ exports.createWebhooks = (req, res) => {
     };
 
     const webhookheaders = {
-        'X-Shopify-Access-Token': process.env.TOKEN,
+        'X-Shopify-Access-Token': globalToken,
         // 'X-Shopify-Topic': "products/create",
         // 'X-Shopify-Shop-Domain': globalShop,
         'Content-Type': "application/json"
@@ -1470,7 +1470,7 @@ exports.tags = (req, res) => {
     
     
      
-    console.log("tags: " + tagsArray[5]);
+    console.log("tags: " + tagsArray);
     //console.log("product found: " + );
     // res.send(obj);
     // res.render('selectproducts', { items: titles, pids: pids });
@@ -1478,5 +1478,32 @@ exports.tags = (req, res) => {
     });
     });
     };
+
+    exports.currency = (req, res) => {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("shopifydbclone");
+        var dbshop=globalShop.split('.');
+        console.log(dbshop[0]);
+         
+        // dbo.collection("shopdetails").find({shopname : "tricon-jewel-store" },{projection:{currency:1}},function (err, obj) {
+            dbo.collection("shopdetails").find({shopname : dbshop[0]}, { projection: { currency: 1 } }).toArray(function (err, obj) {
+        if (err) throw err;
+        console.log('obj');
+        console.log(obj);
+         
+        var cur= obj[0].currency;
+        console.log("cur"+cur);
+        //var ids = result[0];
+         
+        
+        //console.log("product found: " + );
+        // res.send(obj);
+        // res.render('selectproducts', { items: titles, pids: pids });
+        res.send(obj);
+        });
+        });
+        };
+
 
 
