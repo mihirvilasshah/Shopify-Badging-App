@@ -13,7 +13,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const router = express.Router();
 
-const scopes = 'read_products';
+const scopes = 'read_products,read_script_tags,write_script_tags,read_themes,write_themes';
 // const scopes = 'read_products,read_themes,write_themes';
 
 // Replace this with your HTTPS Forwarding address
@@ -199,6 +199,7 @@ exports.auth = (req, res) => {
                                     if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
+                                         request.get(forwardingAddress + '/creatscript');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -354,6 +355,34 @@ exports.shopdet = (req, res) => {
             res.send(err);
         });
 };
+exports.creatscript = (req, res) => {
+    // Webhook products/create      
+    const Scriptjson = {
+        script_tag: {
+            event: "onload",
+            src: forwardingAddress+"/static/script1.js",
+            
+        }
+    };
+
+    const Scriptheaders = {
+        'X-Shopify-Access-Token': process.env.TOKEN,
+        // 'X-Shopify-Topic': "products/create",
+        // 'X-Shopify-Shop-Domain': globalShop,
+        'Content-Type': "application/json"
+    };
+
+    const webhookUrl = 'https://' + globalShop + '/admin/script_tags.json';
+
+    request.post(webhookUrl, { headers: Scriptheaders, json: Scriptjson })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+    }
+
 
 // Create Webhooks 
 exports.createWebhooks = (req, res) => {
