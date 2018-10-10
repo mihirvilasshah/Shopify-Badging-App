@@ -45,13 +45,7 @@ export class SelectProductsComponent implements OnInit {
   selectedids = [];
   selectedAll;
   prodData;
-  cities2 = [
-    { id: 1, name: 'Vilnius' },
-    { id: 2, name: 'Kaunas' },
-    { id: 3, name: 'Pavilnys', disabled: true },
-    { id: 4, name: 'Pabradė' },
-    { id: 5, name: 'Klaipėda' }
-  ];
+ 
   selectedProducts = [];
 
   selected_image_src = "";
@@ -125,6 +119,11 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
+       let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
+      x(this.split);
+      this.split= x(this.split);
+      console.log(this.split);
+      console.log( x(this.split));
       console.log(this.split);
     });
 
@@ -133,7 +132,7 @@ export class SelectProductsComponent implements OnInit {
     // });
 
   }
-
+   
   ngOnInit() {
 
   }
