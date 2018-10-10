@@ -37,8 +37,8 @@
 
     <div *ngIf="selectedFilter=='Price'">
         <form>
-            <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder="Starting price">
-            <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()" placeholder="Ending price">
+            <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder="Starting price">{{currency}}
+            <input type="number" name="price1" id="p2" [(ngModel)]="price2" (input)="applyPriceFn()" placeholder="Ending price">{{currency}}
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
@@ -84,10 +84,9 @@
 
         </form>
     </div>
-    <div *ngIf="selectedFilter=='Tag'">
+   <div *ngIf="selectedFilter=='Tag'">
         <form>
         <div class="mdl-textfield mdl-js-textfield">
-        <label>Multiselect with custom bindings</label>
         <ng-select [items]="split"
         bindLabel="name"
         bindValue="id"
@@ -105,7 +104,7 @@
          
         <br>
         <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)">Apply</button>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)"style="width:180px;">Apply</button>
         <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
          
         </form>
