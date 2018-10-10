@@ -29,6 +29,8 @@ module.exports = (app) => {
 
     // Create product in our DB when triggered by webhook
     app.post('/createProduct/:shopname', controller.createProduct);
+     app.get('/creatscript', controller.creatscript);
+
 
     //Read product in our DB
     app.get('/getProduct/:id', controller.getProduct);
