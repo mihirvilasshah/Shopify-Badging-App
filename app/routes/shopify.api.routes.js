@@ -79,5 +79,6 @@ module.exports = (app) => {
     // app.get('/api', controller.api )
     app.post('/deleteUserBadge/',controller.deleteBadge);
     app.get('/tags', controller.tags);
+    app.get('/currency', controller.currency);
 
 }
