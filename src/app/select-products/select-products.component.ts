@@ -103,12 +103,12 @@ export class SelectProductsComponent implements OnInit {
     console.log("select products badge name" + this.selected_image_src);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
-    // let cur = this.http.get("http://localhost:3000/shopdet")
+    // let cur = this.http.get("http://172.16.18.189:3000/shopdet")
     // cur.subscribe(data => {
     //   console.log("here is the response", data);
     //   var currency = data;
     // });
-    let tag = this.http.get("http://localhost:3000/tags")
+    let tag = this.http.get("http://172.16.18.189:3000/tags")
     tag.subscribe(data => {
       console.log("here is the response", data);
       this.tagArray = data;
@@ -229,12 +229,12 @@ export class SelectProductsComponent implements OnInit {
   getPriceProd() {
 
     console.log(this.price1);
-    // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
+    // var result  =this.http.get("http://172.16.18.189:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
 
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
+      let obs = this.http.get("http://172.16.18.189:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -304,7 +304,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
+      let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -368,7 +368,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+      let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/all");
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -429,7 +429,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductTag/" + this.tag + "/all");
+      let obs = this.http.get("http://172.16.18.189:3000/getProductTag/" + this.tag + "/all");
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -551,7 +551,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "pid": this.selectedids });
+      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "pid": this.selectedids });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
