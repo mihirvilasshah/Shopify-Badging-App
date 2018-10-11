@@ -1,7 +1,8 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light');
 
 body{
-    font-family: 'K2D', sans-serif;
+    font-family: 'Shadows Into Light', cursive;
 }
 
 .outer{
@@ -33,13 +34,21 @@ h4,h3,h2,h1{
 }
 
 h4{
-    background-color: lightblue;
+    background-color: #3f51b5;
     margin-top: 20px;
+    margin-bottom: 0px;
+    color: white;
+    padding: 2%;
     
 }
 
 .alert-secondary{
     color: white;
     background-color: black;
+    border-color: black;
+}
+
+#myRange{
+    margin-top: 10%;
 }
 

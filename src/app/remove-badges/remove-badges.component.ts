@@ -68,6 +68,9 @@ export class RemoveBadgesComponent implements OnInit {
   tagArray;
   split = [];
   p: number = 1;
+  tags;
+  isApplied;
+  created_At;
 
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
@@ -220,67 +223,69 @@ export class RemoveBadgesComponent implements OnInit {
 
     console.log(this.price1);
     // var result  =this.http.get("http://localhost:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
-    
+
     this.spinner.show();
     setTimeout(() => {
-      
-    let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
-    obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
 
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
-      this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
+      let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
 
+        var items = Object.values(data);
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
 
-      this.structuredTitle = [];
-      
-        for (var i= 0;i<+this.titles.length;i++){
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
         
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
         }
-        this.showTitle = this.structuredTitle;
-      
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
-      
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
       }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
-      // var pids = data[pids];
-      this.applyPrice = true;
 
-      // this.show = true;
+      })
 
-    })
-   
-
-    this.spinner.hide();
-  }, 4000);
-
-    // console.log(result);
+      this.spinner.hide();
+    }, 4000);
   }
 
   applyPriceFn() {
-    
+
     if (this.countPrice == 1) {
       this.applyPrice = false;  //!(this.applyPrice);
     }
     this.countPrice = 1;
-    console.log("count: "+this.countPrice);
+    console.log("count: " + this.countPrice);
 
-    if(this.price1 == 0){
+    if (this.price1 == 0) {
       this.price1 = 0.01;
     }
   }
@@ -288,61 +293,65 @@ export class RemoveBadgesComponent implements OnInit {
   getDateProd() {
 
     console.log(this.date1);
-
     this.spinner.show();
     setTimeout(() => {
+      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
+      obs.subscribe(data => {
+        console.log("here is the response", data);
+        console.log(this.pr);
 
-    let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
-    obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
+        var items = Object.values(data);
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
 
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
-      this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
-
-
-      this.structuredTitle = [];
-      
-        for (var i= 0;i<+this.titles.length;i++){
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
         
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
         }
-        this.showTitle = this.structuredTitle;
-      
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
-      
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
       }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
-      // var pids = data[pids];
-      this.applyDate = true;
 
-      // this.show = true;
-      
-    })
-    this.spinner.hide();
-  }, 4000);
+      })
+
+      this.spinner.hide();
+    }, 1000);
   }
 
   applyDateFn() {
-    
+
     if (this.countDate == 1) {
       this.applyDate = false;  //!(this.applyDate);
     }
     this.countDate = 1;
-    console.log("count: "+this.countDate);
+    console.log("count: " + this.countDate);
 
   }
 
@@ -353,66 +362,72 @@ export class RemoveBadgesComponent implements OnInit {
 
   getTitleProd() {
 
-    console.log(this.title1);
 
+    console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-
-
-    let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/withBadges");
-    obs.subscribe(data => {
-      console.log("here is the response", data);
-      console.log(this.pr);
-
-      var items = Object.values(data);
-      console.log("items:", items)
-      this.titles = items[0];
-      this.badges = items[2];
-      this.pids = items[1];
-      console.log("badhes:"+ this.badges);
-      console.log("pids:"+ this.pids);
-
-
-      this.structuredTitle = [];
-      
-        for (var i= 0;i<+this.titles.length;i++){
+      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/withBadges");
+      obs.subscribe(data => {
         
-        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: this.badges[i], pids: this.pids[i]   });
+
+        var items = Object.values(data);
+
+        var self = this;        
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
+
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
         }
-        this.showTitle = this.structuredTitle;
-      
-      console.log("titles:", this.titles);
-      console.log("structuredTitle:", this.structuredTitle);
-      
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-      if(this.pids.length==0){
-        this.msg = "No matches found."
-        this.show = false;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
       }
-      if(this.pids.length>0){
-        this.msg = ""
-        this.show = true;
-      }
-      // var pids = data[pids];
-      this.applyTitle = true;
 
-      // this.show = true;
+      })
 
-    })
-    this.spinner.hide();
-  }, 4000);
+      this.spinner.hide();
+    }, 1000);
   }
 
+
   applyTitleFn() {
-    
+
     if (this.countTitle == 1) {
       this.applyTitle = false;  //!(this.applyTitle);
     }
     this.countTitle = 1;
-    console.log("count: "+this.countTitle);
+    console.log("count: " + this.countTitle);
 
   }
-  
+
   getTagProd() {
 
     console.log(this.title1);
@@ -425,27 +440,30 @@ export class RemoveBadgesComponent implements OnInit {
 
         var items = Object.values(data);
         console.log("items:", items)
+        console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
-        this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
 
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -454,9 +472,11 @@ export class RemoveBadgesComponent implements OnInit {
           this.show = true;
         }
         // var pids = data[pids];
-        this.applyTag = true;
+        this.applyTitle = true;
 
-        // this.show = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
 

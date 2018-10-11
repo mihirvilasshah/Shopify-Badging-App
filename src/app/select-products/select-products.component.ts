@@ -41,7 +41,7 @@ export class SelectProductsComponent implements OnInit {
   selectedEntry;
   titles;
   pids;
-  isApplied
+  isApplied;
   tags;
   abid;
   price;
@@ -132,6 +132,12 @@ export class SelectProductsComponent implements OnInit {
         temp = [];
       }
       console.log(this.split);
+    });
+
+    let cur = this.http.get("http://localhost:3000/currency")
+    cur.subscribe(dat => {
+      console.log("here is the response", dat);
+      this.currency = dat[0].currency;
     });
 
     // console.log("select products badge css"+ this.badgeCss);
