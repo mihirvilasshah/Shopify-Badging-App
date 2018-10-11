@@ -872,10 +872,21 @@ exports.selectedBadgeID = (req, res) => {
 
 
 exports.getProductPriceRange = (req, res) => {
-    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-        if (err) throw err;
+    var myquery;
+    var t1 = req.params.t1;
+    var tr = req.params.tr;
+    var badge = [];
+    var thumbnail=[];
+    
+    var titles = [];
+    var abids =[];
+    var pids = [];
+    var tags =[];
+    var price =[];
+    var created_At =[];
+    var isApplied=[];
 
-        var dbo = db.db("shopifydbclone");
+        // var dbo = db.db("shopifydbclone");
 
         console.log("inside getProdPrice");
         // var myquery = { _id: ObjectId(req.params.id) };
@@ -916,56 +927,67 @@ exports.getProductPriceRange = (req, res) => {
 
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
-
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
             if (err) throw err;
 
+        var dbo = db.db("shopifydbclone");
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+           if (err) throw err;
+           var products = obj;
+           //var ids = result[0];
 
+           for (var i = 0; i < products.length; i++) {
+               titles[i] = products[i].title;
+               pids[i] = products[i]._id;
+               abids[i]=products[i].ABid;
+               var x=products[i].created_at.split("T");
+               created_At[i]=x[0];
+               tags[i]=products[i].tags;
+               if(products[i].ABid){
+                   isApplied[i]="yes";
+               }
+               else
+               isApplied[i]="no";
+           }
 
+       
+           for (var i = 0; i < products.length; i++) {
+               if( products[i].ABid){
+                   badge[i] = products[i].ABid
 
-            var products = obj;
-            //var ids = result[0];
+                   console.log("product id"+badge[i]);
+        
+               }
+               
+               else if (!badge[i]){
+                   console.log("else if thumbnail "+thumbnail[i]);
+                   badge[i] = null;
+                  
+               }
+           }
+       console.log("done with grt prod title");
+   res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
 
-            var titles = [];
-            for (var i = 0; i < products.length; i++) {
-                titles[i] = products[i].title;
-            }
+   });
+   // res.send({ message: "Found product" });
 
-            var pids = [];
-            for (var i = 0; i < products.length; i++) {
-                pids[i] = products[i]._id;
-                // console.log(pids[i]);
-            }
-            var badge = [];
-            for (var i = 0; i < products.length; i++) {
-                console.log(products[i].ABid);
-                if( products[i].ABid){
-                    badge[i] = "yes";
-                    
-                }
-                else{
-                    badge[i] = "no";
-                }
-              
-            }
-
-            console.log("product found: " + titles);
-            //console.log("product found: " + );
-            // res.send(obj);
-            // res.render('selectproducts', { items: titles, pids: pids });
-            res.send({ "items": titles, "pids": pids, "badge": badge });
-        });
-        // res.send({ message: "Found product" });
-
-    });
+});
 };
 
 exports.getProductDateRange = (req, res) => {
-    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-        if (err) throw err;
-
-        var dbo = db.db("shopifydbclone");
-
+    var myquery;
+    var t1 = req.params.t1;
+    var tr = req.params.tr;
+    var badge = [];
+    var thumbnail=[];
+    
+    var titles = [];
+    var abids =[];
+    var pids = [];
+    var tags =[];
+    var price =[];
+    var created_At =[];
+    var isApplied=[];
         console.log("inside getProdPrice");
 
         var myquery;
@@ -1001,38 +1023,47 @@ exports.getProductDateRange = (req, res) => {
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
 
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
             if (err) throw err;
-
-            var products = obj;
-            //var ids = result[0];
-
-            var titles = [];
-            for (var i = 0; i < products.length; i++) {
-                titles[i] = products[i].title;
-            }
-
-            var pids = [];
-            for (var i = 0; i < products.length; i++) {
-                pids[i] = products[i]._id;
-                // console.log(pids[i]);
-            }
-            var badge = [];
-            for (var i = 0; i < products.length; i++) {
-                if( products[i].ABid){
-                    badge[i] = "yes";
+      
+            var dbo = db.db("shopifydbclone");
+             dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+                if (err) throw err;
+                var products = obj;
+                //var ids = result[0];
+    
+                for (var i = 0; i < products.length; i++) {
+                    titles[i] = products[i].title;
+                    pids[i] = products[i]._id;
+                    abids[i]=products[i].ABid;
+                    var x=products[i].created_at.split("T");
+                    created_At[i]=x[0];
+                    tags[i]=products[i].tags;
+                    if(products[i].ABid){
+                        isApplied[i]="yes";
+                    }
+                    else
+                    isApplied[i]="no";
                 }
-                else{
-                    badge[i] = "no";
+    
+            
+                for (var i = 0; i < products.length; i++) {
+                    if( products[i].ABid){
+                        badge[i] = products[i].ABid
+    
+                        console.log("product id"+badge[i]);
+             
+                    }
+                    
+                    else if (!badge[i]){
+                        console.log("else if thumbnail "+thumbnail[i]);
+                        badge[i] = null;
+                       
+                    }
                 }
-              
-            }
-
-            console.log("product found: " + titles);
-            //console.log("product found: " + );
-            // res.send(obj);
-            // res.render('selectproducts', { items: titles, pids: pids });
-            res.send({ "items": titles, "pids": pids, "badge": badge  });
+            console.log("done with grt prod title");
+        res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
+    
         });
         // res.send({ message: "Found product" });
 
@@ -1080,25 +1111,6 @@ exports.getProductTitle = (req, res) => {
         var dbo = db.db("shopifydbclone");
          dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
             if (err) throw err;
-
-        
-        // var myquery = { _id: ObjectId(req.params.id) };
-        // var myquery = { "variants.0.price":{$gte:"100"} };
-       
-
-        //  var myquery ={"title" :t};
-        //  console.log(myquery);   
-        //var queryObj = JSON.parse(myquery);
-        //console.log(queryObj); 
-
-        // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
-        //     if (err) throw err;
-
-       
-
-
-
-
             var products = obj;
             //var ids = result[0];
 
@@ -1116,69 +1128,21 @@ exports.getProductTitle = (req, res) => {
                 isApplied[i]="no";
             }
 
-            
-            // for (var i = 0; i < products.length; i++) {
-                
-            //     // console.log(pids[i]);
-            // }
-
-            // var prod = [];
-            // for (var i = 0; i < products.length; i++) {
-            //     prod[i] = {"pid":products[i]._id,"title":products[i].title};
-            // }
         
             for (var i = 0; i < products.length; i++) {
                 if( products[i].ABid){
                     badge[i] = products[i].ABid
 
-                    // badge.push("yes");
                     console.log("product id"+badge[i]);
-                    // var mq={"_id":ObjectId(products[i].ABid)}
-                    // dbo.collection("badge_Product_mapping").find(mq, { projection: { _id: 1, Bid: 1, css: 1} }).toArray(function (err, obj) {
-                    //       if (err) throw err;
-                    //     console.log("inside nested query");
-                    //     console.log("obj bid "+obj[0].Bid);
-                    //     console.log(obj[0].Bid);
-                      
-                    //     thumbnail[i]=obj[0].Bid;
-                    //     // thumbnail.push(obj[0].Bid);
-                    //     console.log("thumbnail[i] "+thumbnail[i]);
-                    //     // badge[i]+=obj[0].Bid;
-                    //     // badge.push(obj[0].Bid);
-                    //     // console.log("obj.Bid"+obj[0].Bid);
-                    //     // console.log(badge[i]);
-                    // });
-
-                    // thumbnail[i]=t;
-                    
-                    
+         
                 }
                 
                 else if (!badge[i]){
                     console.log("else if thumbnail "+thumbnail[i]);
                     badge[i] = null;
-                    // badge.push("no");
-                    // thumbnail[i]=null;
-                    // thumbnail.push(null);
+                   
                 }
             }
-            // console.log("thumbnail "+thumbnail);
-
-                // console.log("outside if badge[i]" + badge[i]);
-              
-            // }
-
-            // console.log("product found: " + titles);
-            //console.log("product found: " + );
-            // res.send(obj);
-            // res.render('selectproducts', { items: titles, pids: pids });
-            // res.send(prod);
-            // console.log(thumbnail);
-            // debugger;
-           
-
-        
-        // res.send({ message: "Found product" });
         console.log("done with grt prod title");
     res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
 
@@ -1229,10 +1193,21 @@ exports.getThumbnail = (req, res) => {
 
 
 exports.getProductTag = (req, res) => {
-    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-        if (err) throw err;
-
-        var dbo = db.db("shopifydbclone");
+   
+    var myquery;
+    var t1 = req.params.t1;
+    var tr = req.params.tr;
+    var badge = [];
+    var thumbnail=[];
+    
+    var titles = [];
+    var abids =[];
+    var pids = [];
+    var tags =[];
+    var price =[];
+    var created_At =[];
+    var isApplied=[];
+        // var dbo = db.db("shopifydbclone");
 
         console.log("inside getProdTitle");
         // var myquery = { _id: ObjectId(req.params.id) };
@@ -1266,48 +1241,47 @@ exports.getProductTag = (req, res) => {
 
         // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
         //     if (err) throw err;
-
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1 } }).toArray(function (err, obj) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
             if (err) throw err;
 
-
-
-
-            var products = obj;
-            //var ids = result[0];
-
-            var titles = [];
-            for (var i = 0; i < products.length; i++) {
-                titles[i] = products[i].title;
-            }
-
-            var pids = [];
-            for (var i = 0; i < products.length; i++) {
-                pids[i] = products[i]._id;
-                // console.log(pids[i]);
-            }
-
-            // var prod = [];
-            // for (var i = 0; i < products.length; i++) {
-            //     prod[i] = {"pid":products[i]._id,"title":products[i].title};
-            // }
-            var badge = [];
-            for (var i = 0; i < products.length; i++) {
-                if( products[i].ABid){
-                    badge[i] = "yes";
+        var dbo = db.db("shopifydbclone");
+             dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+                if (err) throw err;
+                var products = obj;
+                //var ids = result[0];
+    
+                for (var i = 0; i < products.length; i++) {
+                    titles[i] = products[i].title;
+                    pids[i] = products[i]._id;
+                    abids[i]=products[i].ABid;
+                    var x=products[i].created_at.split("T");
+                    created_At[i]=x[0];
+                    tags[i]=products[i].tags;
+                    if(products[i].ABid){
+                        isApplied[i]="yes";
+                    }
+                    else
+                    isApplied[i]="no";
                 }
-                else{
-                    badge[i] = "no";
+    
+            
+                for (var i = 0; i < products.length; i++) {
+                    if( products[i].ABid){
+                        badge[i] = products[i].ABid
+    
+                        console.log("product id"+badge[i]);
+             
+                    }
+                    
+                    else if (!badge[i]){
+                        console.log("else if thumbnail "+thumbnail[i]);
+                        badge[i] = null;
+                       
+                    }
                 }
-              
-            }
-
-            console.log("product found: " + titles);
-            //console.log("product found: " + );
-            // res.send(obj);
-            // res.render('selectproducts', { items: titles, pids: pids });
-            // res.send(prod);
-            res.send({ "items": titles, "pids": pids, "badge": badge });
+            console.log("done with grt prod title");
+        res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
+    
         });
         // res.send({ message: "Found product" });
 
