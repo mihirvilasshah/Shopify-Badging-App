@@ -1,0 +1,691 @@
+exports.publishBadges = (req, res) => { 
+
+    var map = 0;
+    var abid;
+    console.log('body: ' + JSON.stringify(req.body));
+    console.log(req.body.bid);
+    res.send(req.body);
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+        var myquery = { Bid: req.body.bid, x: req.body.x, y:req.body.y, opacity:req.body.opacity };
+
+        // if (flag == 0) {
+
+        dbo.collection("badge_Product_mapping").insertOne(myquery, function (err, result) {
+            if (err) throw err;
+            console.log("inserted to badge_Product_mapping ");
+
+            var newoid = new ObjectId(result.ops[0]._id);
+            console.log("ABid: " + newoid);
+
+            var newvalues = { $set: { "ABid": newoid } };
+
+
+            for (var i = 0; i < req.body.pid.length; i++) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i])
+                };
+                console.log("pids: " + req.body.pid[i]);
+
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("product updated ABid: " + obj);
+                });
+            }
+
+        });
+    });
+};
+
+
+
+exports.getProductTitle = (req, res) => {
+
+            //var ids = result[0];
+
+            var titles = [];
+            var abids =[];
+            var pids = [];
+            var tags =[];
+            var price =[];
+            var created_At =[];
+            var badge = [];
+            var thumbnail=[];
+            var l=0;
+
+
+            console.log("inside getProdTitle");
+        var myquery;
+        var t1 = req.params.t1;
+        var tr = req.params.tr;
+        console.log("t1: " + t1);
+        console.log("tr: " + tr);
+        //    var t = "/"+t1+"/i";
+        if (tr == "all") {
+            myquery = {
+                'title': new RegExp(t1, 'i')
+            }
+        } else if (tr == "withBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: true }
+            }
+        } else if (tr == "withoutBadges") {
+            myquery = {
+                'title': new RegExp(t1, 'i'),
+                'ABid': { $exists: false }
+            }
+        }
+
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+            if (err) throw err;
+    var products = obj;
+
+            for (var i = 0; i < products.length; i++) {
+                titles[i] = products[i].title;
+                pids[i] = products[i]._id;
+                abids[i]=products[i].ABid;
+                var x=products[i].created_at.split("T");
+                created_At[i]=x[0];
+                tags[i]=products[i].tags;
+            }
+            l=products.length;
+        });
+
+         
+            for (var i = 0; i < l; i++) {
+                if( abids[i]){
+                    badge[i] = "yes";
+
+                    // badge.push("yes");
+                    console.log("product id"+abids[i]);
+                    var mq={"_id":ObjectId(abids[i])}
+                    // dbo.collection("badge_Product_mapping").find(mq, { projection: { _id: 1, Bid: 1, css: 1} }).toArray(function (err, obj) {
+                    //       if (err) throw err;
+                    //     console.log("inside nested query");
+                    //     console.log("obj bid"+obj[0].Bid);
+                    //     console.log(obj[0].Bid);
+                      
+                    //     var x=obj[0].Bid;
+                    //     // badge[i]+=obj[0].Bid;
+                    //     // badge.push(obj[0].Bid);
+                    //     // console.log("obj.Bid"+obj[0].Bid);
+                    //     // console.log(badge[i]);
+                    // });
+
+                    thumbnail[i]=x;
+                    
+                }
+                
+                else{
+                    badge[i] = "no";
+                    // badge.push("no");
+                    thumbnail[i]=null;
+                }
+            }
+
+            res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "thumbnail":thumbnail });
+
+        
+        // res.send({ message: "Found product" });
+
+    });
+// });
+}
+
+exports.getThumbnail = (req, res) => {
+
+//     var abid= req.body.abid;
+//     var send;
+//     console.log("thumbnail abid "+abid);
+//     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+//         if (err) throw err;
+
+//         var dbo = db.db("shopifydbclone");
+      
+//         var mq={"_id":ObjectId(abid)}
+//         dbo.collection("badge_Product_mapping").find(mq, { projection: { _id: 1, Bid: 1, css: 1} }, (function (err, obj) {
+//               if (err) throw err;
+//                   if(obj){
+//                     console.log("obj  inside sdjk ");
+//                     console.log(obj);
+//                     send ="http://localhost:3000/picture/"+obj;
+//                   }
+
+//                   else{
+//                       send="http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
+//                   }
+//                 // console.log("inside nested query");
+//                 // console.log("obj bid "+obj[0].Bid);
+//                 // console.log(obj[0].Bid);
+              
+//                 // thumbnail[i]=obj[0].Bid;
+//                 // // thumbnail.push(obj[0].Bid);
+//                 // console.log(thumbnail[i]);
+//             }));
+//         });
+
+//         res.send({"src":send});
+    
+
+// }
+
+
+
+exports.getProductTitle = (req, res) => {
+    console.log("inside getProdTitle");
+    var myquery;
+    var t1 = req.params.t1;
+    var tr = req.params.tr;
+    var badge = [];
+    var thumbnail=[];
+    
+    var titles = [];
+    var abids =[];
+    var pids = [];
+    var tags =[];
+    var price =[];
+    var created_At =[];
+    console.log("t1: " + t1);
+    console.log("tr: " + tr);
+    var t;
+
+    //    var t = "/"+t1+"/i";
+    if (tr == "all") {
+        myquery = {
+            'title': new RegExp(t1, 'i')
+        }
+    } else if (tr == "withBadges") {
+        myquery = {
+            'title': new RegExp(t1, 'i'),
+            'ABid': { $exists: true }
+        }
+    } else if (tr == "withoutBadges") {
+        myquery = {
+            'title': new RegExp(t1, 'i'),
+            'ABid': { $exists: false }
+        }
+    }
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+         dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+            if (err) throw err;
+
+        
+        // var myquery = { _id: ObjectId(req.params.id) };
+        // var myquery = { "variants.0.price":{$gte:"100"} };
+       
+
+        //  var myquery ={"title" :t};
+        //  console.log(myquery);   
+        //var queryObj = JSON.parse(myquery);
+        //console.log(queryObj); 
+
+        // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
+        //     if (err) throw err;
+
+       
+
+
+
+
+            var products = obj;
+            //var ids = result[0];
+
+            for (var i = 0; i < products.length; i++) {
+                titles[i] = products[i].title;
+                pids[i] = products[i]._id;
+                abids[i]=products[i].ABid;
+                var x=products[i].created_at.split("T");
+                created_At[i]=x[0];
+                tags[i]=products[i].tags;
+            }
+
+            
+            // for (var i = 0; i < products.length; i++) {
+                
+            //     // console.log(pids[i]);
+            // }
+
+            // var prod = [];
+            // for (var i = 0; i < products.length; i++) {
+            //     prod[i] = {"pid":products[i]._id,"title":products[i].title};
+            // }
+        
+            for (var i = 0; i < products.length; i++) {
+                if( products[i].ABid){
+                    badge[i] = "yes";
+
+                    // badge.push("yes");
+                    console.log("product id"+products[i].ABid);
+                    var mq={"_id":ObjectId(products[i].ABid)}
+                    dbo.collection("badge_Product_mapping").find(mq, { projection: { _id: 1, Bid: 1, css: 1} }).toArray(function (err, obj) {
+                          if (err) throw err;
+                        console.log("inside nested query");
+                        console.log("obj bid "+obj[0].Bid);
+                        console.log(obj[0].Bid);
+                      
+                        thumbnail[i]=obj[0].Bid;
+                        // thumbnail.push(obj[0].Bid);
+                        console.log("thumbnail[i] "+thumbnail[i]);
+                        // badge[i]+=obj[0].Bid;
+                        // badge.push(obj[0].Bid);
+                        // console.log("obj.Bid"+obj[0].Bid);
+                        // console.log(badge[i]);
+                    });
+
+                    // thumbnail[i]=t;
+                    
+                    
+                }
+                
+                else if (badge[i]!="yes"){
+                    console.log("else if thumbnail "+thumbnail[i]);
+                    badge[i] = "no";
+                    // badge.push("no");
+                    thumbnail[i]=null;
+                    // thumbnail.push(null);
+                }
+            }
+            console.log("thumbnail "+thumbnail);
+
+                // console.log("outside if badge[i]" + badge[i]);
+              
+            // }
+
+            // console.log("product found: " + titles);
+            //console.log("product found: " + );
+            // res.send(obj);
+            // res.render('selectproducts', { items: titles, pids: pids });
+            // res.send(prod);
+            // console.log(thumbnail);
+            // debugger;
+           
+
+        
+        // res.send({ message: "Found product" });
+    res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "thumbnail":thumbnail });
+
+    });
+});
+
+
+}
+
+
+
+ if(this.badges[i]){
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]});
+              obsx.subscribe(data1 => {
+          x=Object.values(data1)[0];
+          // console.log(data1);
+          console.log( "x value:"+x);
+          console.log(this.titles[i]);
+        this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          });
+
+
+
+
+          let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+    obs.subscribe(data => {
+      // console.log("here is the response for title products", data);
+      // console.log(this.pr);
+
+      var items = Object.values(data);
+      console.log("items:", items)
+      this.titles = items[0];
+      this.badges = items[2];
+
+      this.pids = items[1];
+      this.tags = items[3];
+      this.created_At =items[4];
+      // this.thumbnail= items[5];
+      // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+
+
+      // console.log("badges:"+ this.badges);
+      // console.log("pids:"+ this.pids);
+
+
+      this.structuredTitle = [];
+      var x;
+        for (var i= 0;i<+this.titles.length;i++){
+
+          if(this.badges[i]){
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]});
+              obsx.toPromise().then(data1 => {
+
+                this.titles = items[0];
+      this.badges = items[2];
+
+      this.pids = items[1];
+      this.tags = items[3];
+      this.created_At =items[4];
+
+          x=Object.values(data1)[0];
+          // console.log(data1);
+          console.log( "x value:"+x);
+          // console.log(this.titles[i]);
+          this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          console.log("x val:"+x);
+          });
+        // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        //   console.log("x val:"+x);
+        }
+        else{
+           this.structuredTitle.push({ name: this.titles[i], selected: false,badges: null, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+        }
+        
+
+        }
+        this.showTitle = this.structuredTitle;
+      
+      // console.log("titles:", this.titles);
+      // console.log("structuredTitle:", this.structuredTitle);
+      
+
+    
+      if(this.pids.length==0){
+        this.msg = "No matches found."
+        this.show = false;
+      }
+      if(this.pids.length>0){
+        this.msg = ""
+        this.show = true;
+      }
+      // var pids = data[pids];
+      this.applyTitle = true;
+
+
+      getTitleProd() {
+
+
+    console.log(this.title1);
+    this.spinner.show();
+    setTimeout(() => {
+      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+      obs.subscribe(data => {
+        // console.log("here is the response for title products", data);
+        // console.log(this.pr);
+
+        var items = Object.values(data);
+
+        var self = this;        
+        console.log("items:", items)
+        this.titles = items[0];
+        this.badges = items[2];
+
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        // this.thumbnail= items[5];
+        // "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At
+
+
+        // console.log("badges:"+ this.badges);
+        // console.log("pids:"+ this.pids);
+
+
+        this.structuredTitle = [];
+        self["items"] = items;
+        var x;
+        for (var i = 0; i < +this.titles.length; i++) {
+
+          var isbadge=false;
+         
+
+
+          // if (this.badges[i]) {
+            
+            // this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids })
+            // let obsx = this.http.post("http://localhost:3000/thumbnail/", { "abid": this.badges[0] });
+            // obsx.subscribe(data1 => {
+             isbadge=true;
+              // console.log("titles1:" + this.titles);
+              // this.titles = items[0];
+              // this.badges = items[2];
+
+              // this.pids = items[1];
+              // this.tags = items[3];
+              // this.created_At = items[4];
+              // console.log("titles2:" + this.titles);
+              // var y = this.titles;
+              // var z = this.pids;
+              // var zz = this.tags;
+              // var x = Object.values(data1)[0];
+              // console.log(data1);
+              // console.log("x value:" + x);
+              // console.log("self"+self["items"][2][i]);
+              // // console.log(this.titles[i]);
+              // if(self["items"][2][i]){
+              //   console.log('***********value is : '+ self["items"][0][i]);
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+              // }
+              // else{
+              //   var a1 = {
+              //     name:items[0][i], selected: false, badges: null, pids: items[1][i], tags: items[3][i], created_at: items[4][i]
+              //   }
+              //   this.structuredTitle.push(a1);
+              // }
+              
+              this.showTitle = this.structuredTitle;
+
+               if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
+
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle)
+              
+            // });
+            // debugger;
+
+            // console.log("x val: " + x);
+            // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+            //   console.log("x val:"+x);
+          // }
+
+          // if(this.badges[i]){
+          //   // let promise=  
+
+          //   this.http.post("http://localhost:3000/thumbnail/",{"abid":this.badges[0]}).subscribe(
+          //     suc => {
+          //         console.log(suc);
+          //     },
+          //     err => {
+          //         console.log(err );
+          //     }
+          // );
+          // this.structuredTitle.push({ name: this.titles[i], selected: false,badges: x, pids: this.pids[i], tags:this.tags[i], created_at:this.created_At[i]});
+          // }
+          // else {
+          //   this.structuredTitle.push({ name: this.titles[i], selected: false, badges: null, pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i] });
+          // }
+
+
+        }
+       
+
+        // console.log("titles:", this.titles);
+        // console.log("structuredTitle:", this.structuredTitle);
+
+
+
+       
+
+      })
+
+      this.spinner.hide();
+    }, 1000);
+  }
+
+
+exports.getProductTitle = (req, res) => {
+
+console.log("inside getProdTitle");
+    var myquery;
+    var t1 = req.params.t1;
+    var tr = req.params.tr;
+    var badge = [];
+    var thumbnail=[];
+    
+    var titles = [];
+    var abids =[];
+    var pids = [];
+    var tags =[];
+    var price =[];
+    var created_At =[];
+    var isApplied=[];
+    console.log("t1: " + t1);
+    console.log("tr: " + tr);
+    var t;
+
+    //    var t = "/"+t1+"/i";
+    if (tr == "all") {
+        myquery = {
+            'title': new RegExp(t1, 'i')
+        }
+    } else if (tr == "withBadges") {
+        myquery = {
+            'title': new RegExp(t1, 'i'),
+            'ABid': { $exists: true }
+        }
+    } else if (tr == "withoutBadges") {
+        myquery = {
+            'title': new RegExp(t1, 'i'),
+            'ABid': { $exists: false }
+        }
+    }
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        if (err) throw err;
+
+        var dbo = db.db("shopifydbclone");
+         dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
+            if (err) throw err;
+
+        
+        // var myquery = { _id: ObjectId(req.params.id) };
+        // var myquery = { "variants.0.price":{$gte:"100"} };
+       
+
+        //  var myquery ={"title" :t};
+        //  console.log(myquery);   
+        //var queryObj = JSON.parse(myquery);
+        //console.log(queryObj); 
+
+        // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
+        //     if (err) throw err;
+
+       
+
+
+
+
+            var products = obj;
+            //var ids = result[0];
+
+            for (var i = 0; i < products.length; i++) {
+                titles[i] = products[i].title;
+                pids[i] = products[i]._id;
+                abids[i]=products[i].ABid;
+                var x=products[i].created_at.split("T");
+                created_At[i]=x[0];
+                tags[i]=products[i].tags;
+                if(products[i].ABid){
+                    isApplied[i]="yes";
+                }
+                else
+                isApplied[i]="no";
+            }
+
+            
+            // for (var i = 0; i < products.length; i++) {
+                
+            //     // console.log(pids[i]);
+            // }
+
+            // var prod = [];
+            // for (var i = 0; i < products.length; i++) {
+            //     prod[i] = {"pid":products[i]._id,"title":products[i].title};
+            // }
+        
+            for (var i = 0; i < products.length; i++) {
+                if( products[i].ABid){
+                    badge[i] = products[i].ABid
+
+                    // badge.push("yes");
+                    console.log("product id"+badge[i]);
+                    // var mq={"_id":ObjectId(products[i].ABid)}
+                    // dbo.collection("badge_Product_mapping").find(mq, { projection: { _id: 1, Bid: 1, css: 1} }).toArray(function (err, obj) {
+                    //       if (err) throw err;
+                    //     console.log("inside nested query");
+                    //     console.log("obj bid "+obj[0].Bid);
+                    //     console.log(obj[0].Bid);
+                      
+                    //     thumbnail[i]=obj[0].Bid;
+                    //     // thumbnail.push(obj[0].Bid);
+                    //     console.log("thumbnail[i] "+thumbnail[i]);
+                    //     // badge[i]+=obj[0].Bid;
+                    //     // badge.push(obj[0].Bid);
+                    //     // console.log("obj.Bid"+obj[0].Bid);
+                    //     // console.log(badge[i]);
+                    // });
+
+                    // thumbnail[i]=t;
+                    
+                    
+                }
+                
+                else if (!badge[i]){
+                    console.log("else if thumbnail "+thumbnail[i]);
+                    badge[i] = null;
+                    // badge.push("no");
+                    // thumbnail[i]=null;
+                    // thumbnail.push(null);
+                }
+            }
+            // console.log("thumbnail "+thumbnail);
+
+                // console.log("outside if badge[i]" + badge[i]);
+              
+            // }
+
+            // console.log("product found: " + titles);
+            //console.log("product found: " + );
+            // res.send(obj);
+            // res.render('selectproducts', { items: titles, pids: pids });
+            // res.send(prod);
+            // console.log(thumbnail);
+            // debugger;
+           
+
+        
+        // res.send({ message: "Found product" });
+        console.log("done with grt prod title");
+    res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
+
+    });
+});

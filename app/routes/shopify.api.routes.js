@@ -78,6 +78,7 @@ module.exports = (app) => {
     app.post('/api/upload', upload.single('photo'), controller.upload);
     // app.get('/api', controller.api )
     app.post('/deleteUserBadge/',controller.deleteBadge);
+    app.post('/thumbnail/', controller.getThumbnail);
     app.get('/tags', controller.tags);
     app.get('/currency', controller.currency);
 
