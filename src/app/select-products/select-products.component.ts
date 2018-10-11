@@ -41,11 +41,23 @@ export class SelectProductsComponent implements OnInit {
   selectedEntry;
   titles;
   pids;
+  isApplied
+  tags;
+  abid;
+  price;
+  created_At;
+  thumbnail;
   badges;
   selectedids = [];
   selectedAll;
   prodData;
- 
+  cities2 = [
+    { id: 1, name: 'Vilnius' },
+    { id: 2, name: 'Kaunas' },
+    { id: 3, name: 'Pavilnys', disabled: true },
+    { id: 4, name: 'Pabradė' },
+    { id: 5, name: 'Klaipėda' }
+  ];
   selectedProducts = [];
 
   selected_image_src = "";
@@ -98,11 +110,11 @@ export class SelectProductsComponent implements OnInit {
     console.log("select products badge name" + this.selected_image_src);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
-   let cur = this.http.get("http://localhost:3000/currency")
-    cur.subscribe(dat => {
-      console.log("here is the response", dat);
-      this.currency = dat[0].currency;
-    });
+    // let cur = this.http.get("http://localhost:3000/shopdet")
+    // cur.subscribe(data => {
+    //   console.log("here is the response", data);
+    //   var currency = data;
+    // });
     let tag = this.http.get("http://localhost:3000/tags")
     tag.subscribe(data => {
       console.log("here is the response", data);
@@ -119,11 +131,6 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
-       let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
-      x(this.split);
-      this.split= x(this.split);
-      console.log(this.split);
-      console.log( x(this.split));
       console.log(this.split);
     });
 
@@ -132,7 +139,7 @@ export class SelectProductsComponent implements OnInit {
     // });
 
   }
-   
+
   ngOnInit() {
 
   }
@@ -243,26 +250,27 @@ export class SelectProductsComponent implements OnInit {
         console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
+
         this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
-        // this.publishedNo=this.pids.length;
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -270,20 +278,17 @@ export class SelectProductsComponent implements OnInit {
           this.msg = ""
           this.show = true;
         }
-
         // var pids = data[pids];
-        this.applyPrice = true;
+        this.applyTitle = true;
 
-        // this.show = true;
-
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
 
-
-
       this.spinner.hide();
     }, 4000);
-    // console.log(result);
   }
 
   applyPriceFn() {
@@ -313,24 +318,27 @@ export class SelectProductsComponent implements OnInit {
         console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
-        this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
 
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -339,11 +347,14 @@ export class SelectProductsComponent implements OnInit {
           this.show = true;
         }
         // var pids = data[pids];
-        this.applyDate = true;
+        this.applyTitle = true;
 
-        // this.show = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
+
       this.spinner.hide();
     }, 1000);
   }
@@ -365,37 +376,41 @@ export class SelectProductsComponent implements OnInit {
 
   getTitleProd() {
 
+
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
       let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
       obs.subscribe(data => {
-        console.log("here is the response", data);
-        console.log(this.pr);
+        
 
         var items = Object.values(data);
+
+        var self = this;        
         console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
-        this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
 
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -406,13 +421,16 @@ export class SelectProductsComponent implements OnInit {
         // var pids = data[pids];
         this.applyTitle = true;
 
-        // this.show = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
 
       this.spinner.hide();
     }, 1000);
   }
+
 
   applyTitleFn() {
 
@@ -436,27 +454,30 @@ export class SelectProductsComponent implements OnInit {
 
         var items = Object.values(data);
         console.log("items:", items)
+        console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
-        this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
 
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -465,9 +486,11 @@ export class SelectProductsComponent implements OnInit {
           this.show = true;
         }
         // var pids = data[pids];
-        this.applyTag = true;
+        this.applyTitle = true;
 
-        // this.show = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
 
@@ -493,7 +516,7 @@ export class SelectProductsComponent implements OnInit {
       }
       this.counter = this.showTitle.length;
       var index = this.selectedids.indexOf(value);
-      console.log("value if: " + value);
+      // console.log("value if: " + value);
       this.selectedids = [];
       for (var i = 0; i < this.pids.length; i++) {
         this.selectedids.push(this.pids[i]);
