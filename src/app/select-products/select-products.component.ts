@@ -131,7 +131,12 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
+      let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
+      x(this.split);
+      this.split= x(this.split);
       console.log(this.split);
+      console.log( x(this.split));
+  
     });
 
     let cur = this.http.get("http://localhost:3000/currency")
@@ -143,6 +148,8 @@ export class SelectProductsComponent implements OnInit {
     // console.log("select products badge css"+ this.badgeCss);
 
     // });
+
+    
 
   }
 
