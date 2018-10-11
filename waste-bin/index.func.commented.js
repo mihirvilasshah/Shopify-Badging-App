@@ -33,7 +33,7 @@ app.listen(3000, () => {
 
 app.use('/static', express.static('public'));
 
-// localhost:3000/shopify?shop=triconbadger.myshopify.com
+// 172.16.18.189:3000/shopify?shop=triconbadger.myshopify.com
 
 // app.get('/shopify', (req, res) => {
 //     const shop = req.query.shop;
@@ -154,7 +154,7 @@ app.use('/static', express.static('public'));
 //------------------------------------------------------------------------------------
 
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://172.16.18.189:27017/";
 
 
 

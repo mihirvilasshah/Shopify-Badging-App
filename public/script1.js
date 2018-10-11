@@ -17,7 +17,7 @@ aren’t available to the outside world. */
     /* Load Script function we may need to load jQuery from the Google's CDN */
     /* That code is world-reknown. */
     /* One source: http://snipplr.com/view/18756/loadscript/ */
-    const forwardingAddress = "https:///1fde5866.ngrok.io";
+    const forwardingAddress = "https://1a53ddf0.ngrok.io";
     
     var loadScript = function(url, callback){
      
@@ -69,7 +69,7 @@ aren’t available to the outside world. */
               
                var link = forwardingAddress+"/picture/"+ data.Bid; 
                $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
-               $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="60" width="60" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
+               $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="42" width="42" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
             }           
           }
           

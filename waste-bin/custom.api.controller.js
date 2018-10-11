@@ -38,7 +38,7 @@ exports.productPage = (req, res) => {
 // MongoDB
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId
-// var url = "mongodb://localhost:27017/";
+// var url = "mongodb://172.16.18.189:27017/";
 // mLab DaaS URI
 var url = "mongodb://"+process.env.DB_USER+":"+process.env.DB_PASSWORD+"@ds239682.mlab.com:39682/shopifydbclone";
 // DO NOT USE @ or other special characters IN DB_PASSWORD

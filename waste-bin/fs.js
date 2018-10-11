@@ -9,7 +9,7 @@ app.listen(3000, () => {
 });
 
  
-var url = 'mongodb://localhost:27017/technicalkeeda';
+var url = 'mongodb://172.16.18.189:27017/technicalkeeda';
  
 mongoClient.connect(url, function(err, db) {
     if (err) {

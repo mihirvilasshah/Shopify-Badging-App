@@ -36,7 +36,7 @@ app.listen(3000, () => {
 
 app.use('/static', express.static('public'));
 
-// localhost:3000/shopify?shop=triconbadger.myshopify.com
+// 172.16.18.189:3000/shopify?shop=triconbadger.myshopify.com
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop;
@@ -184,7 +184,7 @@ app.get('/product', (req, res) => {
 
 //------------------------------ mongoDB connection ------------------------------
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/";
+var url = "mongodb://172.16.18.189:27017/";
 
 // Use connect method to connect to the server
 MongoClient.connect(url, function(err, db) {

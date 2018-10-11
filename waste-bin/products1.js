@@ -46,7 +46,7 @@ function onLoad() {
 
 
 
-    //  fetch('http://localhost:3000/product',{content-}).then((respose)=>{
+    //  fetch('http://172.16.18.189:3000/product',{content-}).then((respose)=>{
     //      console.log(respose.json());
     //      var products = respose.body.products // [{name : "P1", id  :1},{name : "P2", id  :2}] // respose.products;
 
