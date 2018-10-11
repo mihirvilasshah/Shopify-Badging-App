@@ -131,7 +131,11 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
+      let x = (tags) => this.split.filter((v,i) => this.split.indexOf(v) === i)
+      x(this.split);
+      this.split= x(this.split);
       console.log(this.split);
+      console.log( x(this.split));
     });
 
     let cur = this.http.get("http://172.16.18.189:3000/currency")
