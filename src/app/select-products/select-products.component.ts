@@ -247,15 +247,14 @@ export class SelectProductsComponent implements OnInit {
 
         var items = Object.values(data);
         console.log("items:", items)
-        console.log("items:", items)
-        // this.titles = items[0];
-        // this.badges = items[2];
+        this.titles = items[0];
+        this.badges = items[2];
 
-        // this.pids = items[1];
-        // this.tags = items[3];
-        // this.created_At = items[4];
-        // this.isApplied=items[5];
-      
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -266,7 +265,8 @@ export class SelectProductsComponent implements OnInit {
                   name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
                 }
                 this.structuredTitle.push(a);
-            
+             
+              
               this.showTitle = this.structuredTitle;
 
                if (this.pids.length == 0) {
@@ -282,7 +282,8 @@ export class SelectProductsComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-        }
+      }
+
       })
 
       this.spinner.hide();
@@ -314,15 +315,14 @@ export class SelectProductsComponent implements OnInit {
 
         var items = Object.values(data);
         console.log("items:", items)
-        console.log("items:", items)
-        // this.titles = items[0];
-        // this.badges = items[2];
+        this.titles = items[0];
+        this.badges = items[2];
 
-        // this.pids = items[1];
-        // this.tags = items[3];
-        // this.created_At = items[4];
-        // this.isApplied=items[5];
-      
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -333,7 +333,8 @@ export class SelectProductsComponent implements OnInit {
                   name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
                 }
                 this.structuredTitle.push(a);
-            
+             
+              
               this.showTitle = this.structuredTitle;
 
                if (this.pids.length == 0) {
@@ -349,7 +350,8 @@ export class SelectProductsComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-        }
+      }
+
       })
 
       this.spinner.hide();
@@ -379,19 +381,20 @@ export class SelectProductsComponent implements OnInit {
     setTimeout(() => {
       let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
       obs.subscribe(data => {
+        
 
         var items = Object.values(data);
 
         var self = this;        
         console.log("items:", items)
-        // this.titles = items[0];
-        // this.badges = items[2];
+        this.titles = items[0];
+        this.badges = items[2];
 
-        // this.pids = items[1];
-        // this.tags = items[3];
-        // this.created_At = items[4];
-        // this.isApplied=items[5];
-      
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -402,7 +405,8 @@ export class SelectProductsComponent implements OnInit {
                   name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
                 }
                 this.structuredTitle.push(a);
-            
+             
+              
               this.showTitle = this.structuredTitle;
 
                if (this.pids.length == 0) {
@@ -418,12 +422,14 @@ export class SelectProductsComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-        }
+      }
+
       })
 
       this.spinner.hide();
     }, 1000);
   }
+
 
   applyTitleFn() {
 
@@ -447,27 +453,30 @@ export class SelectProductsComponent implements OnInit {
 
         var items = Object.values(data);
         console.log("items:", items)
+        console.log("items:", items)
         this.titles = items[0];
         this.badges = items[2];
-        this.pids = items[1];
-        console.log("badhes:" + this.badges);
-        console.log("pids:" + this.pids);
 
+        this.pids = items[1];
+        this.tags = items[3];
+        this.created_At = items[4];
+        this.isApplied=items[5];
+        
 
         this.structuredTitle = [];
-
+        self["items"] = items;
+        var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
-          this.structuredTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
-        }
-        this.showTitle = this.structuredTitle;
+                var a = {
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                }
+                this.structuredTitle.push(a);
+             
+              
+              this.showTitle = this.structuredTitle;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
-
-
-
-        if (this.pids.length == 0) {
+               if (this.pids.length == 0) {
           this.msg = "No matches found."
           this.show = false;
         }
@@ -476,9 +485,11 @@ export class SelectProductsComponent implements OnInit {
           this.show = true;
         }
         // var pids = data[pids];
-        this.applyTag = true;
+        this.applyTitle = true;
 
-        // this.show = true;
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+      }
 
       })
 
