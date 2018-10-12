@@ -46,7 +46,7 @@
 
         </form>
     </div>
-    <div *ngIf="selectedFilter=='Date'">
+    <div *ngIf="selectedFilter=='Created Date'">
         <form>
             <label for="d1">From:
                 <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
@@ -146,21 +146,17 @@
                 <!-- <label class="form-check-label; "> -->
                     <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
                         
-                            <td style="text-align: left">
-                                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
-                            <!-- <td>{{title.pids}}</td> -->
-                            <!-- <td > <img height="50px" width="50px" alt="badge applied" src=http://172.16.18.189:3000/picture/{{title.badges}}> </td> -->
-
-                            <!-- <td><img src={{title.badges}} alt="" border=3 height=50 width=50></td> -->
-                            <td>{{title.tags}} </td>
-                            <td>{{title.created_at}}</td>
-                            <td>{{title.isApplied}}</td>
-                            <!-- <td *ngIf="title.thumbnail"> <img height="50px" width="50px" alt="badge applied" src="http://172.16.18.189:3000/picture/`{{title.thumbnail}}`"></td> -->
-                            <!-- <td>{{title.thumbnail}}</td> -->
-                            <!-- <td>{{title.badges}}</td> -->
-
-                        
-                    </tr>
+                           
+                        <td style="text-align: left">
+                            <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
+                       
+                        <td>{{title.tags}} </td>
+                        <td>{{title.created_at}}</td>
+                        <td><div *ngIf="title.badges=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
+                            <div *ngIf="title.badges!='-'"><img src = {{title.badges}} style="height: 40px; width: 40px"></div>
+                                
+                             </td>
+                   </tr>
                 <!-- </label> -->
                 
                 <!-- </div> -->

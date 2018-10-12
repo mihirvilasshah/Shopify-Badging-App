@@ -75,7 +75,7 @@ export class RemoveBadgesComponent implements OnInit {
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
     { name: 'Price' },
-    { name: 'Date' },
+    { name: 'Created Date' },
     { name: 'Title' },
     { name: 'Tag' },
   ];
@@ -249,9 +249,10 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
                 var a = {
-                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i]
                 }
                 this.structuredTitle.push(a);
+              }
              
               
               this.showTitle = this.structuredTitle;
@@ -269,7 +270,7 @@ export class RemoveBadgesComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-      }
+      
 
       })
 
@@ -317,9 +318,10 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
                 var a = {
-                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i]
                 }
                 this.structuredTitle.push(a);
+              }
              
               
               this.showTitle = this.structuredTitle;
@@ -337,7 +339,7 @@ export class RemoveBadgesComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-      }
+      
 
       })
 
@@ -389,9 +391,10 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
                 var a = {
-                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i]
                 }
                 this.structuredTitle.push(a);
+              }
              
               
               this.showTitle = this.structuredTitle;
@@ -409,7 +412,7 @@ export class RemoveBadgesComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-      }
+      
 
       })
 
@@ -456,9 +459,10 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
                 var a = {
-                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i]
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i]
                 }
                 this.structuredTitle.push(a);
+              }
              
               
               this.showTitle = this.structuredTitle;
@@ -476,7 +480,7 @@ export class RemoveBadgesComponent implements OnInit {
 
         console.log("titles:", this.titles);
         console.log("structuredTitle:", this.structuredTitle);
-      }
+      
 
       })
 
