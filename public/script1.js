@@ -17,7 +17,7 @@ aren’t available to the outside world. */
     /* Load Script function we may need to load jQuery from the Google's CDN */
     /* That code is world-reknown. */
     /* One source: http://snipplr.com/view/18756/loadscript/ */
-    const forwardingAddress = "https://1a53ddf0.ngrok.io";
+    const forwardingAddress = "https://1fde5866.ngrok.io";
     
     var loadScript = function(url, callback){
      
