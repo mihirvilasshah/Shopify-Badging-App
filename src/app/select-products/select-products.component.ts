@@ -175,7 +175,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
           console.log(this.showTitle);
         }
       }
@@ -185,7 +185,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
@@ -219,7 +219,7 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
 
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
@@ -229,7 +229,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
