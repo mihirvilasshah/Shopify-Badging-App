@@ -174,7 +174,7 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "yes") {
+        if (this.structuredTitle[i].isApplied == "yes") {
           this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
           console.log(this.showTitle);
         }
@@ -184,7 +184,7 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "no") {
+        if (this.structuredTitle[i].isApplied == "no") {
           this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
 
         }
@@ -217,7 +217,7 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "yes") {
+        if (this.structuredTitle[i].isApplied == "yes") {
 
           this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
 
@@ -228,7 +228,7 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "no") {
+        if (this.structuredTitle[i].isApplied == "no") {
           this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
 
         }
