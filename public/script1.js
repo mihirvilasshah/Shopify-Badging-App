@@ -69,8 +69,8 @@ aren’t available to the outside world. */
               
                var link = forwardingAddress+"/picture/"+ data.Bid; 
                $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
-               $('.product-single__photo-wrapper').eq(0).css('opacity', data.opacity);
-               console.log(data.opacity);
+               $('.product-single__photo-wrapper').eq(0).css('opacity', data.opvalue);
+               console.log(data.opvalue);
                $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="60" width="60" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
             }           
           }
