@@ -134,7 +134,7 @@ export class CustomizeComponent {
   slidervalue(value){
     this.opvalue = value/100;
 
-// document.getElementById("image1").style.opacity = this.opvalue;
+document.getElementById("image1").style.opacity = this.opvalue;
 
 this.badge.setOpval(this.opvalue);
 console.log("in slidervalue"+this.opvalue);
