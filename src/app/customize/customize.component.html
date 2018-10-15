@@ -25,7 +25,7 @@
         </h4>
     
       <div class="slidecontainer" >
-            <input type="range"  #slider max="100"  class="slider" id="myRange" [(ngModel)]="opvalue" (input) = "slidervalue(slider.value)">
+            <input type="range"  #slider max="100" value ="100" class="slider" id="myRange" (input) = "slidervalue(slider.value)">
             <span>Value: {{opvalue}}</span>
           </div>
           <br>
