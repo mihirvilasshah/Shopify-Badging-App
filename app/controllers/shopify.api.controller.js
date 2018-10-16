@@ -56,21 +56,22 @@ exports.install = (req, res) => {
             '&redirect_uri=' + AppUri;
 
         res.cookie('state', state);
+        res.redirect(installUrl);
 
-        MongoClient.connect(url, function (err, db) {
-            var dbo = db.db("shopifydbclone");
-            dbo.listCollections({ name: shop })
-                .next(function (err, collinfo) {
-                    if (!collinfo) {
+        // MongoClient.connect(url, function (err, db) {
+        //     var dbo = db.db("shopifydbclone");
+        //     dbo.listCollections({ name: shop })
+        //         .next(function (err, collinfo) {
+        //             if (!collinfo) {
 
-                        res.redirect(installUrl);
-                    }
-                    else {
+        //                 res.redirect(installUrl);
+        //             }
+        //             else {
 
-                        res.redirect(appUrl);
-                    }
-                });
-        });
+        //                 res.redirect(appUrl);
+        //             }
+        //         });
+        // });
     } else {
         return res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your request');
     }
@@ -191,7 +192,8 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        request.get(forwardingAddress + '/shopdet');
+                        
+                   
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
@@ -200,6 +202,8 @@ exports.auth = (req, res) => {
                                     if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
+                                        request.get(forwardingAddress + '/creatscript');
+                                        request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
                                         // console.log("Started copying DB");
                                     }
@@ -864,108 +868,6 @@ exports.selectedBadgeID = (req, res) => {
 }
 
 
-exports.getProductPriceRange = (req, res) => {
-    var myquery;
-    var t1 = req.params.t1;
-    var tr = req.params.tr;
-    var badge = [];
-    var thumbnail=[];
-    
-    var titles = [];
-    var abids =[];
-    var pids = [];
-    var tags =[];
-    var price =[];
-    var created_At =[];
-    var isApplied=[];
-
-        // var dbo = db.db("shopifydbclone");
-
-        console.log("inside getProdPrice");
-        // var myquery = { _id: ObjectId(req.params.id) };
-        // var myquery = { "variants.0.price":{$gte:"100"} };
-        p1 = req.params.p1;
-        console.log("p1: " + p1);
-        p2 = req.params.p2;
-        console.log("p2: " + p2);
-        // var myquery=req.params.query;
-
-        pr = req.params.pr;
-        console.log("pr: " + pr);
-        var myquery;
-        // var myquery=req.params.query;
-
-        
-        if (pr == "all") {
-            myquery = {
-                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-                // "variants": { price: { "$gte": p1, "$lte": p2 } }
-            }
-        } else if (pr == "withBadges") {
-            myquery = {
-                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-                "badge": { $exists: true }
-            }
-        } else if (pr == "withoutBadges") {
-            myquery = {
-                "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-                "badge": { $exists: false }
-            }
-        }
-        
-
-        console.log(myquery);
-        //var queryObj = JSON.parse(myquery);
-        //console.log(queryObj); 
-
-        // dbo.collection("shopify_collection").find(myquery, function (err, obj) {
-        //     if (err) throw err;
-        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-            if (err) throw err;
-
-        var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, ABid: 1, created_at:1, tags:1 } }).toArray(function (err, obj) {
-           if (err) throw err;
-           var products = obj;
-           //var ids = result[0];
-
-           for (var i = 0; i < products.length; i++) {
-               titles[i] = products[i].title;
-               pids[i] = products[i]._id;
-               abids[i]=products[i].ABid;
-               var x=products[i].created_at.split("T");
-               created_At[i]=x[0];
-               tags[i]=products[i].tags;
-               if(products[i].ABid){
-                   isApplied[i]="yes";
-               }
-               else
-               isApplied[i]="no";
-           }
-
-       
-           for (var i = 0; i < products.length; i++) {
-               if( products[i].ABid){
-                   badge[i] = products[i].ABid
-
-                   console.log("product id"+badge[i]);
-        
-               }
-               
-               else if (!badge[i]){
-                   console.log("else if thumbnail "+thumbnail[i]);
-                   badge[i] = null;
-                  
-               }
-           }
-       console.log("done with grt prod title");
-   res.send({ "items": titles, "pids": pids, "badge": badge, "tags":tags, "created_at":created_At, "isApplied":isApplied});
-
-   });
-   // res.send({ message: "Found product" });
-
-});
-};
 
 exports.getProductPriceRange = (req, res) => {
     var myquery;
@@ -1008,12 +910,12 @@ exports.getProductPriceRange = (req, res) => {
     } else if (pr == "withBadges") {
         myquery = {
             "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge": { $exists: true }
+            "badge":{ $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
             "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge": { $exists: false }
+            "badge":{ $size: 0 }
         }
     }
 
@@ -1024,31 +926,52 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1,  created_at: 1, tags: 1, "badge.Bid":1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1,  created_at: 1, tags: 1, "badge":1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
 
             //var ids = result[0];
 
             for (var i = 0; i < products.length; i++) {
+                var b = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge) {
-                    bids[i] = "http://localhost:3000/picture/"+ products[i].badge.Bid;
+                if (products[i].badge&&products[i].badge.length>0) {
+                    
+                    var j= 0;
+                    
+                   while(products[i].badge[j]){
+                    b[j] =  products[i].badge[j].Bid;
+                    console.log("b",b[j] );
+                    j++;
 
+                }
+                bids[i] = b;
+                console.log("bids",bids[i] );
                     isApplied[i] = "yes";
 
                }
+            
                  else {
                     isApplied[i] = "no";
-                    bids[i] = "-";
+                    var j = 0;
                     
+                     b[j] = "-";
+                     console.log("b",b[j] );
+                     j++;
+                     bids[i] = b;
+ 
                  }
+                 
+                 console.log("bids",bids[i] );
+              
+
 
             }
+            console.log("bids",bids );
 
                     res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
             
@@ -1087,12 +1010,12 @@ exports.getProductDateRange = (req, res) => {
     } else if (dr == "withBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge": { $exists: true }
+            "badge":{ $exists: true, $ne: [] }
         }
     } else if (dr == "withoutBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge": { $exists: false }
+            "badge":{$not: {$size: 0}}
         }
     }
 
@@ -1114,27 +1037,41 @@ exports.getProductDateRange = (req, res) => {
             console.log(obj);
 
             //var ids = result[0];
-
             for (var i = 0; i < products.length; i++) {
+                var b = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
-                tags[i] = products[i].tags; 
-                
-
-                if (products[i].badge) {
-                    bids[i] = "http://localhost:3000/picture/"+ products[i].badge.Bid;
+                tags[i] = products[i].tags;
+                if (products[i].badge&&products[i].badge.length>0) {
+                    var j= 0;
                     
+                   while(products[i].badge[j]){
+                    b[j] = products[i].badge[j].Bid;
+                    console.log("b",b[j] );
+                    j++;
 
+                }
+                bids[i] = b;
+                console.log("bids",bids[i] );
                     isApplied[i] = "yes";
 
                }
                  else {
                     isApplied[i] = "no";
-                    bids[i] = "-";
+                    var j = 0;
                     
+                     b[j] = "-";
+                     console.log("b",b[j] );
+                     j++;
+                     bids[i] = b;
+ 
                  }
+                 
+                 console.log("bids",bids[i] );
+              
+
 
             }
 
@@ -1172,7 +1109,7 @@ exports.getProductTitle = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'title': new RegExp(t1, 'i'),
-            'badge': { $exists: true }
+            "badge":{ $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1191,22 +1128,40 @@ exports.getProductTitle = (req, res) => {
             //var ids = result[0];
 
             for (var i = 0; i < products.length; i++) {
+                var b = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge) {
-                    bids[i] = "http://localhost:3000/picture/"+ products[i].badge.Bid;
+                if (products[i].badge&&products[i].badge.length>0) {
+                    var j= 0;
+                    
+                   while(products[i].badge[j]){
+                    b[j] =  products[i].badge[j].Bid;
+                    console.log("b",b[j] );
+                    j++;
 
+                }
+                bids[i] = b;
+                console.log("bids",bids[i] );
                     isApplied[i] = "yes";
 
                }
                  else {
                     isApplied[i] = "no";
-                    bids[i] = "-";
+                    var j = 0;
                     
+                     b[j] = "-";
+                     console.log("b",b[j] );
+                     j++;
+                     bids[i] = b;
+ 
                  }
+                 
+                 console.log("bids",bids[i] );
+              
+
 
             }
       
@@ -1256,7 +1211,7 @@ exports.getProductTag = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'tags': new RegExp(tg1, 'i'),
-            'badge': { $exists: true }
+            "badge":{ $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1281,24 +1236,41 @@ exports.getProductTag = (req, res) => {
             var products = obj;
 
             //var ids = result[0];
-
             for (var i = 0; i < products.length; i++) {
+                var b = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge) {
-                    bids[i] = "http://localhost:3000/picture/"+ products[i].badge.Bid;
+                if (products[i].badge&&products[i].badge.length>0) {
+                    var j= 0;
+                    
+                   while(products[i].badge[j]){
+                    b[j] = products[i].badge[j].Bid;
+                    console.log("b",b[j] );
+                    j++;
 
+                }
+                bids[i] = b;
+                console.log("bids",bids[i] );
                     isApplied[i] = "yes";
 
                }
                  else {
                     isApplied[i] = "no";
-                    bids[i] = "-";
+                    var j = 0;
                     
+                     b[j] = "-";
+                     console.log("b",b[j] );
+                     j++;
+                     bids[i] = b;
+ 
                  }
+                 
+                 console.log("bids",bids[i] );
+              
+
 
             }
    
@@ -1328,7 +1300,7 @@ exports.publishBadges = (req, res) => {
 
         
 
-            var newvalues = { $set: { "badge":  { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval } } };
+            var newvalues = { $push: { "badge":  { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval } } };
 
 
             for (var i = 0; i < req.body.pid.length; i++) {
@@ -1354,20 +1326,25 @@ exports.unpublishBadges = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
+        console.log("response result");
 
-        // console.log(req.body.pid);
+        console.log(req.body.pid);
 
         for (var i = 0; i < req.body.pid.length; i++) {
             var myquery = {
-                "_id": ObjectId(req.body.pid[i])
+                "_id": ObjectId(req.body.pid[i].prodid)
             };
-            console.log("pids: " + req.body.pid[i]);
-            var newvalues = { $unset: { "badge": 1 } };
+            var badges = [];
+            for(var j =0;j<req.body.pid[i].bid.length;j++){
+                console.log(req.body.pid[i].bid[j]);
+
+            var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
 
             dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                 if (err) throw err;
                 console.log("removed badge from product: " + obj);
             });
+        }
         }
 
 
