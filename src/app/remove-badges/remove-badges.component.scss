@@ -1,4 +1,10 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
+@import url('https://fonts.googleapis.com/css?family=Arvo');
+
+h6{
+font-family: 'Arvo', serif !important; 
+    font-size: 1.5em !important;
+}
 
 .flex-container {
   display: flex;
