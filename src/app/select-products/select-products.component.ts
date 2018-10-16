@@ -174,8 +174,8 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "yes") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+        if (this.structuredTitle[i].isApplied == "yes") {
+          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
           console.log(this.showTitle);
         }
       }
@@ -184,8 +184,8 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+        if (this.structuredTitle[i].isApplied == "no") {
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
@@ -217,9 +217,9 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "yes" && this.wob == "no") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "yes") {
+        if (this.structuredTitle[i].isApplied == "yes") {
 
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
@@ -228,8 +228,8 @@ export class SelectProductsComponent implements OnInit {
     if (this.wb == "no" && this.wob == "yes") {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
-        if (this.structuredTitle[i].badges == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i] });
+        if (this.structuredTitle[i].isApplied == "no") {
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
 
         }
       }
@@ -268,6 +268,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        console.log("multiple badges", this.badges);
 
 
         this.structuredTitle = [];

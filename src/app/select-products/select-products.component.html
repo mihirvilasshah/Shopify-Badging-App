@@ -153,13 +153,14 @@
                 <!-- <label class="form-check-label; "> -->
                     <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
                         
+                        
                             <td style="text-align: left">
                                 <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
                            
                             <td>{{title.tags}} </td>
                             <td>{{title.created_at}}</td>
-                            <td><div *ngIf="title.badges=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
-                                <div *ngIf="title.badges!='-'"><img src = {{title.badges}} style="height: 40px; width: 40px"></div>
+                            <td><div  *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
+                                <div  *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.badges" src = "http://localhost:3000/picture/{{badge}}" style="height: 40px; width: 40px; margin-right: 15px"> </div>
                                     
                                  </td>
                          
