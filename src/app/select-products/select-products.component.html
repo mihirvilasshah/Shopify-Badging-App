@@ -167,7 +167,7 @@
                             <td>{{title.tags}} </td>
                             <td>{{title.created_at}}</td>
                             <td><div  *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
-                                <div  *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.badges" src = "http://localhost:3000/picture/{{badge}}" style="height: 40px; width: 40px; margin-right: 15px"> </div>
+                                <div  *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.src" src = {{badge}} style="height: 40px; width: 40px; margin-right: 15px"> </div>
                                     
                                  </td>
                          

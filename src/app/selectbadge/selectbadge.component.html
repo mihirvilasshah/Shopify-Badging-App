@@ -16,7 +16,7 @@
       <div id="libImageContainer" >
           <label  *ngFor="let pic of LibPictures; let i= index" style="margin:10px">
               <input id="pic" type="radio" class="LibRadio" name="lib" (click)="selectedPic(i,0)" >
-              <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&lib ? 'active' : 'not-active'">
+              <img src={{pic.imageSource}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&lib ? 'active' : 'not-active'">
             </label>
         </div>
   </mat-tab>
@@ -25,7 +25,7 @@
       <div id="UserImageContainer"  >
           <label *ngFor="let pic of UserPictures; let i= index" class="img-wrap" style="margin:10px">
               <input id="pic" type="radio" class="UserRadio" name="user" (click)="selectedPic(i,1)" >
-              <img src={{pic}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&!lib ? 'active' : 'not-active'">
+              <img src={{pic.imageSource}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&!lib ? 'active' : 'not-active'">
               <span class="close" (click)="deleteBadge(i)">&times;</span>
               
             </label>

@@ -41,6 +41,7 @@ export class RemoveBadgesComponent implements OnInit {
   pr;
   pr1;
   tag;
+  src =[];
 
   selectedEntry;
   titles;
@@ -160,13 +161,15 @@ export class RemoveBadgesComponent implements OnInit {
         console.log("items:", items)
         this.titles = items[0];
         var temp_badges = items[2];
+        this.src=items[6];
         console.log(temp_badges);
         for(var i = 0; i< temp_badges.length; i++){
           var temparray = temp_badges[i];
+          var tempsrc = this.src[i];
           var a1 = [];
           for(var j = 0; j< temparray.length; j++){
             
-            a1.push({"badg": temparray[j], "selected": false });
+            a1.push({"badg": temparray[j], "selected": false, "src": tempsrc[j] });
 
           }
 
@@ -180,6 +183,7 @@ export class RemoveBadgesComponent implements OnInit {
         this.created_At = items[4];
         this.isApplied=items[5];
         
+        
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -187,7 +191,7 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
                 var a = {
-                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i]
+                  name:items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied:items[5][i], badges: this.badges[i],src: this.src[i]
                 }
                 this.structuredTitle.push(a);
               }
