@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='tricon-jewel-store.myshopify.com';
+var globalShop = 'tricon-dev-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -193,8 +193,8 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        
-                   
+
+
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
@@ -724,10 +724,11 @@ exports.upload = (req, res) => {
             console.log("pic file name=" + picname);
             // read the img file from tmp in-memory location
             var newImg = fse.readFileSync(req.file.path);
-            fse.copySync(req.file.path, 'src/img/' + picname);
+            var codedPicName = Math.random() * Math.pow(10, 20) + picname;
+            fse.copySync(req.file.path, 'Badges/' + globalShop + '/image/' + codedPicName);
 
-            const INPUT_path_to_your_images = 'src/img/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}';
-            const OUTPUT_path = 'build/img/';
+            const INPUT_path_to_your_images = 'Badges/' + globalShop + '/image/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}';
+            const OUTPUT_path = 'Badges/' + globalShop + '/thumbnail/';
 
             compress_images(INPUT_path_to_your_images, OUTPUT_path, { compress_force: false, statistic: true, autoupdate: true }, false,
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
@@ -738,13 +739,20 @@ exports.upload = (req, res) => {
             // encode the file as a base64 string.
             var encImg = newImg.toString('base64');
             // define your new document
+            newpicname = codedPicName;
+            if (req.file.mimetype == "image/png" || req.file.mimetype == "image/gif") {
+                var split = codedPicName.split(".");
+                newpicname = split[0] + ".webp";
+            }
             var newItem = {
+
+                // size: req.file.size,
+                // img: Buffer(encImg, 'base64'),
+                imageName: picname,
+                imageSource: "http://localhost:3000/Badges/" + globalShop + "/image/" + codedPicName, // not name, it should be id
+                thumbnailSource: "http://localhost:3000/Badges/" + globalShop + "/thumbnail/" + newpicname,
                 contentType: req.file.mimetype,
-                size: req.file.size,
-                img: Buffer(encImg, 'base64'),
-                src: "http://localhost:3000/originalImage/"+picname,
-                srcComp: "http://localhost:3000/compImage/"+picname,
-                default: false // not name, it should be id
+                // default: false 
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -849,9 +857,45 @@ exports.getPicture = (req, res) => {
                 res.setHeader('content-type', results.contentType);
                 // send only the base64 string stored in the img object
                 // buffer element
-                res.send(results.img.buffer);
+                res.send(results.imageSource);
             });
     });
+}
+
+exports.getMyBadges = (req, res) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection('badges')
+            .find({}, { projection: { imageSource: 1 } }).toArray(function (err, results) {
+                // res.setHeader('content-type', results.contentType);
+                var obj = [];
+                for (var i = 0; i < results.length; i++) {
+                    obj[i] = { _id: results[i]._id, imageSource: results[i].imageSource, default: false };
+                }
+                res.send(obj);
+                console.log(obj);
+            });
+
+    });
+
+}
+
+exports.getMyLibrary = (req, res) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection('Library_Badges_Default')
+            .find({}, { projection: { imageSource: 1 } }).toArray(function (err, results) {
+                // res.setHeader('content-type', results.contentType);
+                var obj = [];
+                for (var i = 0; i < results.length; i++) {
+                    obj[i] = { _id: results[i]._id, imageSource: results[i].imageSource, default: true };
+                }
+                res.send(obj);
+                console.log(obj);
+            });
+
+    });
+
 }
 
 exports.preview = (req, res) => {
@@ -897,6 +941,7 @@ exports.getProductPriceRange = (req, res) => {
     var titles = [];
 
     var bids = [];
+    var srcs = [];
 
     var pids = [];
     var tags = [];
@@ -929,12 +974,12 @@ exports.getProductPriceRange = (req, res) => {
     } else if (pr == "withBadges") {
         myquery = {
             "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
             "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge":{ $size: 0 }
+            "badge": { $size: 0 }
         }
     }
 
@@ -945,7 +990,7 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1,  created_at: 1, tags: 1, "badge":1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(products);
@@ -954,46 +999,53 @@ exports.getProductPriceRange = (req, res) => {
 
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] =  products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    var j = 0;
+
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
+                        console.log("b", b[j]);
+                        console.log("src", src[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
-               }
-            
-                 else {
+                }
+
+                else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    src[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
-            console.log("bids",bids );
+            console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs});
 
 
         });
@@ -1030,12 +1082,12 @@ exports.getProductDateRange = (req, res) => {
     } else if (dr == "withBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (dr == "withoutBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge":{$not: {$size: 0}}
+            "badge": { $not: { $size: 0 } }
         }
     }
 
@@ -1064,33 +1116,33 @@ exports.getProductDateRange = (req, res) => {
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] = products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        console.log("b", b[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
@@ -1129,7 +1181,7 @@ exports.getProductTitle = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'title': new RegExp(t1, 'i'),
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1154,33 +1206,33 @@ exports.getProductTitle = (req, res) => {
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] =  products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        console.log("b", b[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
@@ -1231,7 +1283,7 @@ exports.getProductTag = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'tags': new RegExp(tg1, 'i'),
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1263,33 +1315,33 @@ exports.getProductTag = (req, res) => {
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] = products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        console.log("b", b[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
@@ -1314,27 +1366,46 @@ exports.publishBadges = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
+        var collection = '';
+        if (req.body.default) {
+            collection = "Library_Badges_Default";
+        }
+        else {
+            collection = "badges";
+        }
+        var query = {
+            "_id": ObjectId(req.body.bid)
+        };
+        var imgsrc;
+        var thumbnailSrc;
+        dbo.collection(collection).findOne(query, function (err, obj) {
+            if (err) throw err;
+            console.log("published: ");
+            console.log(obj);
+            imgsrc = obj.imageSource;
+            thumbnailSrc = obj.thumbnailSource;
+
+            var newvalues = { $push: { "badge": { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
+
+            for (var i = 0; i < req.body.pid.length; i++) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i])
+                };
+                console.log("pids: " + req.body.pid[i]);
+
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("product updated ABid: " + obj);
+                });
+            }
+
+        });
 
 
         // if (flag == 0) {
 
 
-            var newvalues = { $push: { "badge":  { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval } } };
 
-       
-
-
-        for (var i = 0; i < req.body.pid.length; i++) {
-            var myquery = {
-                "_id": ObjectId(req.body.pid[i])
-            };
-            console.log("pids: " + req.body.pid[i]);
-
-            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                if (err) throw err;
-                console.log("product updated ABid: " + obj);
-            });
-        }
 
 
     });
@@ -1356,16 +1427,16 @@ exports.unpublishBadges = (req, res) => {
                 "_id": ObjectId(req.body.pid[i].prodid)
             };
             var badges = [];
-            for(var j =0;j<req.body.pid[i].bid.length;j++){
+            for (var j = 0; j < req.body.pid[i].bid.length; j++) {
                 console.log(req.body.pid[i].bid[j]);
 
-            var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
+                var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
 
-            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                if (err) throw err;
-                console.log("removed badge from product: " + obj);
-            });
-        }
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("removed badge from product: " + obj);
+                });
+            }
         }
 
 
@@ -1422,8 +1493,15 @@ exports.deleteBadge = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
         var dbo = db.db("shopifydbclone");
-        var myquery = { _id: ObjectId(req.body.id) };
+        var myquery = { imageName: req.body.name };
         console.log(myquery);
+        fse.removeSync('Badges/' + globalShop + '/image/' + req.body.name);
+        // newpicname = req.body.name;
+        //     if (req.file.mimetype == "image/png" || req.file.mimetype == "image/gif") {
+        //         var split = req.body.name.split(".");
+        //         newpicname = split[0] + ".webp";
+        //     }
+        // fse.removeSync('Badges/' + globalShop + '/thumbnail/' +newpicname);
         dbo.collection("badges").deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             if (obj.deletedCount) {
