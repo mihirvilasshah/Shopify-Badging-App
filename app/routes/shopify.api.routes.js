@@ -40,7 +40,7 @@ module.exports = (app) => {
 
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-          cb(null, '/data')
+          cb(null, '/mih')
         },
         filename: function (req, file, cb) {
           cb(null, file.fieldname + '-' + Date.now())
@@ -76,6 +76,7 @@ module.exports = (app) => {
 
     // upload pic using uploader
     app.post('/api/upload', upload.single('photo'), controller.upload);
+ 
     // app.get('/api', controller.api )
     app.post('/deleteUserBadge/',controller.deleteBadge);
    
