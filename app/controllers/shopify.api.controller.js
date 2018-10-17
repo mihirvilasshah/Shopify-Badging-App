@@ -929,6 +929,7 @@ exports.getProductPriceRange = (req, res) => {
         dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1,  created_at: 1, tags: 1, "badge":1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
+            console.log(products);
 
             //var ids = result[0];
 
