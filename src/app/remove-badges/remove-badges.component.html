@@ -45,12 +45,29 @@
     </div>
     <div *ngIf="selectedFilter=='Created Date'">
         <form>
-            <label for="d1">From:
-                <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
-            </label>
-            <label for="d2">To:
-                <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
-            </label>
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- <label for="d1"> -->
+                <h6>From:</h6>
+                <!-- <input class="mdl-textfield__input" type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()"
+                            placeholder="12/01/2017"> -->
+
+                <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="model1" required placeholder="yyyy-mm-dd"
+                    id="d1"></my-date-picker>
+                <!-- </label> -->
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- <label for="d2"> -->
+                <h6>To:</h6>
+                <!-- <input class="mdl-textfield__input" type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()"
+                            placeholder="12/01/2017"> -->
+
+                <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="model2" required placeholder="yyyy-mm-dd"
+                    id="d2"></my-date-picker>
+                <!-- </label> -->
+            </div>
+            <!-- <label for="d2">To:
+                    <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
+                </label> -->
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
@@ -59,10 +76,12 @@
 
         </form>
     </div>
+    
     <div *ngIf="selectedFilter=='Title'">
         <form>
             <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title">
+                <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()"
+                    placeholder="Search by title">
                 <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
             </div>
 
@@ -112,7 +131,8 @@
 
 
         <div class="form-group">
-            <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()" style="margin-left: 10px;">
+            <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()"
+                style="margin-left: 10px;">
             <label for="all" style="margin-left: 34px;">Select All</label>
             <br>
 

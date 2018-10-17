@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { IMyDpOptions } from 'mydatepicker';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
@@ -22,6 +23,13 @@ export interface filter {
 export class SelectProductsComponent implements OnInit {
 
   // filters = ["Price","Date","Title"];
+  public myDatePickerOptions: IMyDpOptions = {
+    // other options...
+    dateFormat: 'yyyy-mm-dd',
+    width: '60%'
+  };
+  public model1: any ;
+  public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
 
   price1;
   price2;
@@ -175,7 +183,11 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
+<<<<<<< HEAD
           this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+=======
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+>>>>>>> c6028e8455e3fa92ad8a3bac4a6084ff19af7ec8
           console.log(this.showTitle);
         }
       }
@@ -219,7 +231,11 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
 
+<<<<<<< HEAD
           this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+=======
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+>>>>>>> c6028e8455e3fa92ad8a3bac4a6084ff19af7ec8
 
         }
       }
@@ -284,22 +300,22 @@ export class SelectProductsComponent implements OnInit {
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -325,9 +341,12 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
+      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
+        // console.log("date", this.date1);
+        console.log("dateModel", this.model1.formatted);
+        console.log("dateModel2", this.model2.formatted);
         console.log(this.pr);
 
         var items = Object.values(data);
@@ -353,22 +372,22 @@ export class SelectProductsComponent implements OnInit {
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -426,22 +445,22 @@ export class SelectProductsComponent implements OnInit {
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -494,22 +513,22 @@ export class SelectProductsComponent implements OnInit {
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 

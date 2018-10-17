@@ -5,6 +5,7 @@ import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgxSmartModalService } from 'ngx-smart-modal';
+import { IMyDpOptions } from 'mydatepicker';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
@@ -20,6 +21,13 @@ export interface filter {
 export class RemoveBadgesComponent implements OnInit {
 
   // filters = ["Price","Date","Title"];
+  public myDatePickerOptions: IMyDpOptions = {
+    // other options...
+    dateFormat: 'yyyy-mm-dd',
+    width: '60%'
+  };
+  public model1: any ;
+  public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
 
   price1;
   price2;
@@ -226,7 +234,7 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/withBadges")
+      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/withBadges")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
