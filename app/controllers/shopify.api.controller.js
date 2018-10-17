@@ -738,7 +738,8 @@ exports.upload = (req, res) => {
                 contentType: req.file.mimetype,
                 size: req.file.size,
                 img: Buffer(encImg, 'base64'),
-                src: picname,
+                src: "http://localhost:3000/originalImage/"+picname,
+                srcComp: "http://localhost:3000/compImage/"+picname,
                 default: false // not name, it should be id
             };
             var dbo = db.db("shopifydbclone");
