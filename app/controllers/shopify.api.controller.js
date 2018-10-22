@@ -194,7 +194,7 @@ exports.auth = (req, res) => {
 
                         console.log("Token: " + globalToken);
 
-
+                        request.get(forwardingAddress + '/gettheme');
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
@@ -206,6 +206,7 @@ exports.auth = (req, res) => {
                                         request.get(forwardingAddress + '/creatscript');
                                         request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
+                                        request.get(forwardingAddress + '/gettheme');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -381,6 +382,90 @@ exports.creatscript = (req, res) => {
             if (error) throw error;
         });
 }
+
+exports.gettheme = (req, res) => {
+    const shopRequestUrl1 = 'https://' + globalShop + '/admin/themes.json';
+    const shopRequestHeaders = {
+        'X-Shopify-Access-Token': globalToken,
+    };
+    var themeid;
+    request.get(shopRequestUrl1, { headers: shopRequestHeaders })
+        .then((themeID) => {
+            themeid = JSON.parse(themeID).themes[0].id;
+            console.log("theme ID:", themeid);
+
+            const shopRequestUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=layout/theme.liquid&theme_id=' + themeid;
+            var theme;
+
+            request.get(shopRequestUrl, { headers: shopRequestHeaders })
+                .then((shopResponse) => {
+                    theme = JSON.parse(shopResponse).asset.value;
+                    console.log("theme details");
+                    console.log(shopResponse);
+                    console.log("theme:");
+                    console.log(theme);
+                    var split = theme.split("{{ content_for_header }}");
+                    theme = split[0] + "{{ content_for_header }} test" + split[1];
+                    console.log(theme);
+
+
+                    const Scriptjson = {
+                        asset: {
+                            key: "layout/theme.liquid",
+                            value: theme
+                        }
+                    };
+
+                    const Scriptheaders = {
+                        'X-Shopify-Access-Token': globalToken,
+                        // 'X-Shopify-Topic': "products/create",
+                        // 'X-Shopify-Shop-Domain': globalShop,
+                        'Content-Type': "application/json"
+                    };
+
+                    const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
+
+                    // const Scriptjson2 = {
+                    //     asset: {
+                    //         key: "sections/product-template.liquid",
+                    //         value: theme
+                    //     }
+                    // };
+
+
+                    // request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
+                    //     .then((response) => {
+                    //         console.log(response);
+                    //     })
+                    //     .catch((error) => {
+                    //         if (error) throw error;
+                    //     });
+
+
+
+                }).catch((err) => {
+                    console.log(err);
+                    res.send(err);
+                });
+
+
+        }).catch((err) => {
+            console.log(err);
+            res.send(err);
+        });
+
+
+
+
+};
 
 
 // Create Webhooks 
@@ -748,7 +833,7 @@ exports.upload = (req, res) => {
 
                 // size: req.file.size,
                 // img: Buffer(encImg, 'base64'),
-                imageName: picname,
+                imageName: codedPicName,
                 imageSource: "http://localhost:3000/Badges/" + globalShop + "/image/" + codedPicName, // not name, it should be id
                 thumbnailSource: "http://localhost:3000/Badges/" + globalShop + "/thumbnail/" + newpicname,
                 contentType: req.file.mimetype,
