@@ -1045,7 +1045,7 @@ exports.getProductPriceRange = (req, res) => {
             }
             console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs});
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
 
 
         });
@@ -1059,6 +1059,7 @@ exports.getProductDateRange = (req, res) => {
     var myquery;
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1103,7 +1104,7 @@ exports.getProductDateRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(obj);
@@ -1111,6 +1112,7 @@ exports.getProductDateRange = (req, res) => {
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
@@ -1121,11 +1123,14 @@ exports.getProductDateRange = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
+                        console.log("src", src[j]);
                         j++;
 
                     }
                     bids[i] = b;
+                    srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
@@ -1135,9 +1140,11 @@ exports.getProductDateRange = (req, res) => {
                     var j = 0;
 
                     b[j] = "-";
+                    src[j] = "-";
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    srcs[i] = src;
 
                 }
 
@@ -1147,7 +1154,7 @@ exports.getProductDateRange = (req, res) => {
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
         });
 
 
@@ -1164,6 +1171,7 @@ exports.getProductTitle = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1193,7 +1201,7 @@ exports.getProductTitle = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
 
@@ -1201,6 +1209,7 @@ exports.getProductTitle = (req, res) => {
 
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
@@ -1211,11 +1220,13 @@ exports.getProductTitle = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
                         j++;
 
                     }
                     bids[i] = b;
+                    srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
@@ -1228,6 +1239,7 @@ exports.getProductTitle = (req, res) => {
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    srcs[i] = src;
 
                 }
 
@@ -1239,7 +1251,7 @@ exports.getProductTitle = (req, res) => {
 
             console.log("src:" + badge);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
         });
 
 
@@ -1260,6 +1272,7 @@ exports.getProductTag = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1267,7 +1280,7 @@ exports.getProductTag = (req, res) => {
     var isApplied = [];
     // var dbo = db.db("shopifydbclone");
 
-    console.log("inside getProdTitle");
+    console.log("inside getProdTag");
     // var myquery = { _id: ObjectId(req.params.id) };
     // var myquery = { "variants.0.price":{$gte:"100"} };
     var myquery;
@@ -1303,13 +1316,14 @@ exports.getProductTag = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
 
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
@@ -1320,11 +1334,13 @@ exports.getProductTag = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
                         j++;
 
                     }
                     bids[i] = b;
+                    srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
@@ -1337,6 +1353,7 @@ exports.getProductTag = (req, res) => {
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    srcs[i] = src;
 
                 }
 
@@ -1346,7 +1363,7 @@ exports.getProductTag = (req, res) => {
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
 
 
         });
