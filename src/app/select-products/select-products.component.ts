@@ -353,6 +353,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -361,7 +362,7 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
@@ -426,6 +427,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -434,7 +436,7 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
@@ -494,6 +496,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -502,7 +505,7 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
