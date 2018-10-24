@@ -75,23 +75,25 @@ aren’t available to the outside world. */
                 var xi = $("img[src^='" + trim + "']");
   
                 for (var i = 0; i < data.badge.length; i++) {
-                  console.log("CHECK PID",id);  
-                  console.log('in badge image success' + data.badge[i].x);
-                  console.log('in badge image success' + data.badge[i].y);
-                  var x = data.badge[i].x;
-                  var y = data.badge[i].y;
-                  console.log('in badge image success' + data.badge[i].Bid);
-                  // var id = $('.productid').eq(0).html;
-                  // console.log("id:::::",id);
-  
-                  var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
-                  //  $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
-  
-                  xi.eq(0).after('<div class="badge-wrapper"><img style="position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
-                  //  $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="60" width="60" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
+                    console.log("CHECK PID",id);  
+                    console.log('in badge image success' + data.badge[i].x);
+                    console.log('in badge image success' + data.badge[i].y);
+                    var x = data.badge[i].x;
+                    x = (x*85)/350;
+                    var y = data.badge[i].y;
+                    y= (y*77)/225;
+                    console.log('in badge image success' + data.badge[i].Bid);
+                    // var id = $('.productid').eq(0).html;
+                    // console.log("id:::::",id);
+    
+                    var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
+                    //  $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
+    
+                    xi.eq(0).after('<div class="badge-wrapper"><img style="position:absolute ; top :' + y + '%;height:auto;width:15%; left:' + x + '%;" src="' + link + '"></div>');
+                    //  $('.product-single__photo-wrapper').eq(0).append('<img src="' + link + '" class="tricon-badge" alt="Badge" height="60" width="60" style="position:absolute ; top :'+ y +'px; left:'+x +'px;">');            
+                  }
+                  console.log("append", trim);
                 }
-                console.log("append", trim);
-              }
   
             }
           }
