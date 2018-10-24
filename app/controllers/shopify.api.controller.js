@@ -299,7 +299,8 @@ exports.getSrc = (req, res) => {
         dbo.collection(globalShop).findOne(myquery, function (err, obj) {
             if (err) throw err;
 
-            Aid = obj.badge;
+            Aid = obj;
+
 
 
             //res.send(obj.ABid);
@@ -391,8 +392,15 @@ exports.gettheme = (req, res) => {
     var themeid;
     request.get(shopRequestUrl1, { headers: shopRequestHeaders })
         .then((themeID) => {
-            themeid = JSON.parse(themeID).themes[0].id;
-            console.log("theme ID:", themeid);
+
+            JSON.parse(themeID).themes.map((theme) => {
+                if (theme.role == "main") {
+                    themeid = theme.id;
+                    console.log("theme ID:", themeid);
+                }
+            });
+            // themeid = JSON.parse(themeID).themes[2].id;
+            // console.log("theme ID:", themeid);
 
             const shopRequestUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=layout/theme.liquid&theme_id=' + themeid;
             var theme;
@@ -405,7 +413,7 @@ exports.gettheme = (req, res) => {
                     console.log("theme:");
                     console.log(theme);
                     var split = theme.split("{{ content_for_header }}");
-                    theme = split[0] + "{{ content_for_header }} test" + split[1];
+                    theme = split[0] + "{{ content_for_header }} {% include 'tricon-badge' %}" + split[1];
                     console.log(theme);
 
 
@@ -433,22 +441,75 @@ exports.gettheme = (req, res) => {
                             if (error) throw error;
                         });
 
-                    // const Scriptjson2 = {
-                    //     asset: {
-                    //         key: "sections/product-template.liquid",
-                    //         value: theme
-                    //     }
-                    // };
+                    var srcvalue = "\"{{ 'tricon-label.js' | asset_url }}\""
+                    const Scriptjson2 = {
+                        asset: {
+                            key: "snippets/tricon-badge.liquid",
+                            value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
+                        }
+                    };
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
+
+                    const Script1json = {
+                        asset: {
+                            key: "assets/tricon-label.js.liquid",
+                            src: forwardingAddress + "/static/script.js"
+                        }
+                    };
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
 
 
-                    // request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
-                    //     .then((response) => {
-                    //         console.log(response);
-                    //     })
-                    //     .catch((error) => {
-                    //         if (error) throw error;
+
+                    //product-template
+                    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
+
+                    // request.get(assetUrl, { headers: shopRequestHeaders })
+                    //     .then((template) => {
+                    //         template = JSON.parse(template).asset.value;
+                    //         var split = template.split('data-section-id="{{ section.id }}"');
+                    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
+                    //         console.log("TEMPLATE Changed:", template);
+
+
+                    //         const Scriptjson3 = {
+                    //             asset: {
+                    //                 key: "sections/product-template.liquid",
+                    //                 value: template
+                    //             }
+                    //         };
+
+                    //         const Scriptheaders = {
+                    //             'X-Shopify-Access-Token': globalToken,
+                    //             // 'X-Shopify-Topic': "products/create",
+                    //             // 'X-Shopify-Shop-Domain': globalShop,
+                    //             'Content-Type': "application/json"
+                    //         };
+                    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+                    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
+                    //             .then((response) => {
+                    //                 console.log(response);
+                    //             })
+                    //             .catch((error) => {
+                    //                 if (error) throw error;
+                    //             });
+                    //     }).catch((err) => {
+                    //         console.log(err);
+                    //         res.send(err);
                     //     });
-
 
 
                 }).catch((err) => {
@@ -461,6 +522,9 @@ exports.gettheme = (req, res) => {
             console.log(err);
             res.send(err);
         });
+
+
+
 
 
 
@@ -1598,12 +1662,12 @@ exports.deleteBadge = (req, res) => {
         var myquery = { imageName: req.body.name };
         console.log(myquery);
         fse.removeSync('Badges/' + globalShop + '/image/' + req.body.name);
-        // newpicname = req.body.name;
-        //     if (req.file.mimetype == "image/png" || req.file.mimetype == "image/gif") {
-        //         var split = req.body.name.split(".");
-        //         newpicname = split[0] + ".webp";
-        //     }
-        // fse.removeSync('Badges/' + globalShop + '/thumbnail/' +newpicname);
+        newpicname = req.body.name;
+        var split = req.body.name.split(".");
+        if (split[1] == "gif" || split[1] == "png") {
+            newpicname = split[0] + ".webp";
+        }
+        fse.removeSync('Badges/' + globalShop + '/thumbnail/' + newpicname);
         dbo.collection("badges").deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             if (obj.deletedCount) {
