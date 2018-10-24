@@ -194,7 +194,7 @@ exports.auth = (req, res) => {
 
                         console.log("Token: " + globalToken);
 
-                        request.get(forwardingAddress + '/gettheme');
+                        // request.get(forwardingAddress + '/gettheme');
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
