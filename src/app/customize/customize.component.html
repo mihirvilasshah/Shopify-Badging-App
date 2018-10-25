@@ -3,63 +3,120 @@
 <link href="https://fonts.googleapis.com/css?family=K2D" rel="stylesheet">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
 
-<h1 > Customize</h1>
-  <DIV class="df">
-    <div class="divp">
+<h1> Customize</h1>
+<DIV class="df">
+  <div class="divp">
 
-      <h4>
-        Selected Badge
-      </h4>
-      <img src={{selected_image_src}} height="200px" width="200px">
-      <br>
-      <h4>
-        Position:
-      </h4>
-  <div class="alert alert-secondary" role="alert" >
-           Left: {{endOffset.x}} px<br>
-           Top: {{endOffset.y}} px
-        </div>
+    <h4>
+      Selected Badge
+    </h4>
+    <img src={{selected_image_src}} height="200px" width="200px">
+    <br>
+    <h4>
+      Opacity:
+    </h4>
+
+    <div class="slidecontainer">
+      <input type="range" #slider max="100" value="100" class="slider" id="myRange" (input)="slidervalue(slider.value)">
+      <span>Value: {{opvalue}}</span>
+    </div>
+    <br>
+    <h4>
+      Size:
+    </h4><br>
+    <div >
+      Width:<input type="number"max="100" min ="0" id="imgW" [(ngModel)]="imgW" (input)="BadgeWidth1(imgW)" style="width:60%;">%
+        <br><br>
+      Height<input type="number" max="100" min ="0" id="imgH" [(ngModel)]="imgH" (input)="BadgeHeight1(imgH)" style="width:60%">%
+      </div>
       
-        <h4>
-          Opacity:
-        </h4>
     
-      <div class="slidecontainer" >
-            <input type="range"  #slider max="100" value ="100" class="slider" id="myRange" (input) = "slidervalue(slider.value)">
-            <span>Value: {{opvalue}}</span>
-          </div>
-          <br>
-          <br>
-          <br>
-          <div >
-
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;" (click)="selectProducts()"> NEXT
-    </button>
-    </div>
-    </div>
-
-    <div class="divp">
-      <h4>
-        Preview:
-      </h4>
-
-      <div class="drag-boundary" #myBounds style="background-image: url('https://cdn.shopify.com/s/files/1/0035/6886/1273/products/man-adjusts-blue-tuxedo-bowtie_925x_bca94da6-e411-475d-af95-9a40bffd217e_1024x1024@2x.jpg'); width: 410px;height: 285px; background-size:cover ">
-        
-
-       
-
-         <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" style=`position:relative``top:{{top}}``left:{{left}}` id='badge'
-         [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" [bounds]="myBounds" [inBounds]="inBounds"  #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" height="60" width="60" /> 
-        
-
+    <h4>
+      Border Radius
+    </h4><br>
+    <div >
+      Radius:<input type="number"max="50" min ="0" id="imgR" [(ngModel)]="imgR" (input)="BorderRadius1(imgR)" style="width:60%;">%
         
       </div>
+    <br><br>
+    <div>
 
-      <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
+      <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" style="width: 200px;height: 50px;"
+        (click)="selectProducts()"> NEXT
+      </button>
+    </div>
+  </div>
+  <div class="divp">
+    <h4 >
+      Position:
+    </h4><br>
+    <div>
 
-      <br>
-      <br>
-      
+      <mat-radio-group placeholder="position" [(ngModel)]="position">
+        <mat-radio-button value="drag">Drag</mat-radio-button> &nbsp;&nbsp;
+        <mat-radio-button value="input">Input</mat-radio-button>
+      </mat-radio-group>
+    </div><br>
+    <div *ngIf="position=='drag'">
+      <div class="alert alert-secondary" role="alert" style=width:50%>
+        Left: {{endOffset.x}} px<br>
+        Top: {{endOffset.y}} px
+        <!-- <input type="number" id="img1x" [(ngModel)]="img1x" (input)="leftpx()" style="width:80%;color:black"><span style="color:white">px</span>
+        <br>
+        <input type="number" id="img1y" [(ngModel)]="img1y" (input)="toppx()" style="width:80%;color:black"><span style="color:white">px</span> -->
+      </div>
 
-</div>
+      <div>
+        <h4>
+          Preview:
+        </h4>
+
+        <div class="drag-boundary" #myBounds style="background-image: url('https://cdn.shopify.com/s/files/1/0035/6886/1273/products/man-adjusts-blue-tuxedo-bowtie_925x_bca94da6-e411-475d-af95-9a40bffd217e_1024x1024@2x.jpg'); width: 410px;height: 285px; background-size:cover ">
+
+
+
+
+          <img  ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" 
+             [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" [bounds]="myBounds" [inBounds]="inBounds"
+            #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" width="15%" height="15%"/>
+
+
+
+        </div>
+
+        <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
+
+        <br>
+        <br>
+      </div>
+    </div>
+    <div *ngIf="position=='input'">
+      <div class="alert alert-secondary2" role="alert" style=width:55%>
+        <input type="number" id="img1x" [(ngModel)]="img1.x" (input)="leftpx()" style="width:80%;"><span style="color:white">px</span>
+        <br>
+        <input type="number" id="img1y" [(ngModel)]="img1.y" (input)="toppx()" style="width:80%"><span style="color:white">px</span>
+      </div>
+
+      <div>
+        <h4>
+          Preview:
+        </h4>
+
+        <div style="position: absolute;background-image: url('https://cdn.shopify.com/s/files/1/0035/6886/1273/products/man-adjusts-blue-tuxedo-bowtie_925x_bca94da6-e411-475d-af95-9a40bffd217e_1024x1024@2x.jpg'); width: 410px;height: 285px; background-size:cover ">
+
+
+
+
+          <img id="image1" style="position: absolute" #panel src={{selected_image_src}} alt="Cinque Terre" width="15%" height="15%">
+            
+
+        </div>
+
+        <!-- <img src="https://images-na.ssl-images-amazon.com/images/I/81l6zbSjSzL.jpg" height="500px" width="500px"> -->
+
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
 </DIV>

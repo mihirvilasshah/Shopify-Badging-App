@@ -41,17 +41,37 @@ export class CustomizeComponent {
     right: true
   };
   endOffset;
+  img1 = {x:0,y:0};
+  img1x=0;
+  img1y=0;
+  imgW=15;
+  imgH=15;
+  imgR=0;
   
+  position='drag';
+  BadgeWidth=15;
+  BadgeHeight=15;
+  BorderRadius=0;
 
 
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router) {
     // this.badge.getProduct();
     this.selected_image_src=badge.getBadgePic();
+ 
     this.endOffset = badge.getCoor();
+    this.img1 = badge.getCoor();
+   
     this.top=this.endOffset.x;
     this.left=this.endOffset.y;
     this.opvalue=badge.getOpval();
+    this.BadgeWidth=badge.getBadgeWidth();
+    this.BadgeHeight=badge.getBadgeHeight();
+    this.BorderRadius=badge.getBorderRadius();
+    
+    
+
+    
     // document.getElementById("image12").style.top="200px";
     // var c = document.getElementById("image12").childNodes.length;
     // console.log(c);
@@ -73,6 +93,52 @@ export class CustomizeComponent {
       // console.log("position"+this.css);
 
   }
+
+  leftpx(){
+    var x=this.img1.x;
+    // this.endOffset.x = this.img1x;
+    console.log(x);
+    document.getElementById("image1").style.left=x+'px';
+    this.badge.setCoor(this.img1.x,this.img1.y);
+  
+  }
+  toppx(){
+    var y=this.img1.y;
+    // this.endOffset.y = this.img1y;
+    console.log(y);
+    document.getElementById("image1").style.top=y+'px';
+    this.badge.setCoor(this.img1.x,this.img1.y);
+  
+  }
+
+  // BadgeWidth2(){
+  //   var w=this.imgW;
+  //   document.getElementById("img1").style.width=w+'%';
+    
+  // }
+
+  // BadgeHeight2(){
+  //   var h=this.imgH;
+  //   document.getElementById("img1").style.height=h+'%';
+    
+  // }
+  BorderRadius1(R){
+    this.BorderRadius=R;
+    document.getElementById("image1").style['border-radius']=this.BorderRadius+'%';
+    this.badge.setBorderRadius(this.BorderRadius);
+  }
+
+  BadgeWidth1(W){
+    this.BadgeWidth=W;
+    document.getElementById("image1").style.width=this.BadgeWidth+'%';
+    this.badge.setBadgeWidth(this.BadgeWidth);
+  }
+
+  BadgeHeight1(H){
+    this.BadgeHeight=H;
+    document.getElementById("image1").style.height=this.BadgeHeight+'%';
+    this.badge.setBadgeHeight(this.BadgeHeight);
+  }
   onStart(event) {
     console.log('started output:', event);
   }
@@ -88,6 +154,7 @@ export class CustomizeComponent {
   onMoveEnd(event) {
     this.endOffset.x = event.x;
     this.endOffset.y = event.y;
+    this.badge.setCoor(this.endOffset.x,this.endOffset.y);
   }
 
 

@@ -16,6 +16,10 @@ export class BadgeService {
   private badgeCss="top-left";
   private coord={ x: 0, y: 0 };
   private opval=1;
+  private BadgeWidth=15;
+  private BadgeHeight=15;
+  private BorderRadius=0;
+
 
   constructor(private http: HttpClient) { }
 
@@ -62,6 +66,30 @@ export class BadgeService {
 
   setOpval(val){
     this.opval=val;
+  }
+
+  getBadgeWidth(){
+    return this.BadgeWidth;
+  }
+
+  setBadgeWidth(W){
+    this.BadgeWidth=W;
+  }
+
+  getBadgeHeight(){
+    return this.BadgeHeight;
+  }
+
+  setBadgeHeight(H){
+    this.BadgeHeight=H;
+  }
+
+  getBorderRadius(){
+    return this.BorderRadius;
+  }
+
+  setBorderRadius(R){
+    this.BorderRadius=R;
   }
 
   showBadges() {

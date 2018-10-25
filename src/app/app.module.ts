@@ -23,6 +23,7 @@ import { ImageUploadModule } from "angular2-image-upload";
 import { AngularDraggableModule } from 'angular2-draggable';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MyDatePickerModule } from 'mydatepicker';
+import {MatRadioModule} from '@angular/material/radio';
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -54,7 +55,8 @@ import { MyDatePickerModule } from 'mydatepicker';
     ImageUploadModule.forRoot(),
     AngularDraggableModule,
     NgSelectModule,
-    MyDatePickerModule
+    MyDatePickerModule,
+    MatRadioModule
 
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }

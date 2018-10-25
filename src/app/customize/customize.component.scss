@@ -39,6 +39,7 @@ h4{
     margin-bottom: 0px;
     color: white;
     padding: 2%;
+    width: 410px;
     
 }
 
@@ -48,7 +49,31 @@ h4{
     border-color: black;
 }
 
+.alert-secondary2{
+    color: rgb(12, 12, 12);
+    background-color: black;
+    border-color: black;
+}
+
 #myRange{
     margin-top: 10%;
 }
+#img1{
+	position:absolute;
+	top:img1y+'px';
+    left:img1x+'px';
+    z-index:100;
+    width:imgW+'%';
+    height:imgH+'%';
+	
+}
 
+
+
+/deep/.mat-radio-button.mat-accent .mat-radio-inner-circle {
+    background-color: #052af7;
+}
+
+/deep/.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #0f23cc;
+}
