@@ -10,7 +10,7 @@
     <h4>
       Selected Badge
     </h4>
-    <img src={{selected_image_src}} height="200px" width="200px">
+    <img src={{selected_image_src.imageSource}} height="200px" width="200px">
     <br>
     <h4>
       Opacity:
@@ -78,7 +78,7 @@
 
           <img  ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" 
              [preventDefaultEvent]="true" (endOffset)="onMoveEnd($event)" [bounds]="myBounds" [inBounds]="inBounds"
-            #panel id="image1" src={{selected_image_src}} alt="Cinque Terre" width="15%" height="15%"/>
+            #panel id="image1" src={{selected_image_src.imageSource}} alt="Cinque Terre" width="15%" height="15%"/>
 
 
 
@@ -107,7 +107,7 @@
 
 
 
-          <img id="image1" style="position: absolute" #panel src={{selected_image_src}} alt="Cinque Terre" width="15%" height="15%">
+          <img id="image1" style="position: absolute" #panel src={{selected_image_src.imageSource}} alt="Cinque Terre" width="15%" height="15%">
             
 
         </div>

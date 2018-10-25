@@ -71,7 +71,7 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)"
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((model1&&model2)&&applyDate)||((!(model1&&model2))&&!applyDate)"
                 style="width:180px">Apply</button>
 
         </form>
@@ -171,9 +171,9 @@
 
 
                             <div *ngFor="let badge of title.badges" style="display: inline">  
-                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge]" (click)="givebid($event.target.checked, box.value)"[disabled]="prodsel">
+                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
 
-                                <img src="http://localhost:3000/picture/{{badge.badg}}" style="height: 40px; width: 40px; margin-right: 30px">
+                                <img src="{{badge.src}}" style="height: 40px; width: 40px; margin-right: 30px">
                                 </div>
 
 

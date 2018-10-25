@@ -55,16 +55,17 @@ export class SelectBadgeComponent implements OnInit {
       }
     };
     var count = 0;
-    var ids = this.http.get("http://localhost:3000/getIDS");
+    var ids = this.http.get("http://localhost:3000/getMyLibrary");
     ids.subscribe(val => {
-      console.log(val);
       var temp = Object.values(val);
       temp.forEach(pic => {
-        this.LibPictures.push("http://localhost:3000/picture/" + pic);
+        this.LibPictures.push(pic);
       })
-    });
+
+      console.log(this.LibPictures);
+    })
     this.loadBadges();
-    console.log("select badge"+this.badge.getBadgePic);
+    console.log("select badge" + this.badge.getBadgePic);
 
   };
 
@@ -72,13 +73,23 @@ export class SelectBadgeComponent implements OnInit {
 
   loadBadges(): void {
 
-    var ids = this.http.get("http://localhost:3000/getUserIDS");
+    // var ids = this.http.get("http://localhost:3000/getUserIDS");
+    // ids.subscribe(val => {
+    //   console.log(val);
+    //   var temp = Object.values(val);
+    //   temp.forEach(pic => {
+    //     this.UserPictures.push("http://localhost:3000/picture/" + pic);
+    //   })
+    // })
+
+    var ids = this.http.get("http://localhost:3000/getMyBadges");
     ids.subscribe(val => {
-      console.log(val);
       var temp = Object.values(val);
       temp.forEach(pic => {
-        this.UserPictures.push("http://localhost:3000/picture/" + pic);
+        this.UserPictures.push(pic);
       })
+
+      console.log(this.UserPictures);
     })
   };
 
@@ -148,8 +159,8 @@ export class SelectBadgeComponent implements OnInit {
   deleteBadge(index: number): void {
     if (confirm("Are You sure you want to delete?")) {
       console.log("deletebadge front end");
-      var x = this.UserPictures[index].split("http://localhost:3000/picture/");
-      var deleted = this.http.post("http://localhost:3000/deleteUserBadge/", { "id": x[1] });
+      var x = this.UserPictures[index].imageSource.split("/image/");
+      var deleted = this.http.post("http://localhost:3000/deleteUserBadge", { "name": x[1] });
       // var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":"5ba4c859767a3337741a66e8"});
 
       deleted.subscribe(val => {
@@ -171,9 +182,9 @@ export class SelectBadgeComponent implements OnInit {
     }
   }
 
-  up(){
-  console.log(this.fileList);
-  let obs = this.http.post("http://localhost:3000/api/upload", { "file": this.fileList });
+  up() {
+    console.log(this.fileList);
+    let obs = this.http.post("http://localhost:3000/api/upload", { "file": this.fileList });
     obs.subscribe(data => {
       console.log("here is the response", data);
 
