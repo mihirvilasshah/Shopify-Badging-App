@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop='tricon-jewel-store.myshopify.com';
+var globalShop = undefined;
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -193,8 +193,8 @@ exports.auth = (req, res) => {
                     .then((shopResponse) => {
 
                         console.log("Token: " + globalToken);
-                        
-                   
+
+                        // request.get(forwardingAddress + '/gettheme');
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
@@ -206,6 +206,7 @@ exports.auth = (req, res) => {
                                         request.get(forwardingAddress + '/creatscript');
                                         request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
+                                        request.get(forwardingAddress + '/gettheme');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -298,7 +299,8 @@ exports.getSrc = (req, res) => {
         dbo.collection(globalShop).findOne(myquery, function (err, obj) {
             if (err) throw err;
 
-            Aid = obj.badge;
+            Aid = obj;
+
 
 
             //res.send(obj.ABid);
@@ -381,6 +383,153 @@ exports.creatscript = (req, res) => {
             if (error) throw error;
         });
 }
+
+exports.gettheme = (req, res) => {
+    const shopRequestUrl1 = 'https://' + globalShop + '/admin/themes.json';
+    const shopRequestHeaders = {
+        'X-Shopify-Access-Token': globalToken,
+    };
+    var themeid;
+    request.get(shopRequestUrl1, { headers: shopRequestHeaders })
+        .then((themeID) => {
+
+            JSON.parse(themeID).themes.map((theme) => {
+                if (theme.role == "main") {
+                    themeid = theme.id;
+                    console.log("theme ID:", themeid);
+                }
+            });
+            // themeid = JSON.parse(themeID).themes[2].id;
+            // console.log("theme ID:", themeid);
+
+            const shopRequestUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=layout/theme.liquid&theme_id=' + themeid;
+            var theme;
+
+            request.get(shopRequestUrl, { headers: shopRequestHeaders })
+                .then((shopResponse) => {
+                    theme = JSON.parse(shopResponse).asset.value;
+                    console.log("theme details");
+                    console.log(shopResponse);
+                    console.log("theme:");
+                    console.log(theme);
+                    var split = theme.split("{{ content_for_header }}");
+                    theme = split[0] + "{{ content_for_header }} {% include 'tricon-badge' %}" + split[1];
+                    console.log(theme);
+
+
+                    const Scriptjson = {
+                        asset: {
+                            key: "layout/theme.liquid",
+                            value: theme
+                        }
+                    };
+
+                    const Scriptheaders = {
+                        'X-Shopify-Access-Token': globalToken,
+                        // 'X-Shopify-Topic': "products/create",
+                        // 'X-Shopify-Shop-Domain': globalShop,
+                        'Content-Type': "application/json"
+                    };
+
+                    const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
+
+                    var srcvalue = "\"{{ 'tricon-label.js' | asset_url }}\""
+                    const Scriptjson2 = {
+                        asset: {
+                            key: "snippets/tricon-badge.liquid",
+                            value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
+                        }
+                    };
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
+
+                    const Script1json = {
+                        asset: {
+                            key: "assets/tricon-label.js.liquid",
+                            src: forwardingAddress + "/static/script.js"
+                        }
+                    };
+
+                    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
+                        .then((response) => {
+                            console.log(response);
+                        })
+                        .catch((error) => {
+                            if (error) throw error;
+                        });
+
+
+
+                    //product-template
+                    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
+
+                    // request.get(assetUrl, { headers: shopRequestHeaders })
+                    //     .then((template) => {
+                    //         template = JSON.parse(template).asset.value;
+                    //         var split = template.split('data-section-id="{{ section.id }}"');
+                    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
+                    //         console.log("TEMPLATE Changed:", template);
+
+
+                    //         const Scriptjson3 = {
+                    //             asset: {
+                    //                 key: "sections/product-template.liquid",
+                    //                 value: template
+                    //             }
+                    //         };
+
+                    //         const Scriptheaders = {
+                    //             'X-Shopify-Access-Token': globalToken,
+                    //             // 'X-Shopify-Topic': "products/create",
+                    //             // 'X-Shopify-Shop-Domain': globalShop,
+                    //             'Content-Type': "application/json"
+                    //         };
+                    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+                    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
+                    //             .then((response) => {
+                    //                 console.log(response);
+                    //             })
+                    //             .catch((error) => {
+                    //                 if (error) throw error;
+                    //             });
+                    //     }).catch((err) => {
+                    //         console.log(err);
+                    //         res.send(err);
+                    //     });
+
+
+                }).catch((err) => {
+                    console.log(err);
+                    res.send(err);
+                });
+
+
+        }).catch((err) => {
+            console.log(err);
+            res.send(err);
+        });
+
+
+
+
+
+
+
+};
 
 
 // Create Webhooks 
@@ -727,10 +876,11 @@ exports.upload = (req, res) => {
             console.log("pic file name=" + picname);
             // read the img file from tmp in-memory location
             var newImg = fse.readFileSync(req.file.path);
-            fse.copySync(req.file.path, 'src/img/' + picname);
+            var codedPicName = Math.random() * Math.pow(10, 20) + picname;
+            fse.copySync(req.file.path, 'Badges/' + globalShop + '/image/' + codedPicName);
 
-            const INPUT_path_to_your_images = 'src/img/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}';
-            const OUTPUT_path = 'build/img/';
+            const INPUT_path_to_your_images = 'Badges/' + globalShop + '/image/*.{jpg,JPG,jpeg,JPEG,png,svg,gif}';
+            const OUTPUT_path = 'Badges/' + globalShop + '/thumbnail/';
 
             compress_images(INPUT_path_to_your_images, OUTPUT_path, { compress_force: false, statistic: true, autoupdate: true }, false,
                 { jpg: { engine: 'mozjpeg', command: ['-quality', '60'] } },
@@ -741,12 +891,20 @@ exports.upload = (req, res) => {
             // encode the file as a base64 string.
             var encImg = newImg.toString('base64');
             // define your new document
+            newpicname = codedPicName;
+            if (req.file.mimetype == "image/png" || req.file.mimetype == "image/gif") {
+                var split = codedPicName.split(".");
+                newpicname = split[0] + ".webp";
+            }
             var newItem = {
+
+                // size: req.file.size,
+                // img: Buffer(encImg, 'base64'),
+                imageName: codedPicName,
+                imageSource: "http://localhost:3000/Badges/" + globalShop + "/image/" + codedPicName, // not name, it should be id
+                thumbnailSource: "http://localhost:3000/Badges/" + globalShop + "/thumbnail/" + newpicname,
                 contentType: req.file.mimetype,
-                size: req.file.size,
-                img: Buffer(encImg, 'base64'),
-                src: picname,
-                default: false // not name, it should be id
+                // default: false 
             };
             var dbo = db.db("shopifydbclone");
             dbo.collection("badges")
@@ -851,9 +1009,45 @@ exports.getPicture = (req, res) => {
                 res.setHeader('content-type', results.contentType);
                 // send only the base64 string stored in the img object
                 // buffer element
-                res.send(results.img.buffer);
+                res.send(results.imageSource);
             });
     });
+}
+
+exports.getMyBadges = (req, res) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection('badges')
+            .find({}, { projection: { imageSource: 1 } }).toArray(function (err, results) {
+                // res.setHeader('content-type', results.contentType);
+                var obj = [];
+                for (var i = 0; i < results.length; i++) {
+                    obj[i] = { _id: results[i]._id, imageSource: results[i].imageSource, default: false };
+                }
+                res.send(obj);
+                console.log(obj);
+            });
+
+    });
+
+}
+
+exports.getMyLibrary = (req, res) => {
+    MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        var dbo = db.db("shopifydbclone");
+        dbo.collection('Library_Badges_Default')
+            .find({}, { projection: { imageSource: 1 } }).toArray(function (err, results) {
+                // res.setHeader('content-type', results.contentType);
+                var obj = [];
+                for (var i = 0; i < results.length; i++) {
+                    obj[i] = { _id: results[i]._id, imageSource: results[i].imageSource, default: true };
+                }
+                res.send(obj);
+                console.log(obj);
+            });
+
+    });
+
 }
 
 exports.preview = (req, res) => {
@@ -903,6 +1097,7 @@ exports.getProductPriceRange = (req, res) => {
     var variants3=[];
 
     var bids = [];
+    var srcs = [];
 
     var pids = [];
     var tags = [];
@@ -964,6 +1159,7 @@ exports.getProductPriceRange = (req, res) => {
 
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 variants1[i]=products[i].variants.option1;
                 if(variants1[i]==null){variants1[i]="-";}
@@ -979,41 +1175,47 @@ exports.getProductPriceRange = (req, res) => {
                 //var x = products[i].created_at.split("T");
                 //created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] =  products[i].badge[j].Bid;
-                   // console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
 
-                }
-                bids[i] = b;
-               // console.log("bids",bids[i] );
+                    var j = 0;
+
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
+                        console.log("b", b[j]);
+                        console.log("src", src[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
-               }
-            
-                 else {
+                }
+
+                else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                    // console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-               //  console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    src[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
-            console.log("bids",bids );
+            console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied ,"variants":variants ,"variantsId":variantsId});
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs,"variants":variants ,"variantsId":variantsId});
 
 
         });
@@ -1027,6 +1229,7 @@ exports.getProductDateRange = (req, res) => {
     var myquery;
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1050,12 +1253,12 @@ exports.getProductDateRange = (req, res) => {
     } else if (dr == "withBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (dr == "withoutBadges") {
         myquery = {
             "created_at": { "$gte": d1, "$lte": d2 },
-            "badge":{$not: {$size: 0}}
+            "badge": { $not: { $size: 0 } }
         }
     }
 
@@ -1071,7 +1274,7 @@ exports.getProductDateRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(obj);
@@ -1079,43 +1282,49 @@ exports.getProductDateRange = (req, res) => {
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] = products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
+                        console.log("b", b[j]);
+                        console.log("src", src[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    srcs[i] = src;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    src[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
         });
 
 
@@ -1132,6 +1341,7 @@ exports.getProductTitle = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1149,7 +1359,7 @@ exports.getProductTitle = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'title': new RegExp(t1, 'i'),
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1161,7 +1371,7 @@ exports.getProductTitle = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
 
@@ -1169,45 +1379,49 @@ exports.getProductTitle = (req, res) => {
 
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] =  products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
+                        console.log("b", b[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    srcs[i] = src;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
 
             console.log("src:" + badge);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
         });
 
 
@@ -1228,6 +1442,7 @@ exports.getProductTag = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var srcs = [];
     var pids = [];
     var tags = [];
     var price = [];
@@ -1235,7 +1450,7 @@ exports.getProductTag = (req, res) => {
     var isApplied = [];
     // var dbo = db.db("shopifydbclone");
 
-    console.log("inside getProdTitle");
+    console.log("inside getProdTag");
     // var myquery = { _id: ObjectId(req.params.id) };
     // var myquery = { "variants.0.price":{$gte:"100"} };
     var myquery;
@@ -1251,7 +1466,7 @@ exports.getProductTag = (req, res) => {
     } else if (tr == "withBadges") {
         myquery = {
             'tags': new RegExp(tg1, 'i'),
-            "badge":{ $exists: true, $ne: [] }
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (tr == "withoutBadges") {
         myquery = {
@@ -1271,50 +1486,54 @@ exports.getProductTag = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
 
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].badge&&products[i].badge.length>0) {
-                    var j= 0;
-                    
-                   while(products[i].badge[j]){
-                    b[j] = products[i].badge[j].Bid;
-                    console.log("b",b[j] );
-                    j++;
+                if (products[i].badge && products[i].badge.length > 0) {
+                    var j = 0;
 
-                }
-                bids[i] = b;
-                console.log("bids",bids[i] );
+                    while (products[i].badge[j]) {
+                        b[j] = products[i].badge[j].Bid;
+                        src[j] = products[i].badge[j].thumbnailSource;
+                        console.log("b", b[j]);
+                        j++;
+
+                    }
+                    bids[i] = b;
+                    srcs[i] = src;
+                    console.log("bids", bids[i]);
                     isApplied[i] = "yes";
 
                 }
                 else {
                     isApplied[i] = "no";
                     var j = 0;
-                    
-                     b[j] = "-";
-                     console.log("b",b[j] );
-                     j++;
-                     bids[i] = b;
- 
-                 }
-                 
-                 console.log("bids",bids[i] );
-              
+
+                    b[j] = "-";
+                    console.log("b", b[j]);
+                    j++;
+                    bids[i] = b;
+                    srcs[i] = src;
+
+                }
+
+                console.log("bids", bids[i]);
+
 
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
 
 
         });
@@ -1334,27 +1553,46 @@ exports.publishBadges = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
+        var collection = '';
+        if (req.body.default) {
+            collection = "Library_Badges_Default";
+        }
+        else {
+            collection = "badges";
+        }
+        var query = {
+            "_id": ObjectId(req.body.bid)
+        };
+        var imgsrc;
+        var thumbnailSrc;
+        dbo.collection(collection).findOne(query, function (err, obj) {
+            if (err) throw err;
+            console.log("published: ");
+            console.log(obj);
+            imgsrc = obj.imageSource;
+            thumbnailSrc = obj.thumbnailSource;
+
+            var newvalues = { $push: { "badge": { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
+
+            for (var i = 0; i < req.body.pid.length; i++) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i])
+                };
+                console.log("pids: " + req.body.pid[i]);
+
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("product updated ABid: " + obj);
+                });
+            }
+
+        });
 
 
         // if (flag == 0) {
 
 
-            var newvalues = { $push: { "badge":  { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval } } };
 
-       
-
-
-        for (var i = 0; i < req.body.pid.length; i++) {
-            var myquery = {
-                "_id": ObjectId(req.body.pid[i])
-            };
-            console.log("pids: " + req.body.pid[i]);
-
-            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                if (err) throw err;
-                console.log("product updated ABid: " + obj);
-            });
-        }
 
 
     });
@@ -1376,16 +1614,16 @@ exports.unpublishBadges = (req, res) => {
                 "_id": ObjectId(req.body.pid[i].prodid)
             };
             var badges = [];
-            for(var j =0;j<req.body.pid[i].bid.length;j++){
+            for (var j = 0; j < req.body.pid[i].bid.length; j++) {
                 console.log(req.body.pid[i].bid[j]);
 
-            var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
+                var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
 
-            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                if (err) throw err;
-                console.log("removed badge from product: " + obj);
-            });
-        }
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("removed badge from product: " + obj);
+                });
+            }
         }
 
 
@@ -1442,8 +1680,15 @@ exports.deleteBadge = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
         var dbo = db.db("shopifydbclone");
-        var myquery = { _id: ObjectId(req.body.id) };
+        var myquery = { imageName: req.body.name };
         console.log(myquery);
+        fse.removeSync('Badges/' + globalShop + '/image/' + req.body.name);
+        newpicname = req.body.name;
+        var split = req.body.name.split(".");
+        if (split[1] == "gif" || split[1] == "png") {
+            newpicname = split[0] + ".webp";
+        }
+        fse.removeSync('Badges/' + globalShop + '/thumbnail/' + newpicname);
         dbo.collection("badges").deleteOne(myquery, function (err, obj) {
             if (err) throw err;
             if (obj.deletedCount) {
