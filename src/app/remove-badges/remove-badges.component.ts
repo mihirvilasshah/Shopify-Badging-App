@@ -27,7 +27,7 @@ export class RemoveBadgesComponent implements OnInit {
     width: '60%'
   };
   public model1: any;
-  public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
+  public model2: any; // = { date: { year:   2018, month: 12, day: 31 } }
 
   price1;
   price2;
