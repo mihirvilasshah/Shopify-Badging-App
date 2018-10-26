@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = 'tricon-dev-store.myshopify.com';
+var globalShop = undefined;
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -200,7 +200,7 @@ exports.auth = (req, res) => {
                             var dbo = db.db("shopifydbclone");
                             dbo.listCollections({ name: globalShop })
                                 .next(function (err, collinfo) {
-                                    if (!collinfo) {
+                                     if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
                                         request.get(forwardingAddress + '/creatscript');
@@ -637,42 +637,45 @@ exports.copyDB = (req, res) => {
 
         console.log("before: " + flag);
         if (flag == 1) {
-            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
+             dbo.collection(globalShop).find({ "variants":{$elemMatch:{"price": { "$exists": true, "$type": 2 } }}}).forEach(function (doc) {
             // bulkUpdateOps = [];
 
-            cursor.forEach(function (doc) {
+            for (var i = 0; i < doc.variants.length; i++){
+                doc.variants[i].price=parseFloat(doc.variants[i].price) ;
+                console.log(doc.variants.length);}
+                dbo.collection(globalShop).save(doc);
                 // var price = "variants.price";
                 // for (var i = 0; i < doc.variants.length; i++) {
-                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
-                if (doc.variants[0].compare_at_price != null) {
-                    var newComparePrice = Number(doc.variants[0].compare_at_price.replace(/[^0-9\.]+/g, ""));
-                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newComparePrice } }
+                // var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                // if (doc.variants[0].compare_at_price != null) {
+                //     var newComparePrice = Number(doc.variants[0].compare_at_price.replace(/[^0-9\.]+/g, ""));
+                //     var n = { "$set": { "variants.$[].price": newPrice, "variants.$[].compare_at_price": newComparePrice} }
 
-                }
-                else {
-                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newPrice } }
-                }
-
-
-                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
-                console.log("before: " + doc.variants[0].price);
-                console.log("after: " + newPrice);
-                // bulkUpdateOps.push(
-                var q = { "_id": doc._id };
-
+                // }
+                // else {
+                //     var n = { "$set": { "variants.$[].price": newPrice, "variants.$[].compare_at_price": newComparePrice} }
                 // }
 
 
-                // );
-                // console.log("push: " + doc.published_at);
-                // console.log(bulkUpdateOps);
+                // // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                // console.log("before: " + doc.variants[0].price);
+                // console.log("after: " + newPrice);
+                // // bulkUpdateOps.push(
+                // var q = { "_id": doc._id };
 
-                // if (bulkUpdateOps.length == 1000) {
-                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
-                    if (err) throw err;
-                    console.log("set newPrice done : " + obj);
-                    // console.log(obj);
-                });
+                // // }
+
+
+                // // );
+                // // console.log("push: " + doc.published_at);
+                // // console.log(bulkUpdateOps);
+
+                // // if (bulkUpdateOps.length == 1000) {
+                // dbo.collection(globalShop).updateMany(q, n, function (err, obj) {
+                //     if (err) throw err;
+                //     console.log("set newPrice done : " + obj);
+                //     // console.log(obj);
+                // });
                 // bulkUpdateOps = [];
                 // }
             });
@@ -1088,6 +1091,10 @@ exports.getProductPriceRange = (req, res) => {
 
 
     var titles = [];
+    var variants=[];
+    var variants1=[];
+    var variants2=[];
+    var variants3=[];
 
     var bids = [];
     var srcs = [];
@@ -1117,18 +1124,21 @@ exports.getProductPriceRange = (req, res) => {
 
     if (pr == "all") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
+           "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} 
+
+           
+
             // "variants": { price: { "$gte": p1, "$lte": p2 } }
         }
     } else if (pr == "withBadges") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge": { $exists: true, $ne: [] }
+            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
+            "badge":{ $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
-            "badge": { $size: 0 }
+            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
+            "badge":{ $size: 0 }
         }
     }
 
@@ -1139,7 +1149,8 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{$project:{_id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1,"variants":1}},{$unwind: "$variants"} ,{$match:myquery}]).toArray(function (err, obj) {
+       // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(products);
@@ -1150,9 +1161,19 @@ exports.getProductPriceRange = (req, res) => {
                 var b = [];
                 var src = [];
                 titles[i] = products[i].title;
+                variants1[i]=products[i].variants.option1;
+                if(variants1[i]==null){variants1[i]="-";}
+                variants2[i]=products[i].variants.option2;
+                if(variants2[i]==null){variants2[i]="-";}
+                variants3[i]=products[i].variants.option3;
+                if(variants3[i]==null){variants3[i]="-";}
+                variants[i]=variants1[i]+","+variants2[i]+","+variants3[i];
+                variantsId[i]=products[i].variants.id;
+                //console.log(products[i].variants.length);
+               console.log(variants[i]);
                 pids[i] = products[i]._id;
-                var x = products[i].created_at.split("T");
-                created_At[i] = x[0];
+                //var x = products[i].created_at.split("T");
+                //created_At[i] = x[0];
                 tags[i] = products[i].tags;
                 if (products[i].badge && products[i].badge.length > 0) {
 
@@ -1194,7 +1215,7 @@ exports.getProductPriceRange = (req, res) => {
             }
             console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs,"variants":variants ,"variantsId":variantsId});
 
 
         });
