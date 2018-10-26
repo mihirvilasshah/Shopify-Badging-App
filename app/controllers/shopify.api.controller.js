@@ -1095,6 +1095,7 @@ exports.getProductPriceRange = (req, res) => {
     var variants1=[];
     var variants2=[];
     var variants3=[];
+    var variantsId=[];
 
     var bids = [];
     var srcs = [];
@@ -1149,7 +1150,7 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).aggregate([{$project:{_id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1,"variants":1}},{$unwind: "$variants"} ,{$match:myquery}]).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{$project:{_id: 1, title: 1, created_at: 1, tags: 1, "badge": 1,"variants":1}},{$unwind: "$variants"} ,{$match:myquery}]).toArray(function (err, obj) {
        // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
@@ -1209,6 +1210,7 @@ exports.getProductPriceRange = (req, res) => {
                 }
 
                 console.log("bids", bids[i]);
+                console.log("src", srcs[i]);
 
 
 
@@ -1585,6 +1587,8 @@ exports.publishBadges = (req, res) => {
                     console.log("product updated ABid: " + obj);
                 });
             }
+
+            
 
         });
 
