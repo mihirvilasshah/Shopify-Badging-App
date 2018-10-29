@@ -84,6 +84,7 @@ export class RemoveBadgesComponent implements OnInit {
   isApplied;
   created_At;
   prodsel = true;
+  selectedFilter;
 
   filterControl = new FormControl('', [Validators.required]);
   filters: filter[] = [
@@ -674,7 +675,7 @@ export class RemoveBadgesComponent implements OnInit {
     //   })
     // };
 
-    let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids });
+    let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids ,"filter":this.selectedFilter});
     obs.subscribe(data => {
       if (data.hasOwnProperty('pid')) {
         console.log("in unpublish");

@@ -58,7 +58,9 @@ export class SelectProductsComponent implements OnInit {
   thumbnail;
   src = [];
   badges;
+  selectedFilter;
   selectedids = [];
+  selectedVids = [];
   selectedAll;
   prodData;
   cities2 = [
@@ -298,10 +300,11 @@ export class SelectProductsComponent implements OnInit {
 
           var a = {
 
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i],variants:this.variants[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i],variants:this.variants[i],variantsId:this.variantsId[i]
           }
           this.structuredTitle.push(a);
           console.log("src:"+items[6][i]);
+          console.log("vids:"+this.variantsId);
         }
 
 
@@ -555,22 +558,30 @@ export class SelectProductsComponent implements OnInit {
   }
 
   giveid(flag, value) {
-
+    var x = value.split(",");
+    var value1 = x[0];
+    var value2 = x[1];
     if (this.selectedAll) {
       for (var i = 0; i < this.showTitle.length; i++) {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.counter = this.showTitle.length;
-      var index = this.selectedids.indexOf(value);
-      // console.log("value if: " + value);
+      var index = this.selectedids.indexOf(value1);
+      var index2 = this.selectedVids.indexOf(value2);
+      // console.log("value1 if: " + value1);
       this.selectedids = [];
+      this.selectedVids = [];
       for (var i = 0; i < this.pids.length; i++) {
         this.selectedids.push(this.pids[i]);
       }
+      for (var i = 0; i < this.variantsId.length; i++) {
+        this.selectedVids.push(this.variantsId[i]);
+      }
       // this.selectedids.splice(index, 1);
       console.log("selectedIDS(selected all): " + this.selectedids);
-      console.log("selectedAll value: " + this.selectedAll);
-      // console.log("pid value if: " + this.pids);
+      console.log("selectedVIDS(selected all): " + this.selectedVids);
+      console.log("selectedAll value1: " + this.selectedAll);
+      // console.log("pid value1 if: " + this.pids);
 
 
     }
@@ -579,6 +590,7 @@ export class SelectProductsComponent implements OnInit {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
+      this.selectedVids = [];
       this.counter = 0;
       console.log("selectedIDS (deselected all): " + this.selectedids);
 
@@ -586,24 +598,30 @@ export class SelectProductsComponent implements OnInit {
     else if (flag) {
       this.counter = this.counter + 1;
 
-      // this.selectedids.push(value);
-      // var index = this.selectedids.indexOf(value);
-      this.selectedids.push(value);
+      // this.selectedids.push(value1);
+      // var index = this.selectedids.indexOf(value1);
+      
+      this.selectedids.push(value1);
+      this.selectedVids.push(value2);
       console.log("flag true:" + this.selectedids);
-      // console.log("pid value esle if: " + this.pids);
+      console.log("flag trueV:" + this.selectedVids);
+      // console.log("pid value1 esle if: " + this.pids);
     }
     if (flag == false) {
       this.counter = this.counter - 1;
 
-      var index = this.selectedids.indexOf(this.pids[value]);
-      // this.selectedids.splice(value, 1);
+      var index = this.selectedids.indexOf(this.pids[value1]);
+      var index2 = this.selectedVids.indexOf(this.pids[value2]);
+      // this.selectedids.splice(value1, 1);
       console.log("spliced: " + this.selectedids.splice(index, 1));
+      console.log("spliced: " + this.selectedVids.splice(index2, 1));
       console.log("if flag false:" + this.selectedids);
-      // console.log("pid value else: " + this.pids);
+      console.log("if flag falseV:" + this.selectedVids);
+      // console.log("pid value1 else: " + this.pids);
     }
 
     console.log("flag: " + flag);
-    console.log("value: " + value);
+    console.log("value1: " + value1);
 
     console.log("COUNTER:" + this.counter)
     if (this.counter == this.showTitle.length)
@@ -620,15 +638,17 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius,"pid": this.selectedids,"default":this.selected_image_src.default });
+      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius,"pid": this.selectedids,"vid":this.selectedVids,"filter":this.selectedFilter,"default":this.selected_image_src.default });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
           this.publishedNo = data['pid'].length;
           console.log("publish", this.publishedNo);
+          console.log("publish2", this.selectedVids);
         };
 
-      })
+      });
+
       console.log("done");
 
 

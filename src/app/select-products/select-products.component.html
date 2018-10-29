@@ -163,7 +163,7 @@
 
 
                     <td style="text-align: left">
-                        <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids"
+                        <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="[title.pids,title.variantsId]"
                             (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
 
                     <td>{{title.tags}} </td>
