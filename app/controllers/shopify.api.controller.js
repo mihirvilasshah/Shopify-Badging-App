@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = 'tricon-dev-store.myshopify.com';
+var globalShop = 'tricon-jewel-store.myshopify.com';
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -187,7 +187,8 @@ exports.auth = (req, res) => {
                 const shopRequestUrl = 'https://' + shop + '/admin/products.json';
                 const shopRequestHeaders = {
                     'X-Shopify-Access-Token': globalToken,
-                };
+                };           
+
 
                 request.get(shopRequestUrl, { headers: shopRequestHeaders })
                     .then((shopResponse) => {
@@ -289,6 +290,7 @@ exports.getSrc = (req, res) => {
 
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
+        console.log("check",db);
 
         var dbo = db.db("shopifydbclone");
 
@@ -319,6 +321,42 @@ exports.getSrc = (req, res) => {
 
 
 
+};
+exports.getcollections = (req, res) => {
+    const shopRequestUrl = 'https://' + globalShop + '/admin/collections.json';
+    const shopRequestHeaders = {
+        'X-Shopify-Access-Token': globalToken,
+    };
+    var shopdetails;
+
+    request.get(shopRequestUrl, { headers: shopRequestHeaders })
+        .then((shopResponse) => {
+            shopdetails = JSON.parse(shopResponse).shop;
+
+            console.log(shopdetails.id);
+
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                if (err) throw err;
+
+                var dbo = db.db("shopifydbclone");
+
+                // if (flag == 0) {
+                var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken, currency: shopdetails.currency };
+
+                dbo.collection("shopdetails").insert(myquey, function (err, result) {
+                    if (err) throw err;
+                    console.log("Number of documents inserted: " + result.insertedCount);
+                });
+
+
+                // }
+                res.send({ message: "shopdet copied to DB" });
+                db.close();
+            });
+        }).catch((err) => {
+            console.log(err);
+            res.send(err);
+        });
 };
 exports.shopdet = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/shop.json';
@@ -415,8 +453,6 @@ exports.gettheme = (req, res) => {
                     var split = theme.split("{{ content_for_header }}");
                     theme = split[0] + "{{ content_for_header }} {% include 'tricon-badge' %}" + split[1];
                     console.log(theme);
-
-
                     const Scriptjson = {
                         asset: {
                             key: "layout/theme.liquid",
@@ -611,7 +647,10 @@ exports.productPage = (req, res) => {
             res.send(err);
         });
 };
+exports.getcollections = (req, res) => {
 
+    
+}
 exports.copyDB = (req, res) => {
     var flag = 0;
     // console.log("Shop Response: "+globalShopResponse);

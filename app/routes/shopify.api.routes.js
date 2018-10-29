@@ -15,6 +15,7 @@ module.exports = (app) => {
 
     // Copy Shopify DB to our DB
     app.get('/copyDB', controller.copyDB);
+    app.get('/getcollections', controller.getcollections);
     app.get('/shopdet', controller.shopdet);
 
     // Create Webhooks
@@ -31,6 +32,7 @@ module.exports = (app) => {
     app.post('/createProduct/:shopname', controller.createProduct);
      app.get('/creatscript', controller.creatscript);
      app.get('/gettheme', controller.gettheme);
+     
 
 
     //Read product in our DB
