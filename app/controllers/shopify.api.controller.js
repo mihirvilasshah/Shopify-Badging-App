@@ -200,7 +200,7 @@ exports.auth = (req, res) => {
                             var dbo = db.db("shopifydbclone");
                             dbo.listCollections({ name: globalShop })
                                 .next(function (err, collinfo) {
-                                     if (!collinfo) {
+                                    if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
                                         request.get(forwardingAddress + '/creatscript');
@@ -637,12 +637,13 @@ exports.copyDB = (req, res) => {
 
         console.log("before: " + flag);
         if (flag == 1) {
-             dbo.collection(globalShop).find({ "variants":{$elemMatch:{"price": { "$exists": true, "$type": 2 } }}}).forEach(function (doc) {
-            // bulkUpdateOps = [];
+            dbo.collection(globalShop).find({ "variants": { $elemMatch: { "price": { "$exists": true, "$type": 2 } } } }).forEach(function (doc) {
+                // bulkUpdateOps = [];
 
-            for (var i = 0; i < doc.variants.length; i++){
-                doc.variants[i].price=parseFloat(doc.variants[i].price) ;
-                console.log(doc.variants.length);}
+                for (var i = 0; i < doc.variants.length; i++) {
+                    doc.variants[i].price = parseFloat(doc.variants[i].price);
+                    console.log(doc.variants.length);
+                }
                 dbo.collection(globalShop).save(doc);
                 // var price = "variants.price";
                 // for (var i = 0; i < doc.variants.length; i++) {
@@ -1091,10 +1092,11 @@ exports.getProductPriceRange = (req, res) => {
 
 
     var titles = [];
-    var variants=[];
-    var variants1=[];
-    var variants2=[];
-    var variants3=[];
+    var variants = [];
+    var variants1 = [];
+    var variants2 = [];
+    var variants3 = [];
+    var variantsId = [];
 
     var bids = [];
     var srcs = [];
@@ -1124,21 +1126,21 @@ exports.getProductPriceRange = (req, res) => {
 
     if (pr == "all") {
         myquery = {
-           "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} 
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) }
 
-           
+
 
             // "variants": { price: { "$gte": p1, "$lte": p2 } }
         }
     } else if (pr == "withBadges") {
         myquery = {
-            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
-            "badge":{ $exists: true, $ne: [] }
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
-            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
-            "badge":{ $size: 0 }
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
+            "badge": { $size: 0 }
         }
     }
 
@@ -1149,8 +1151,8 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).aggregate([{$project:{_id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1,"variants":1}},{$unwind: "$variants"} ,{$match:myquery}]).toArray(function (err, obj) {
-       // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{ $project: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1, "variants": 1 } }, { $unwind: "$variants" }, { $match: myquery }]).toArray(function (err, obj) {
+            // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(products);
@@ -1161,16 +1163,16 @@ exports.getProductPriceRange = (req, res) => {
                 var b = [];
                 var src = [];
                 titles[i] = products[i].title;
-                variants1[i]=products[i].variants.option1;
-                if(variants1[i]==null){variants1[i]="-";}
-                variants2[i]=products[i].variants.option2;
-                if(variants2[i]==null){variants2[i]="-";}
-                variants3[i]=products[i].variants.option3;
-                if(variants3[i]==null){variants3[i]="-";}
-                variants[i]=variants1[i]+","+variants2[i]+","+variants3[i];
-                variantsId[i]=products[i].variants.id;
+                variants1[i] = products[i].variants.option1;
+                if (variants1[i] == null) { variants1[i] = "-"; }
+                variants2[i] = products[i].variants.option2;
+                if (variants2[i] == null) { variants2[i] = "-"; }
+                variants3[i] = products[i].variants.option3;
+                if (variants3[i] == null) { variants3[i] = "-"; }
+                variants[i] = variants1[i] + "," + variants2[i] + "," + variants3[i];
+                variantsId[i] = products[i].variants.id;
                 //console.log(products[i].variants.length);
-               console.log(variants[i]);
+                console.log(variants[i]);
                 pids[i] = products[i]._id;
                 //var x = products[i].created_at.split("T");
                 //created_At[i] = x[0];
@@ -1215,7 +1217,7 @@ exports.getProductPriceRange = (req, res) => {
             }
             console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs,"variants":variants ,"variantsId":variantsId});
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "variants": variants, "variantsId": variantsId });
 
 
         });
@@ -1563,6 +1565,8 @@ exports.publishBadges = (req, res) => {
         var query = {
             "_id": ObjectId(req.body.bid)
         };
+
+        console.log(query);
         var imgsrc;
         var thumbnailSrc;
         dbo.collection(collection).findOne(query, function (err, obj) {
@@ -1572,7 +1576,7 @@ exports.publishBadges = (req, res) => {
             imgsrc = obj.imageSource;
             thumbnailSrc = obj.thumbnailSource;
 
-            var newvalues = { $push: { "badge": { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
+            var newvalues = { $push: { "badge": { Bid: req.body.bid, left: req.body.xvalue, top: req.body.yvalue, opvalue: req.body.opval, width: req.body.width, height: req.body.height, borderRadius: req.body.borderRadius, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
 
             for (var i = 0; i < req.body.pid.length; i++) {
                 var myquery = {
@@ -1583,8 +1587,79 @@ exports.publishBadges = (req, res) => {
                 dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
-                });
+                })
+
+                if (req.body.filter == "Price") {
+                    var v = parseFloat(req.body.vid[i]);
+                    var v1 = req.body.vid[i];
+                    var myquery1 = {
+                        "_id": ObjectId(req.body.pid[i]),
+                        "variants.id": v
+                    };
+                    var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+                    console.log("vids: " + req.body.vid[i]);
+                    console.log("v: " + v);
+
+                    dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.bids": req.body.bid } }, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product updated Vid: " + obj);
+                        console.log("product updated Bid: " + req.body.bid);
+                        console.log("product updated Vid: " + v);
+                        console.log("product updated Vid: " + req.body.vid.length);
+                    });
+
+
+
+
+                } else {
+                    for (var i = 0; i < req.body.pid.length; i++) {
+                        var myquery = {
+                            "_id": ObjectId(req.body.pid[i])
+                        };
+                        console.log(myquery);
+                        dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                            console.log("varID");
+                            console.log(obj);
+                            for (var j = 0; j < obj.variants.length; j++) {
+                                var myquery = {
+                                    "variants.id": obj.variants[j].id
+                                };
+
+                                var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+
+
+                                dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.bids": req.body.bid } }, function (err, res) {
+                                    if (err) throw err;
+                                    console.log("product updated Vid: " + res);
+                                    console.log("product updated Bid: " + req.body.bid);
+
+                                });
+                            }
+                        });
+                    }
+
+                }
             }
+
+            // for (var j = 0; j < req.body.vid.length; j++) {
+            //     var v = parseFloat(req.body.vid[j]).toFixed(1);
+            //     var v1 = req.body.vid[j];
+            //     var myquery = {
+            //         "_id": ObjectId(req.body.pid[i]),
+            //         "variants.id": v
+            //     };
+            //     var newvalues1 = { $push:{"variants.$.bids":req.body.bid}};
+            //     console.log("vids: " + req.body.vid[j]);
+            //     console.log("v: " + v);
+
+            //     dbo.collection(globalShop).update({"variants.id": 12765315366985.0 }, { $push:{"variants.$.bids":req.body.bid}}, function (err, obj) {
+            //         if (err) throw err;
+            //         console.log("product updated Vid: " + obj);
+            //         console.log("product updated Bid: " + req.body.bid);
+            //         console.log("product updated Vid: " + v);
+            //         console.log("product updated Vid: " + req.body.vid.length);
+            //     });
+            // }
 
         });
 
@@ -1598,6 +1673,43 @@ exports.publishBadges = (req, res) => {
     });
 };
 
+// exports.publishBadges2 = (req, res) => {
+
+//     var map = 0;
+//     var abid;
+//     console.log('body: ' + JSON.stringify(req.body));
+//     console.log(req.body.bid);
+//     res.send(req.body);
+//     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+//         if (err) throw err;
+
+//         var dbo = db.db("shopifydbclone");
+
+//             for (var j = 0; j < req.body.vid.length; j++) {
+//                 var v = parseFloat(req.body.vid[j]).toFixed(1);
+//                 var v1 = req.body.vid[j];
+//                 var myquery = {
+//                     // "_id": ObjectId(req.body.pid[j]),
+//                     "variants.id": parseFloat(req.body.vid[j])
+//                 };
+//                 var newvalues1 = { $push:{"variants.$.bids":req.body.bid}};
+//                 console.log("vids: " + req.body.vid[j]);
+//                 console.log("v: " + v);
+//                 console.log( myquery);
+
+//                 dbo.collection(globalShop).update(myquery, { $push:{"variants.$.bids":req.body.bid}},console.log(v), function (err, obj) {
+//                     if (err) throw err;
+//                     console.log("product updated Vid: " + obj);
+//                     console.log("product updated Bid: " + req.body.bid);
+//                     console.log("product updated Vid: " + v);
+//                     console.log("product updated Vid: " + req.body.vid.length);
+//                 });
+//              }
+
+
+
+//     });
+// };
 
 exports.unpublishBadges = (req, res) => {
 
@@ -1623,10 +1735,36 @@ exports.unpublishBadges = (req, res) => {
                     if (err) throw err;
                     console.log("removed badge from product: " + obj);
                 });
-            }
+            
+
+      
+            console.log(myquery);
+            // dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+            //     console.log("varID");
+            //     console.log(obj);
+           
+
+
+            //         for (var k = 0; k < obj.variants.length; k++) {
+            //             var newvalues1 = { $pull: { "variants.$.bids": req.body.pid[i].bid[j] } };
+
+            //             var myquery = {
+            //                 "variants.id": obj.variants[k].id
+            //             };
+
+
+            //             dbo.collection(globalShop).updateOne(myquery, newvalues1, function (err, res) {
+            //                 if (err) throw err;
+            //                 console.log("product updated Vid: " + res);
+            //                 console.log("product updated Bid: " + req.body.bid);
+
+            //             });
+            //         }
+                
+            // });
         }
 
-
+        }
     });
 };
 
@@ -1720,6 +1858,7 @@ exports.tags = (req, res) => {
             for (var i = 0; i < products.length; i++) {
                 tagsArray.push(products[i].tags);
             }
+
 
             //var ids = result[0];
 
