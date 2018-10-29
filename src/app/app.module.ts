@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { MatSelectModule} from '@angular/material/select';
+import {MatRadioModule} from '@angular/material/radio';
 import { HttpClientModule }    from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +23,7 @@ import { DragndropDirective } from './dragndrop.directive';
 import { ImageUploadModule } from "angular2-image-upload";
 import { AngularDraggableModule } from 'angular2-draggable';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { MyDatePickerModule } from 'mydatepicker';
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -35,7 +37,7 @@ import { NgSelectModule } from '@ng-select/ng-select';
     SelectProductsComponent,
     RemoveBadgesComponent,
     FileSelectDirective,
-    DragndropDirective
+    DragndropDirective,
     // MultiSelectComponent
   ],
   imports: [
@@ -46,13 +48,16 @@ import { NgSelectModule } from '@ng-select/ng-select';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
+    MatRadioModule,
     HttpClientModule,
     NgxSpinnerModule,
     NgxPaginationModule,
     NgxSmartModalModule.forRoot(),
     ImageUploadModule.forRoot(),
     AngularDraggableModule,
-    NgSelectModule
+    NgSelectModule,
+    MyDatePickerModule
+
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
     // )

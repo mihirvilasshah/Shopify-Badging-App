@@ -1,12 +1,8 @@
 <!--<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
 <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>-->
-<ngx-spinner
-  bdColor="rgba(51,51,51,0.8)"
-  size="medium"
-  color="#fff"
-  type="ball-atom">
- <p style="font-size: 20px; color: white">Loading...</p>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-atom">
+    <p style="font-size: 20px; color: white">Loading...</p>
 </ngx-spinner>
 <h1>Apply Rule Conditions</h1>
 <div>
@@ -42,68 +38,84 @@
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)" style="width:180px">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getPriceProd()" [disabled]="((price1&&price2)&&applyPrice)||((!(price1&&price2))&&!applyPrice)"
+                style="width:180px">Apply</button>
 
         </form>
     </div>
     <div *ngIf="selectedFilter=='Created Date'">
         <form>
-            <label for="d1">From:
-                <input type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()">
-            </label>
-            <label for="d2">To:
-                <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
-            </label>
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- <label for="d1"> -->
+                <h6>From:</h6>
+                <!-- <input class="mdl-textfield__input" type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()"
+                            placeholder="12/01/2017"> -->
+
+                <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="model1" required placeholder="yyyy-mm-dd"
+                    id="d1"></my-date-picker>
+                <!-- </label> -->
+            </div>
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- <label for="d2"> -->
+                <h6>To:</h6>
+                <!-- <input class="mdl-textfield__input" type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()"
+                            placeholder="12/01/2017"> -->
+
+                <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="model2" required placeholder="yyyy-mm-dd"
+                    id="d2"></my-date-picker>
+                <!-- </label> -->
+            </div>
+            <!-- <label for="d2">To:
+                    <input type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()">
+                </label> -->
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((date1&&date2)&&applyDate)||((!(date1&&date2))&&!applyDate)" style="width:180px">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDateProd()" [disabled]="((model1&&model2)&&applyDate)||((!(model1&&model2))&&!applyDate)"
+                style="width:180px">Apply</button>
 
         </form>
     </div>
+    
     <div *ngIf="selectedFilter=='Title'">
         <form>
             <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title">
+                <input class="mdl-textfield__input" type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()"
+                    placeholder="Search by title">
                 <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
             </div>
 
             <br>
             <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)" style="width:180px" style="width:180px">Apply</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTitleProd()" [disabled]="((title1)&&applyTitle)||((!(title1))&&!applyTitle)"
+                style="width:180px" style="width:180px">Apply</button>
             <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
 
         </form>
     </div>
-  
-  <div *ngIf="selectedFilter=='Tag'">
-        <form>
-        <div class="mdl-textfield mdl-js-textfield">
-        
-        <ng-select [items]="split"
-        bindLabel="name"
-        bindValue="id"
-        [multiple]="false"
-        placeholder="Select Tags"
-        [(ngModel)]="tag"
-        name="tag"
-        id="tg1"
-        (click)="applyTagFn()">
-        </ng-select>
-        <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
-        </div>
-        <!-- <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title"> -->
-        <!-- (keyup.enter)="getTitleProd()" -->
-         
-        <br>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)"style="width:180px;">Apply</button>
-        <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
-         
-        </form>
-        </div>
 
-    
+    <div *ngIf="selectedFilter=='Tag'">
+        <form>
+            <div class="mdl-textfield mdl-js-textfield">
+
+                <ng-select [items]="split" bindLabel="name" bindValue="id" [multiple]="false" placeholder="Select Tags" [(ngModel)]="tag"
+                    name="tag" id="tg1" (click)="applyTagFn()">
+                </ng-select>
+                <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+            </div>
+            <!-- <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title"> -->
+            <!-- (keyup.enter)="getTitleProd()" -->
+
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getTagProd()" [disabled]="((tag)&&applyTag)||((!(tag))&&!applyTag)"
+                style="width:180px;">Apply</button>
+            <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+
+        </form>
+    </div>
+
+
     <span>
         <h2>{{msg}}</h2>
     </span>
@@ -115,69 +127,82 @@
         <label for="title" *ngFor="let title of titles">{{title}}</label>
         <p>hdghdf</p>
     </div>-->
-<!-- <br> -->
+        <!-- <br> -->
 
 
         <div class="form-group">
-            <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()" style="margin-left: 10px;">
+            <input class="form-check-input" type="checkbox" id="all" [(ngModel)]="selectedAll" (change)="giveid()"
+                style="margin-left: 10px;">
             <label for="all" style="margin-left: 34px;">Select All</label>
             <br>
-            
+
             <table class="mdl-data-table">
                 <tr>
-                 <th>Title</th>
-                
-                 
+                    <th>Title</th>
 
-                  <th> Tags</th>
-                  <th> Created Date </th>
-                  <th>Badge applied</th>
-                  <!-- <th> Thumbail</th> -->
-        
-                </tr> 
-                <!-- <div > -->
-                <!-- <thead>
+
+
+                    <th> Tags</th>
+                    <th> Created Date </th>
+                    <th>Badge applied</th>
+                    <!-- <th> Thumbail</th> -->
+
+                </tr>
+               
+                    <!-- <thead>
                     <tr>
                         <th *ngFor='let h of head'>
                             {{h}}
                         </th>
                     </tr>
                 </thead> -->
-                <!-- <label class="form-check-label; "> -->
-                    <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
-                        
-                           
+                    <!-- <label class="form-check-label; "> -->
+
+                    <tr *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
+
+
                         <td style="text-align: left">
-                            <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
-                       
+                            <input class="form-check-input" #box1 type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box1.value)">{{title.name}}</td>
+                         
                         <td>{{title.tags}} </td>
                         <td>{{title.created_at}}</td>
-                        <td><div *ngIf="title.badges=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
-                            <div *ngIf="title.badges!='-'"><img src = {{title.badges}} style="height: 40px; width: 40px"></div>
-                                
-                             </td>
-                   </tr>
-                <!-- </label> -->
-                
-                <!-- </div> -->
+
+                        <td> 
+
+
+                            <div *ngFor="let badge of title.badges" style="display: inline">  
+                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge.badg]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
+
+                                <img src="{{badge.src}}" style="height: 40px; width: 40px; margin-right: 30px">
+                                </div>
+
+
+                        </td>
+
+
+
+                    </tr>
+                    <!-- </label> -->
+
+               
             </table>
             <pagination-controls (pageChange)="p = $event" autoHide="true">
             </pagination-controls>
-            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();unpublish()" style="width:180px; height:60px; background:green">REMOVE</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" [disabled]="!selectedids.length" (click)="ngxSmartModalService.getModal('myModal').open();unpublish()"
+                style="width:180px; height:60px; background:green">REMOVE</button>
 
-            
+
+
+            </div>
+
+
+            <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
 
         </div>
 
-
-        <!-- <ejs-multiselect id='multiselectelement' [dataSource]='prodData' [fields]='fields' [mode]='mode' [selectAllText]='selectAllText' showSelectAll=true [placeholder]='placeholder'></ejs-multiselect> -->
-
     </div>
 
-</div>
-
-<ngx-smart-modal #myModal identifier="myModal">
+    <ngx-smart-modal #myModal identifier="myModal">
         <h3>Successfully removed {{selectedids.length}} badge(s)</h3>
         <button (click)="myModal.close()" style="text-align: center;height: 40px;width: 94px;position: relative;left: 31%;">Ok</button>
-</ngx-smart-modal>
-
+    </ngx-smart-modal>

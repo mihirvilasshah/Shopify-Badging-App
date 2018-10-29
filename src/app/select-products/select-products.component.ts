@@ -6,6 +6,7 @@ import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { NgSelectModule, NgOption } from '@ng-select/ng-select';
+import { IMyDpOptions } from 'mydatepicker';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
 export interface filter {
@@ -22,6 +23,13 @@ export interface filter {
 export class SelectProductsComponent implements OnInit {
 
   // filters = ["Price","Date","Title"];
+  public myDatePickerOptions: IMyDpOptions = {
+    // other options...
+    dateFormat: 'yyyy-mm-dd',
+    width: '60%'
+  };
+  public model1: any ;
+  public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
 
   price1;
   price2;
@@ -47,6 +55,7 @@ export class SelectProductsComponent implements OnInit {
   price;
   created_At;
   thumbnail;
+  src = [];
   badges;
   selectedids = [];
   selectedAll;
@@ -60,7 +69,7 @@ export class SelectProductsComponent implements OnInit {
   ];
   selectedProducts = [];
 
-  selected_image_src = "";
+  selected_image_src;
   badgeCss = "";
 
   structuredTitle = [];
@@ -95,6 +104,10 @@ export class SelectProductsComponent implements OnInit {
   split = [];
   currency;
 
+  BadgeWidth;
+  BadgeHeight;
+  BorderRadius;
+
 
   constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient, public ngxSmartModalService: NgxSmartModalService) {
     // this.badge.getProduct();
@@ -110,6 +123,10 @@ export class SelectProductsComponent implements OnInit {
     console.log("select products badge name" + this.selected_image_src);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
+
+    this.BadgeWidth=badge.getBadgeWidth();
+    this.BadgeHeight=badge.getBadgeHeight();
+    this.BorderRadius=badge.getBorderRadius();
     // let cur = this.http.get("http://172.16.18.189:3000/shopdet")
     // cur.subscribe(data => {
     //   console.log("here is the response", data);
@@ -175,7 +192,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
           console.log(this.showTitle);
         }
       }
@@ -185,7 +202,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
 
         }
       }
@@ -219,7 +236,7 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
 
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i]});
 
         }
       }
@@ -229,7 +246,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
 
         }
       }
@@ -268,6 +285,8 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
+        console.log("multiple badges", this.badges);
 
 
         this.structuredTitle = [];
@@ -277,28 +296,29 @@ export class SelectProductsComponent implements OnInit {
 
           var a = {
 
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
+          console.log("src:"+items[6][i]);
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -324,9 +344,12 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.date1 + "/" + this.date2 + "/all")
+      let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
+        // console.log("date", this.date1);
+        console.log("dateModel", this.model1.formatted);
+        console.log("dateModel2", this.model2.formatted);
         console.log(this.pr);
 
         var items = Object.values(data);
@@ -338,6 +361,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -346,28 +370,28 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -411,6 +435,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -419,28 +444,28 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -479,6 +504,7 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.src = items[6];
 
 
         this.structuredTitle = [];
@@ -487,28 +513,28 @@ export class SelectProductsComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
           }
           this.structuredTitle.push(a);
         }
 
 
-          this.showTitle = this.structuredTitle;
+        this.showTitle = this.structuredTitle;
 
-          if (this.pids.length == 0) {
-            this.msg = "No matches found."
-            this.show = false;
-          }
-          if (this.pids.length > 0) {
-            this.msg = ""
-            this.show = true;
-          }
-          // var pids = data[pids];
-          this.applyTitle = true;
+        if (this.pids.length == 0) {
+          this.msg = "No matches found."
+          this.show = false;
+        }
+        if (this.pids.length > 0) {
+          this.msg = ""
+          this.show = true;
+        }
+        // var pids = data[pids];
+        this.applyTitle = true;
 
-          console.log("titles:", this.titles);
-          console.log("structuredTitle:", this.structuredTitle);
-        
+        console.log("titles:", this.titles);
+        console.log("structuredTitle:", this.structuredTitle);
+
 
       })
 
@@ -585,14 +611,14 @@ export class SelectProductsComponent implements OnInit {
   }
 
   publish() {
-    var id = this.selected_image_src.split("picture/");
+    var id = this.selected_image_src._id;
     console.log(id);
     console.log(this.selectedids);
 
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "pid": this.selectedids });
+      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius, "pid": this.selectedids, "default":this.selected_image_src.default});
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
