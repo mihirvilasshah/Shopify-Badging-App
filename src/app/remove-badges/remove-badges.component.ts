@@ -525,7 +525,7 @@ export class RemoveBadgesComponent implements OnInit {
       for (var i = 0; i < this.pids.length; i++) {
         //var x = this.badges[i].split("picture/"); 
         console.log("x", this.badges[i]);
-        this.selectedids.push({ "prodid": this.pids[i], "bid": this.badges[i].badg });
+        this.selectedids.push({ "prodid": this.pids[i], "bid": this.badges[i].badg  });
         this.badges[i].selected = true;
       }
       // this.selectedids.splice(index, 1);
