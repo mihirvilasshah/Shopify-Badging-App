@@ -206,7 +206,7 @@ exports.auth = (req, res) => {
                                         request.get(forwardingAddress + '/creatscript');
                                         request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
-                                        request.get(forwardingAddress + '/gettheme');
+                                        request.post(forwardingAddress + '/gettheme');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -591,6 +591,24 @@ exports.createWebhooks = (req, res) => {
         .then((webresponse) => {
             console.log(webresponse);
             console.log("inside webhook call products/delete");
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+
+    // Webhook themes/publish      
+    const Webhookjson4 = {
+        webhook: {
+            topic: "themes/publish",
+            address: forwardingAddress + "/gettheme/",
+            format: "json",
+        }
+    };
+
+    request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson4 })
+        .then((webresponse) => {  
+            console.log("inside webhook call themes/publish");
+            console.log(webresponse);
         })
         .catch((error) => {
             if (error) throw error;
@@ -1151,7 +1169,7 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).aggregate([{ $project: { _id: 1, title: 1, created_at: 1, tags: 1, "badge.Bid": 1, "variants": 1 } }, { $unwind: "$variants" }, { $match: myquery }]).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{ $project: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1, "variants": 1 } }, { $unwind: "$variants" }, { $match: myquery }]).toArray(function (err, obj) {
             // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
@@ -1211,6 +1229,7 @@ exports.getProductPriceRange = (req, res) => {
                 }
 
                 console.log("bids", bids[i]);
+                console.log("src", srcs[i]);
 
 
 

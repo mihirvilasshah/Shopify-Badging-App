@@ -50,14 +50,15 @@ aren’t available to the outside world. */
     //-----------------------------------------------------------------------------------------------------------------------------------------
     // when the loaded page is product page run this code
     function productpage() {
-      var productId = id;                          // we get the value of id from the script file loaded in snippets of shopify
+      var productId = id; 
+      var applydbadges = [];                          // we get the value of id from the script file loaded in snippets of shopify
       $.ajax({                                     //ajax call to get the product details based on product id
         url: forwardingAddress + '/getSrc/' + productId,
         type: 'GET',
         success: function (data) {
           if (data) {
             variantid = data.variants[0].id;        // get the variant 0 id when page is loaded
-            var applydbadges = [];                      //initially applied badges array is empty we get based on variant id
+                                 //initially applied badges array is empty we get based on variant id
             var varlen = data.variants.length;
             for (var i = 0; i < varlen; i++) {       //get the badges for that variant
               if (variantid = data.variants[i].id) {
