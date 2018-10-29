@@ -200,13 +200,13 @@ exports.auth = (req, res) => {
                             var dbo = db.db("shopifydbclone");
                             dbo.listCollections({ name: globalShop })
                                 .next(function (err, collinfo) {
-                                     if (!collinfo) {
+                                    if (!collinfo) {
                                         request.get(forwardingAddress + '/copyDB');
                                         request.get(forwardingAddress + '/createWebhooks');
                                         request.get(forwardingAddress + '/creatscript');
                                         request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
-                                        request.get(forwardingAddress + '/gettheme');
+                                        request.post(forwardingAddress + '/gettheme');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -596,6 +596,24 @@ exports.createWebhooks = (req, res) => {
             if (error) throw error;
         });
 
+    // Webhook themes/publish      
+    const Webhookjson4 = {
+        webhook: {
+            topic: "themes/publish",
+            address: forwardingAddress + "/gettheme/",
+            format: "json",
+        }
+    };
+
+    request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson4 })
+        .then((webresponse) => {  
+            console.log("inside webhook call themes/publish");
+            console.log(webresponse);
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+
 }
 exports.productPage = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/products.json';
@@ -637,12 +655,13 @@ exports.copyDB = (req, res) => {
 
         console.log("before: " + flag);
         if (flag == 1) {
-             dbo.collection(globalShop).find({ "variants":{$elemMatch:{"price": { "$exists": true, "$type": 2 } }}}).forEach(function (doc) {
-            // bulkUpdateOps = [];
+            dbo.collection(globalShop).find({ "variants": { $elemMatch: { "price": { "$exists": true, "$type": 2 } } } }).forEach(function (doc) {
+                // bulkUpdateOps = [];
 
-            for (var i = 0; i < doc.variants.length; i++){
-                doc.variants[i].price=parseFloat(doc.variants[i].price) ;
-                console.log(doc.variants.length);}
+                for (var i = 0; i < doc.variants.length; i++) {
+                    doc.variants[i].price = parseFloat(doc.variants[i].price);
+                    console.log(doc.variants.length);
+                }
                 dbo.collection(globalShop).save(doc);
                 // var price = "variants.price";
                 // for (var i = 0; i < doc.variants.length; i++) {
@@ -1091,11 +1110,11 @@ exports.getProductPriceRange = (req, res) => {
 
 
     var titles = [];
-    var variants=[];
-    var variants1=[];
-    var variants2=[];
-    var variants3=[];
-    var variantsId=[];
+    var variants = [];
+    var variants1 = [];
+    var variants2 = [];
+    var variants3 = [];
+    var variantsId = [];
 
     var bids = [];
     var srcs = [];
@@ -1125,21 +1144,21 @@ exports.getProductPriceRange = (req, res) => {
 
     if (pr == "all") {
         myquery = {
-           "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} 
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) }
 
-           
+
 
             // "variants": { price: { "$gte": p1, "$lte": p2 } }
         }
     } else if (pr == "withBadges") {
         myquery = {
-            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
-            "badge":{ $exists: true, $ne: [] }
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
+            "badge": { $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
-            "variants.price":{$gte:parseInt(p1),$lte:parseInt(p2)} ,
-            "badge":{ $size: 0 }
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
+            "badge": { $size: 0 }
         }
     }
 
@@ -1150,8 +1169,8 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).aggregate([{$project:{_id: 1, title: 1, created_at: 1, tags: 1, "badge": 1,"variants":1}},{$unwind: "$variants"} ,{$match:myquery}]).toArray(function (err, obj) {
-       // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{ $project: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1, "variants": 1 } }, { $unwind: "$variants" }, { $match: myquery }]).toArray(function (err, obj) {
+            // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(products);
@@ -1162,16 +1181,16 @@ exports.getProductPriceRange = (req, res) => {
                 var b = [];
                 var src = [];
                 titles[i] = products[i].title;
-                variants1[i]=products[i].variants.option1;
-                if(variants1[i]==null){variants1[i]="-";}
-                variants2[i]=products[i].variants.option2;
-                if(variants2[i]==null){variants2[i]="-";}
-                variants3[i]=products[i].variants.option3;
-                if(variants3[i]==null){variants3[i]="-";}
-                variants[i]=variants1[i]+","+variants2[i]+","+variants3[i];
-                variantsId[i]=products[i].variants.id;
+                variants1[i] = products[i].variants.option1;
+                if (variants1[i] == null) { variants1[i] = "-"; }
+                variants2[i] = products[i].variants.option2;
+                if (variants2[i] == null) { variants2[i] = "-"; }
+                variants3[i] = products[i].variants.option3;
+                if (variants3[i] == null) { variants3[i] = "-"; }
+                variants[i] = variants1[i] + "," + variants2[i] + "," + variants3[i];
+                variantsId[i] = products[i].variants.id;
                 //console.log(products[i].variants.length);
-               console.log(variants[i]);
+                console.log(variants[i]);
                 pids[i] = products[i]._id;
                 //var x = products[i].created_at.split("T");
                 //created_At[i] = x[0];
@@ -1217,7 +1236,7 @@ exports.getProductPriceRange = (req, res) => {
             }
             console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied , "src": srcs,"variants":variants ,"variantsId":variantsId});
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "variants": variants, "variantsId": variantsId });
 
 
         });
@@ -1588,7 +1607,7 @@ exports.publishBadges = (req, res) => {
                 });
             }
 
-            
+
 
         });
 
