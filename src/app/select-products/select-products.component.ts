@@ -621,7 +621,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id[1], "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius,"pid": this.selectedids,"default":this.selected_image_src.default, "vid": this.selectedvids });
+      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius,"pid": this.selectedids,"default":this.selected_image_src.default, "vid": this.selectedvids });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
