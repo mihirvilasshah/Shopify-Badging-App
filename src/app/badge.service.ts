@@ -15,6 +15,8 @@ export class BadgeService {
   private badgePic="http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
   private badgeCss="top-left";
   private coord={ x: 0, y: 0 };
+  private coord2={ x: 0, y: 0 };
+  private coordFinal={ x: 0, y: 0 };
   private opval=1;
   private BadgeWidth=15;
   private BadgeHeight=15;
@@ -58,6 +60,24 @@ export class BadgeService {
 
   getCoor(){
     return this.coord;
+  }
+
+  setCoor2(x,y){
+    this.coord2.x=x;
+    this.coord2.y=y;
+  }
+
+  getCoor2(){
+    return this.coord2;
+  }
+
+  setCoorFinal(x,y){
+    this.coordFinal.x=x;
+    this.coordFinal.y=y;
+  }
+
+  getCoorFinal(){
+    return this.coordFinal;
   }
 
   getOpval(){

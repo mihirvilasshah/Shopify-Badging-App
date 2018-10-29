@@ -53,8 +53,8 @@
     <div>
 
       <mat-radio-group placeholder="position" [(ngModel)]="position">
-        <mat-radio-button value="drag">Drag</mat-radio-button> &nbsp;&nbsp;
-        <mat-radio-button value="input">Input</mat-radio-button>
+        <mat-radio-button value="drag" (click)="drag()">Drag</mat-radio-button> &nbsp;&nbsp;
+        <mat-radio-button value="input" (click)="input()">Input</mat-radio-button>
       </mat-radio-group>
     </div><br>
     <div *ngIf="position=='drag'">

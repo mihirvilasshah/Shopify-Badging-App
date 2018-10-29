@@ -119,7 +119,7 @@ export class SelectProductsComponent implements OnInit {
     //   if (params["badgeCss"])
     //     this.badgeCss = params["badgeCss"];
     // if(this.position== "drag")
-    this.endOffset = badge.getCoor();
+    this.endOffset = badge.getCoorFinal();
     this.opvalue = badge.getOpval();
     this.selected_image_src = badge.getBadgePic();
     this.BadgeWidth=badge.getBadgeWidth();
