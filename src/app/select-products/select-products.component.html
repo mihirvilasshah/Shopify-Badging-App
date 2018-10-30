@@ -139,14 +139,14 @@
 
             <table class="mdl-data-table">
                 <tr>
-                    <th>Title</th>
+                 <th class="text-center"> Title</th>
 
 
 
-                    <th> Tags</th>
-                    <th> Created Date </th>
-                    <th>Badge applied</th>
-                    <th *ngIf="selectedFilter=='Price'">variants</th>
+                    <th class="text-center">  Tags</th>
+                    <th class="text-center">  Created Date </th>
+                    <th class="text-center"> Badge applied</th>
+                    <th *ngIf="selectedFilter=='Price'" class="text-center">Variants</th>
                     <!-- <th> Thumbail</th> -->
 
                 </tr>
@@ -167,7 +167,7 @@
                             (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
 
                     <td>{{title.tags}} </td>
-                    <td>{{title.created_at}}</td>
+                    <td >{{title.created_at}}</td>
                     <td>
                         <div *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
                         <div *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.src" src="{{badge}}"
