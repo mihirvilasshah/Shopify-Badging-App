@@ -1,9 +1,9 @@
 
 /* Using a self-executing anonymous function - (function(){})(); - so that all variables and functions defined within 
 aren’t available to the outside world. */
-
+ 
 (function () {
-  const forwardingAddress = "https://67d9fa72.ngrok.io"; // we use this to call apis from this url
+  const forwardingAddress = "https://0723fef1.ngrok.io"; // we use this to call apis from this url
   // function to load the jquery script to the page and calls one callback fuction in which we write our logic
   //-------------------------------------------------------------------------------------------------------------------
   var loadScript = function (url, callback) {
@@ -60,13 +60,15 @@ aren’t available to the outside world. */
             var applydbadges = [];                      //initially applied badges array is empty we get based on variant id
             var varlen = data.variants.length;
             for (var i = 0; i < varlen; i++) {       //get the badges for that variant
-              if (variantid = data.variants[i].id) {
+              if (variantid == data.variants[i].id) {
                 applydbadges = data.variants[i].bids;
-                break;
 
+
+
+                break;
               }
             }
-            var imageslen = data.images.length
+            var imageslen = data.images.length;
             for (var j = 0; j < imageslen; j++) {                     //loop through the images array and apply badges for all the variants
               console.log(data.images.length);
               console.log(j);
@@ -81,10 +83,10 @@ aren’t available to the outside world. */
               var badgeids = [];
               for (var i = 0; i < data.badge.length; i++) {                           //loop through the badge array and get all badge details to apply for each image 
                 console.log("CHECK PID", id);
-                console.log('in badge image success' + data.badge[i].x);
-                console.log('in badge image success' + data.badge[i].y);
-                var x = data.badge[i].x;
-                var y = data.badge[i].y;
+                console.log('in badge image success' + data.badge[i].left);
+                console.log('in badge image success' + data.badge[i].top);
+                var x = data.badge[i].left;
+                var y = data.badge[i].top;
                 badgeids[i] = data.badge[i].Bid;
                 console.log('in badge image success' + data.badge[i].Bid);
                 var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
@@ -93,54 +95,59 @@ aren’t available to the outside world. */
                 for (var k = 0; k < applydbadgeslength; k++) {                         //based on the apply badges to this variant we create the badge image to display or not
                   if (data.badge[i].Bid == applydbadges[k]) {
                     flag = true;
+                    break;
                   }
                   else {
                     flag = false;
                   }
                 }
                 if (flag == false) {                                                //if badge not there in applybadges array we will display none
-
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + '><img style="display:none;position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
                 }
-                if (flag = true) {                                                    //else display block
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + '><img style="display:block;position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
-
+                if (flag == true) {                                                    //else display block
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
                 }
               }                                                                              //end of badge array lopp
               console.log("append", trim);
             }
-
 
             //--------------------------------------------------------------------------------------------------------------------------------
             $("select").change(function () {                                                 // when user change the select input we get the variant id and change the css properties of the badge 
               var variantid = getUrlParam('variant', data.variants[0].id);
               console.log("variantid", variantid);
               for (var i = 0; i < data.variants.length; i++) {
-                if (variantid = data.variants[i].id) {
+                if (variantid == data.variants[i].id) {
                   applydbadges = data.variants[i].bids;
                   break;
-
                 }
               }
               var flag = true;
               var badgelen = data.badge.length;
-              for (var i = 0; i < badgelen; j++) {
+              console.log(applydbadges);
+              for (var i = 0; i < badgelen; i++) {
                 var applydbadgeslength = applydbadges.length
                 for (var k = 0; k < applydbadgeslength; k++) {
                   if (data.badge[i].Bid == applydbadges[k]) {
                     flag = true;
-
+                    break;
                   }
                   else {
                     flag = false;
                   }
                 }
-                if (flag == false) {
-                  $('.' + data.badge[i].Bid).css("display", "none");
+                 if (flag == false) {
+                
+                   
+                  $("."+data.badge[i].Bid).css("display", "none");
+                   console.log("none",data.badge[i].Bid);
+                 
 
                 }
                 if (flag == true) {
-                  $('.' + data.badge[i].Bid).css("display", "block");
+                
+                  $("."+data.badge[i].Bid).css("display", "block");
+                  console.log("block",data.badge[i].Bid);
+                      
 
                 }
               }
@@ -163,7 +170,6 @@ aren’t available to the outside world. */
       }
     }
   };
-
   //----------------------------------------------------------------------------------------------------------------------------------------------------
   if ((typeof jQuery === 'undefined') || (parseFloat(jQuery.fn.jquery) < 1.7)) {
     loadScript('//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js', function () {

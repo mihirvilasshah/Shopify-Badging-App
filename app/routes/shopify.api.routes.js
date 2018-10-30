@@ -31,8 +31,7 @@ module.exports = (app) => {
     // Create product in our DB when triggered by webhook
     app.post('/createProduct/:shopname', controller.createProduct);
      app.get('/creatscript', controller.creatscript);
-     app.get('/gettheme', controller.gettheme);
-     
+     app.post('/gettheme', controller.gettheme);
 
 
     //Read product in our DB
@@ -77,6 +76,7 @@ module.exports = (app) => {
     app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
     app.get('/getProductTag/:tg1/:tr', controller.getProductTag);
     app.post('/publishBadges', controller.publishBadges);
+    // app.post('/publishBadges2', controller.publishBadges2);
     app.post('/unpublishBadges', controller.unpublishBadges);
 
     // upload pic using uploader

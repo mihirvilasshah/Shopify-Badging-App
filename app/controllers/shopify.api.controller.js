@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = 'tricon-jewel-store.myshopify.com';
+var globalShop = undefined;
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -207,7 +207,7 @@ exports.auth = (req, res) => {
                                         request.get(forwardingAddress + '/creatscript');
                                         request.get(forwardingAddress + '/shopdet');
                                         request.get(forwardingAddress + '/creatscript');
-                                        request.get(forwardingAddress + '/gettheme');
+                                        request.post(forwardingAddress + '/gettheme');
                                         // console.log("Started copying DB");
                                     }
                                 });
@@ -632,6 +632,24 @@ exports.createWebhooks = (req, res) => {
             if (error) throw error;
         });
 
+    // Webhook themes/publish      
+    const Webhookjson4 = {
+        webhook: {
+            topic: "themes/publish",
+            address: forwardingAddress + "/gettheme/",
+            format: "json",
+        }
+    };
+
+    request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson4 })
+        .then((webresponse) => {  
+            console.log("inside webhook call themes/publish");
+            console.log(webresponse);
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+
 }
 exports.productPage = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/products.json';
@@ -676,42 +694,46 @@ exports.copyDB = (req, res) => {
 
         console.log("before: " + flag);
         if (flag == 1) {
-            var cursor = dbo.collection(globalShop).find({ "variants.0.price": { "$exists": true, "$type": 2 } });
-            // bulkUpdateOps = [];
+            dbo.collection(globalShop).find({ "variants": { $elemMatch: { "price": { "$exists": true, "$type": 2 } } } }).forEach(function (doc) {
+                // bulkUpdateOps = [];
 
-            cursor.forEach(function (doc) {
+                for (var i = 0; i < doc.variants.length; i++) {
+                    doc.variants[i].price = parseFloat(doc.variants[i].price);
+                    console.log(doc.variants.length);
+                }
+                dbo.collection(globalShop).save(doc);
                 // var price = "variants.price";
                 // for (var i = 0; i < doc.variants.length; i++) {
-                var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
-                if (doc.variants[0].compare_at_price != null) {
-                    var newComparePrice = Number(doc.variants[0].compare_at_price.replace(/[^0-9\.]+/g, ""));
-                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newComparePrice } }
+                // var newPrice = Number(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                // if (doc.variants[0].compare_at_price != null) {
+                //     var newComparePrice = Number(doc.variants[0].compare_at_price.replace(/[^0-9\.]+/g, ""));
+                //     var n = { "$set": { "variants.$[].price": newPrice, "variants.$[].compare_at_price": newComparePrice} }
 
-                }
-                else {
-                    var n = { "$set": { "variants.0.price": newPrice, "variants.0.compare_at_price": newPrice } }
-                }
-
-
-                // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
-                console.log("before: " + doc.variants[0].price);
-                console.log("after: " + newPrice);
-                // bulkUpdateOps.push(
-                var q = { "_id": doc._id };
-
+                // }
+                // else {
+                //     var n = { "$set": { "variants.$[].price": newPrice, "variants.$[].compare_at_price": newComparePrice} }
                 // }
 
 
-                // );
-                // console.log("push: " + doc.published_at);
-                // console.log(bulkUpdateOps);
+                // // var newPrice = Float(doc.variants[0].price.replace(/[^0-9\.]+/g, ""));
+                // console.log("before: " + doc.variants[0].price);
+                // console.log("after: " + newPrice);
+                // // bulkUpdateOps.push(
+                // var q = { "_id": doc._id };
 
-                // if (bulkUpdateOps.length == 1000) {
-                dbo.collection(globalShop).updateOne(q, n, function (err, obj) {
-                    if (err) throw err;
-                    console.log("set newPrice done : " + obj);
-                    // console.log(obj);
-                });
+                // // }
+
+
+                // // );
+                // // console.log("push: " + doc.published_at);
+                // // console.log(bulkUpdateOps);
+
+                // // if (bulkUpdateOps.length == 1000) {
+                // dbo.collection(globalShop).updateMany(q, n, function (err, obj) {
+                //     if (err) throw err;
+                //     console.log("set newPrice done : " + obj);
+                //     // console.log(obj);
+                // });
                 // bulkUpdateOps = [];
                 // }
             });
@@ -1127,6 +1149,11 @@ exports.getProductPriceRange = (req, res) => {
 
 
     var titles = [];
+    var variants = [];
+    var variants1 = [];
+    var variants2 = [];
+    var variants3 = [];
+    var variantsId = [];
 
     var bids = [];
     var srcs = [];
@@ -1156,17 +1183,20 @@ exports.getProductPriceRange = (req, res) => {
 
     if (pr == "all") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) }
+
+
+
             // "variants": { price: { "$gte": p1, "$lte": p2 } }
         }
     } else if (pr == "withBadges") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
             "badge": { $exists: true, $ne: [] }
         }
     } else if (pr == "withoutBadges") {
         myquery = {
-            "variants.0.price": { "$gte": parseInt(p1), "$lte": parseInt(p2) },
+            "variants.price": { $gte: parseInt(p1), $lte: parseInt(p2) },
             "badge": { $size: 0 }
         }
     }
@@ -1178,7 +1208,8 @@ exports.getProductPriceRange = (req, res) => {
         if (err) throw err;
 
         var dbo = db.db("shopifydbclone");
-        dbo.collection(globalShop).find(myquery, { projection: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1 } }).toArray(function (err, obj) {
+        dbo.collection(globalShop).aggregate([{ $project: { _id: 1, title: 1, created_at: 1, tags: 1, "badge": 1, "variants": 1 } }, { $unwind: "$variants" }, { $match: myquery }]).toArray(function (err, obj) {
+            // dbo.collection(globalShop).find(myquery,{projection:{"variants":  { $elemMatch : { "price":{$gte:parseInt(p1),$lte:parseInt(p2)}} }}}).toArray(function (err, obj) {
             if (err) throw err;
             var products = obj;
             console.log(products);
@@ -1189,9 +1220,19 @@ exports.getProductPriceRange = (req, res) => {
                 var b = [];
                 var src = [];
                 titles[i] = products[i].title;
+                variants1[i] = products[i].variants.option1;
+                if (variants1[i] == null) { variants1[i] = "-"; }
+                variants2[i] = products[i].variants.option2;
+                if (variants2[i] == null) { variants2[i] = "-"; }
+                variants3[i] = products[i].variants.option3;
+                if (variants3[i] == null) { variants3[i] = "-"; }
+                variants[i] = variants1[i] + "," + variants2[i] + "," + variants3[i];
+                variantsId[i] = products[i].variants.id;
+                //console.log(products[i].variants.length);
+                console.log(variants[i]);
                 pids[i] = products[i]._id;
-                var x = products[i].created_at.split("T");
-                created_At[i] = x[0];
+                //var x = products[i].created_at.split("T");
+                //created_At[i] = x[0];
                 tags[i] = products[i].tags;
                 if (products[i].badge && products[i].badge.length > 0) {
 
@@ -1227,13 +1268,14 @@ exports.getProductPriceRange = (req, res) => {
                 }
 
                 console.log("bids", bids[i]);
+                console.log("src", srcs[i]);
 
 
 
             }
             console.log("bids", bids);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
+            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "variants": variants, "variantsId": variantsId });
 
 
         });
@@ -1581,6 +1623,8 @@ exports.publishBadges = (req, res) => {
         var query = {
             "_id": ObjectId(req.body.bid)
         };
+
+        console.log(query);
         var imgsrc;
         var thumbnailSrc;
         dbo.collection(collection).findOne(query, function (err, obj) {
@@ -1590,7 +1634,7 @@ exports.publishBadges = (req, res) => {
             imgsrc = obj.imageSource;
             thumbnailSrc = obj.thumbnailSource;
 
-            var newvalues = { $push: { "badge": { Bid: req.body.bid, x: req.body.xvalue, y: req.body.yvalue, opvalue: req.body.opval, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
+            var newvalues = { $push: { "badge": { Bid: req.body.bid, left: req.body.xvalue, top: req.body.yvalue, opvalue: req.body.opval, width: req.body.width, height: req.body.height, borderRadius: req.body.borderRadius, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
 
             for (var i = 0; i < req.body.pid.length; i++) {
                 var myquery = {
@@ -1601,8 +1645,79 @@ exports.publishBadges = (req, res) => {
                 dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                     if (err) throw err;
                     console.log("product updated ABid: " + obj);
-                });
+                })
+
+                if (req.body.filter == "Price") {
+                    var v = parseFloat(req.body.vid[i]);
+                    var v1 = req.body.vid[i];
+                    var myquery1 = {
+                        "_id": ObjectId(req.body.pid[i]),
+                        "variants.id": v
+                    };
+                    var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+                    console.log("vids: " + req.body.vid[i]);
+                    console.log("v: " + v);
+
+                    dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.bids": req.body.bid } }, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product updated Vid: " + obj);
+                        console.log("product updated Bid: " + req.body.bid);
+                        console.log("product updated Vid: " + v);
+                        console.log("product updated Vid: " + req.body.vid.length);
+                    });
+
+
+
+
+                } else {
+                    for (var i = 0; i < req.body.pid.length; i++) {
+                        var myquery = {
+                            "_id": ObjectId(req.body.pid[i])
+                        };
+                        console.log(myquery);
+                        dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                            console.log("varID");
+                            console.log(obj);
+                            for (var j = 0; j < obj.variants.length; j++) {
+                                var myquery = {
+                                    "variants.id": obj.variants[j].id
+                                };
+
+                                var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+
+
+                                dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.bids": req.body.bid } }, function (err, res) {
+                                    if (err) throw err;
+                                    console.log("product updated Vid: " + res);
+                                    console.log("product updated Bid: " + req.body.bid);
+
+                                });
+                            }
+                        });
+                    }
+
+                }
             }
+
+            // for (var j = 0; j < req.body.vid.length; j++) {
+            //     var v = parseFloat(req.body.vid[j]).toFixed(1);
+            //     var v1 = req.body.vid[j];
+            //     var myquery = {
+            //         "_id": ObjectId(req.body.pid[i]),
+            //         "variants.id": v
+            //     };
+            //     var newvalues1 = { $push:{"variants.$.bids":req.body.bid}};
+            //     console.log("vids: " + req.body.vid[j]);
+            //     console.log("v: " + v);
+
+            //     dbo.collection(globalShop).update({"variants.id": 12765315366985.0 }, { $push:{"variants.$.bids":req.body.bid}}, function (err, obj) {
+            //         if (err) throw err;
+            //         console.log("product updated Vid: " + obj);
+            //         console.log("product updated Bid: " + req.body.bid);
+            //         console.log("product updated Vid: " + v);
+            //         console.log("product updated Vid: " + req.body.vid.length);
+            //     });
+            // }
 
         });
 
@@ -1616,6 +1731,43 @@ exports.publishBadges = (req, res) => {
     });
 };
 
+// exports.publishBadges2 = (req, res) => {
+
+//     var map = 0;
+//     var abid;
+//     console.log('body: ' + JSON.stringify(req.body));
+//     console.log(req.body.bid);
+//     res.send(req.body);
+//     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+//         if (err) throw err;
+
+//         var dbo = db.db("shopifydbclone");
+
+//             for (var j = 0; j < req.body.vid.length; j++) {
+//                 var v = parseFloat(req.body.vid[j]).toFixed(1);
+//                 var v1 = req.body.vid[j];
+//                 var myquery = {
+//                     // "_id": ObjectId(req.body.pid[j]),
+//                     "variants.id": parseFloat(req.body.vid[j])
+//                 };
+//                 var newvalues1 = { $push:{"variants.$.bids":req.body.bid}};
+//                 console.log("vids: " + req.body.vid[j]);
+//                 console.log("v: " + v);
+//                 console.log( myquery);
+
+//                 dbo.collection(globalShop).update(myquery, { $push:{"variants.$.bids":req.body.bid}},console.log(v), function (err, obj) {
+//                     if (err) throw err;
+//                     console.log("product updated Vid: " + obj);
+//                     console.log("product updated Bid: " + req.body.bid);
+//                     console.log("product updated Vid: " + v);
+//                     console.log("product updated Vid: " + req.body.vid.length);
+//                 });
+//              }
+
+
+
+//     });
+// };
 
 exports.unpublishBadges = (req, res) => {
 
@@ -1641,10 +1793,36 @@ exports.unpublishBadges = (req, res) => {
                     if (err) throw err;
                     console.log("removed badge from product: " + obj);
                 });
-            }
+            
+
+      
+            console.log(myquery);
+            // dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+            //     console.log("varID");
+            //     console.log(obj);
+           
+
+
+            //         for (var k = 0; k < obj.variants.length; k++) {
+            //             var newvalues1 = { $pull: { "variants.$.bids": req.body.pid[i].bid[j] } };
+
+            //             var myquery = {
+            //                 "variants.id": obj.variants[k].id
+            //             };
+
+
+            //             dbo.collection(globalShop).updateOne(myquery, newvalues1, function (err, res) {
+            //                 if (err) throw err;
+            //                 console.log("product updated Vid: " + res);
+            //                 console.log("product updated Bid: " + req.body.bid);
+
+            //             });
+            //         }
+                
+            // });
         }
 
-
+        }
     });
 };
 
@@ -1738,6 +1916,7 @@ exports.tags = (req, res) => {
             for (var i = 0; i < products.length; i++) {
                 tagsArray.push(products[i].tags);
             }
+
 
             //var ids = result[0];
 
