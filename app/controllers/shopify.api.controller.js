@@ -1223,16 +1223,16 @@ exports.getProductPriceRange = (req, res) => {
                 variants1[i] = products[i].variants.option1;
                 if (variants1[i] == null) { variants1[i] = "-"; }
                 variants2[i] = products[i].variants.option2;
-                if (variants2[i] == null) { variants2[i] = "-"; }
+                if (variants2[i] == null) { variants2[i] = " "; }else{variants2[i]=","+variants2[i]}
                 variants3[i] = products[i].variants.option3;
-                if (variants3[i] == null) { variants3[i] = "-"; }
-                variants[i] = variants1[i] + "," + variants2[i] + "," + variants3[i];
+                if (variants3[i] == null) { variants3[i] = " "; }else{variants3[i]=","+variants3[i]}
+                variants[i] = variants1[i] + variants2[i] + variants3[i];
                 variantsId[i] = products[i].variants.id;
                 //console.log(products[i].variants.length);
                 console.log(variants[i]);
                 pids[i] = products[i]._id;
-                //var x = products[i].created_at.split("T");
-                //created_At[i] = x[0];
+                var x = products[i].created_at.split("T");
+                created_At[i] = x[0];
                 tags[i] = products[i].tags;
                 if (products[i].badge && products[i].badge.length > 0) {
 
