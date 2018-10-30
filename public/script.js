@@ -85,9 +85,15 @@ aren’t available to the outside world. */
                 console.log("CHECK PID", id);
                 console.log('in badge image success' + data.badge[i].left);
                 console.log('in badge image success' + data.badge[i].top);
-                var x = data.badge[i].left;
-                var y = data.badge[i].top;
+                var left = data.badge[i].left;
+                var top = data.badge[i].top;
+                 var width = data.badge[i].width;
+                    var height = data.badge[i].height;
+                    var borderRadius = data.badge[i].borderRadius;
                 badgeids[i] = data.badge[i].Bid;
+                left = (left*85)/350;
+                    
+                    top= (top*77)/225;
                 console.log('in badge image success' + data.badge[i].Bid);
                 var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
                 var flag = true;
@@ -102,10 +108,10 @@ aren’t available to the outside world. */
                   }
                 }
                 if (flag == false) {                                                //if badge not there in applybadges array we will display none
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
                 }
                 if (flag == true) {                                                    //else display block
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + y + 'px;height:60px;width:60px; left:' + x + 'px;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
                 }
               }                                                                              //end of badge array lopp
               console.log("append", trim);
