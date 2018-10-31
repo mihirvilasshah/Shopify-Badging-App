@@ -28,7 +28,7 @@ export class SelectProductsComponent implements OnInit {
     dateFormat: 'yyyy-mm-dd',
     width: '60%'
   };
-  public model1: any ;
+  public model1: any;
   public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
 
   price1;
@@ -122,9 +122,9 @@ export class SelectProductsComponent implements OnInit {
     this.endOffset = badge.getCoorFinal();
     this.opvalue = badge.getOpval();
     this.selected_image_src = badge.getBadgePic();
-    this.BadgeWidth=badge.getBadgeWidth();
-    this.BadgeHeight=badge.getBadgeHeight();
-    this.BorderRadius=badge.getBorderRadius();
+    this.BadgeWidth = badge.getBadgeWidth();
+    this.BadgeHeight = badge.getBadgeHeight();
+    this.BorderRadius = badge.getBorderRadius();
     // this.badgeCss=badge.getBadgeCss();
     console.log("select products badge name" + this.selected_image_src);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
@@ -194,7 +194,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i],variants:this.variants[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
           console.log(this.showTitle);
         }
       }
@@ -204,7 +204,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i],variants:this.variants[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -238,7 +238,7 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
 
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i],variants:this.variants[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -248,7 +248,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i],variants:this.variants[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -287,8 +287,8 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
-        this.variants=items[7];
-        this.variantsId=items[8];
+        this.variants = items[7];
+        this.variantsId = items[8];
         this.src = items[6];
         console.log("multiple badges", this.badges);
 
@@ -300,11 +300,11 @@ export class SelectProductsComponent implements OnInit {
 
           var a = {
 
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i],variants:this.variants[i],variantsId:this.variantsId[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
           }
           this.structuredTitle.push(a);
-          console.log("src:"+items[6][i]);
-          console.log("vids:"+this.variantsId);
+          console.log("src:" + items[6][i]);
+          console.log("vids:" + this.variantsId);
         }
 
 
@@ -440,7 +440,39 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        var uSrc = [];
         this.src = items[6];
+
+        // var temp = [];
+
+        // temp = this.src[0].split(',');
+        // console.log(temp);
+        // for (var j = 0; j < temp.length; j++) {
+        //   if (temp[j] != "")
+        //     this.split.push(temp[j]);
+
+        // }
+        // temp = [];
+
+
+        console.log("this.src", this.split);
+        // for(var i=0;i<this.src.length;i++){
+        //   if(!uSrc.includes(this.src[i])){
+        //     uSrc.push(this.src[i]);
+
+        //   }
+        //   console.log("unique src",uSrc);
+        // }
+        // this.src = uSrc;
+        console.log("unique b src",this.src[0].length);
+        for(var i=0;i<this.src[0].length;i++){
+          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        }
+
+        // let uSrc = new Set(this.src);
+        // let uASrc  = Array.from(uSrc);
+        // this.src = uASrc;
+        // console.log("unique src",this.src);
 
 
         this.structuredTitle = [];
@@ -600,7 +632,7 @@ export class SelectProductsComponent implements OnInit {
 
       // this.selectedids.push(value1);
       // var index = this.selectedids.indexOf(value1);
-      
+
       this.selectedids.push(value1);
       this.selectedVids.push(value2);
       console.log("flag true:" + this.selectedids);
@@ -638,7 +670,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius,"pid": this.selectedids,"vid":this.selectedVids,"filter":this.selectedFilter,"default":this.selected_image_src.default });
+      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "width": this.BadgeWidth, "height": this.BadgeHeight, "borderRadius": this.BorderRadius, "pid": this.selectedids, "vid": this.selectedVids, "filter": this.selectedFilter, "default": this.selected_image_src.default, "thumbnailSource": this.selected_image_src.thumbnailSource });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
