@@ -309,8 +309,7 @@ exports.getSrc = (req, res) => {
     });
 };
 exports.getbadges = (req, res) => {
-console.log("test",(req.body));     
-res.send("done");     
+console.log(req.body);  
 
 
 }
