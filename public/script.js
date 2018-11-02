@@ -1,9 +1,9 @@
 
 /* Using a self-executing anonymous function - (function(){})(); - so that all variables and functions defined within 
 aren’t available to the outside world. */
- 
+
 (function () {
-  const forwardingAddress = "https://0723fef1.ngrok.io"; // we use this to call apis from this url
+  const forwardingAddress = "https://505b2390.ngrok.io"; // we use this to call apis from this url
   // function to load the jquery script to the page and calls one callback fuction in which we write our logic
   //-------------------------------------------------------------------------------------------------------------------
   var loadScript = function (url, callback) {
@@ -87,13 +87,13 @@ aren’t available to the outside world. */
                 console.log('in badge image success' + data.badge[i].top);
                 var left = data.badge[i].left;
                 var top = data.badge[i].top;
-                 var width = data.badge[i].width;
-                    var height = data.badge[i].height;
-                    var borderRadius = data.badge[i].borderRadius;
+                var width = data.badge[i].width;
+                var height = data.badge[i].height;
+                var borderRadius = data.badge[i].borderRadius;
                 badgeids[i] = data.badge[i].Bid;
-                left = (left*85)/350;
-                    
-                    top= (top*77)/225;
+                left = (left * 85) / 350;
+
+                top = (top * 77) / 225;
                 console.log('in badge image success' + data.badge[i].Bid);
                 var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
                 var flag = true;
@@ -108,10 +108,10 @@ aren’t available to the outside world. */
                   }
                 }
                 if (flag == false) {                                                //if badge not there in applybadges array we will display none
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + top + '%;height:' + height + '%;width:' + width + '%; left:' + left + '%;border-radius:' + borderRadius + '%;" src="' + link + '"></div>');
                 }
                 if (flag == true) {                                                    //else display block
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + top + '%;height:' + height + '%;width:' + width + '%; left:' + left + '%;border-radius:' + borderRadius + '%;" src="' + link + '"></div>');
                 }
               }                                                                              //end of badge array lopp
               console.log("append", trim);
@@ -141,19 +141,19 @@ aren’t available to the outside world. */
                     flag = false;
                   }
                 }
-                 if (flag == false) {
-                
-                   
-                  $("."+data.badge[i].Bid).css("display", "none");
-                   console.log("none",data.badge[i].Bid);
-                 
+                if (flag == false) {
+
+
+                  $("." + data.badge[i].Bid).css("display", "none");
+                  console.log("none", data.badge[i].Bid);
+
 
                 }
                 if (flag == true) {
-                
-                  $("."+data.badge[i].Bid).css("display", "block");
-                  console.log("block",data.badge[i].Bid);
-                      
+
+                  $("." + data.badge[i].Bid).css("display", "block");
+                  console.log("block", data.badge[i].Bid);
+
 
                 }
               }
@@ -164,7 +164,28 @@ aren’t available to the outside world. */
     }
 
     function collectionpage() {
-      
+      var pageimages = []
+      var images = jQuery('img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".jp"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".JP"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".png"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".PNG"]')
+      images.each(function (index, image) {
+        var src = jQuery(image).attr('src');
+        pageimages.push(src);
+        console.log(src);
+      })
+      console.log(pageimages);
+
+    //   $.ajax({                                     //ajax call to get the product details based on product id
+    //     url: forwardingAddress + '/getbadges',
+    //     type: 'POST',
+    //     data:"asfs",
+    //     //dataType: "json",
+    //     success: function (data) {
+
+
+    //     }
+    // })
+    $.post(forwardingAddress + '/getbadges', {"src": pageimages}, 
+    function(data){}, 'json'
+    )
     }
     var storeURL = window.location.pathname;                                             // based on url identify page and call that function to apply badge to that page
     if (storeURL) {

@@ -187,7 +187,9 @@ exports.auth = (req, res) => {
                 const shopRequestUrl = 'https://' + shop + '/admin/products.json';
                 const shopRequestHeaders = {
                     'X-Shopify-Access-Token': globalToken,
-                };           
+                };
+
+
 
 
                 request.get(shopRequestUrl, { headers: shopRequestHeaders })
@@ -196,6 +198,8 @@ exports.auth = (req, res) => {
                         console.log("Token: " + globalToken);
 
                         // request.get(forwardingAddress + '/gettheme');
+                        //request.get(forwardingAddress + '/getcollections');
+
 
                         MongoClient.connect(url, function (err, db) {
                             var dbo = db.db("shopifydbclone");
@@ -287,72 +291,67 @@ exports.auth = (req, res) => {
 };
 var Aid;
 exports.getSrc = (req, res) => {
-
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
-        console.log("check",db);
-
+        console.log("check", db);
         var dbo = db.db("shopifydbclone");
-
-
         var myquery = { id: parseInt(req.params.pid) };
-
         console.log("id: " + req.params.pid);
         dbo.collection(globalShop).findOne(myquery, function (err, obj) {
             if (err) throw err;
-
             Aid = obj;
-
-
-
             //res.send(obj.ABid);
             //console.log("product found: " + Aid);
             if (Aid) {
                 res.send(Aid);
-
-
             }
         });
-
-
-
-
     });
-
-
-
 };
+exports.getbadges = (req, res) => {
+console.log("test",(req.body));     
+res.send("done");     
+
+
+}
 exports.getcollections = (req, res) => {
-    const shopRequestUrl = 'https://' + globalShop + '/admin/collections.json';
+    const shopRequestUrl = 'https://' + globalShop + '/admin/smart_collections.json';
     const shopRequestHeaders = {
         'X-Shopify-Access-Token': globalToken,
     };
-    var shopdetails;
+    var collectiondetails;
+    var collids = [];
 
     request.get(shopRequestUrl, { headers: shopRequestHeaders })
         .then((shopResponse) => {
-            shopdetails = JSON.parse(shopResponse).shop;
 
-            console.log(shopdetails.id);
+            collectiondetails = JSON.parse(shopResponse).smart_collections;
 
-            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-                if (err) throw err;
+            collectiondetails.forEach(function (collection) {
+                collids.push(collection.id);
 
-                var dbo = db.db("shopifydbclone");
-
-                // if (flag == 0) {
-                var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken, currency: shopdetails.currency };
-
-                dbo.collection("shopdetails").insert(myquey, function (err, result) {
-                    if (err) throw err;
-                    console.log("Number of documents inserted: " + result.insertedCount);
-                });
-
-
-                // }
-                res.send({ message: "shopdet copied to DB" });
-                db.close();
             });
+            console.log("collecids", collids);
+
+
+            // MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            //     if (err) throw err;
+
+            //     var dbo = db.db("shopifydbclone");
+
+            //     // if (flag == 0) {
+            //     var myquey = { id: shopdetails.id, shopname: shopdetails.name, token: globalToken, currency: shopdetails.currency };
+
+            //     dbo.collection("shopdetails").insert(myquey, function (err, result) {
+            //         if (err) throw err;
+            //         console.log("Number of documents inserted: " + result.insertedCount);
+            //     });
+
+
+            //     // }
+            //     res.send({ message: "shopdet copied to DB" });
+            //     db.close();
+            // });
         }).catch((err) => {
             console.log(err);
             res.send(err);
@@ -508,46 +507,6 @@ exports.gettheme = (req, res) => {
                             if (error) throw error;
                         });
 
-
-
-                    //product-template
-                    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
-
-                    // request.get(assetUrl, { headers: shopRequestHeaders })
-                    //     .then((template) => {
-                    //         template = JSON.parse(template).asset.value;
-                    //         var split = template.split('data-section-id="{{ section.id }}"');
-                    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
-                    //         console.log("TEMPLATE Changed:", template);
-
-
-                    //         const Scriptjson3 = {
-                    //             asset: {
-                    //                 key: "sections/product-template.liquid",
-                    //                 value: template
-                    //             }
-                    //         };
-
-                    //         const Scriptheaders = {
-                    //             'X-Shopify-Access-Token': globalToken,
-                    //             // 'X-Shopify-Topic': "products/create",
-                    //             // 'X-Shopify-Shop-Domain': globalShop,
-                    //             'Content-Type': "application/json"
-                    //         };
-                    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
-                    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
-                    //             .then((response) => {
-                    //                 console.log(response);
-                    //             })
-                    //             .catch((error) => {
-                    //                 if (error) throw error;
-                    //             });
-                    //     }).catch((err) => {
-                    //         console.log(err);
-                    //         res.send(err);
-                    //     });
-
-
                 }).catch((err) => {
                     console.log(err);
                     res.send(err);
@@ -642,7 +601,7 @@ exports.createWebhooks = (req, res) => {
     };
 
     request.post(webhookUrl, { headers: webhookheaders, json: Webhookjson4 })
-        .then((webresponse) => {  
+        .then((webresponse) => {
             console.log("inside webhook call themes/publish");
             console.log(webresponse);
         })
@@ -665,10 +624,7 @@ exports.productPage = (req, res) => {
             res.send(err);
         });
 };
-exports.getcollections = (req, res) => {
 
-    
-}
 exports.copyDB = (req, res) => {
     var flag = 0;
     // console.log("Shop Response: "+globalShopResponse);
@@ -1793,34 +1749,34 @@ exports.unpublishBadges = (req, res) => {
                     if (err) throw err;
                     console.log("removed badge from product: " + obj);
                 });
-            
-
-      
-            console.log(myquery);
-            // dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
-            //     console.log("varID");
-            //     console.log(obj);
-           
 
 
-            //         for (var k = 0; k < obj.variants.length; k++) {
-            //             var newvalues1 = { $pull: { "variants.$.bids": req.body.pid[i].bid[j] } };
 
-            //             var myquery = {
-            //                 "variants.id": obj.variants[k].id
-            //             };
+                console.log(myquery);
+                // dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                //     console.log("varID");
+                //     console.log(obj);
 
 
-            //             dbo.collection(globalShop).updateOne(myquery, newvalues1, function (err, res) {
-            //                 if (err) throw err;
-            //                 console.log("product updated Vid: " + res);
-            //                 console.log("product updated Bid: " + req.body.bid);
 
-            //             });
-            //         }
-                
-            // });
-        }
+                //         for (var k = 0; k < obj.variants.length; k++) {
+                //             var newvalues1 = { $pull: { "variants.$.bids": req.body.pid[i].bid[j] } };
+
+                //             var myquery = {
+                //                 "variants.id": obj.variants[k].id
+                //             };
+
+
+                //             dbo.collection(globalShop).updateOne(myquery, newvalues1, function (err, res) {
+                //                 if (err) throw err;
+                //                 console.log("product updated Vid: " + res);
+                //                 console.log("product updated Bid: " + req.body.bid);
+
+                //             });
+                //         }
+
+                // });
+            }
 
         }
     });

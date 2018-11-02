@@ -15,8 +15,9 @@ module.exports = (app) => {
 
     // Copy Shopify DB to our DB
     app.get('/copyDB', controller.copyDB);
-    app.get('/getcollections', controller.getcollections);
+    
     app.get('/shopdet', controller.shopdet);
+    app.get('/getcollections', controller.getcollections);
 
     // Create Webhooks
     app.get('/createWebhooks', controller.createWebhooks);
@@ -68,6 +69,7 @@ module.exports = (app) => {
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
     app.get('/getSrc/:pid', controller.getSrc);
+    app.post('/getbadges', controller.getbadges);
 
     app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
