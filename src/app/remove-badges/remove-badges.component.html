@@ -172,7 +172,7 @@
 
 
                             <div *ngFor="let badge of title.badges" style="display: inline">  
-                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
+                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge.badg]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
 
                                 <img src="{{badge.src}}" style="height: 40px; width: 40px; margin-right: 30px">
                                 </div>

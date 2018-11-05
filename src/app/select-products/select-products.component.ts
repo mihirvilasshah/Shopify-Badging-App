@@ -368,6 +368,10 @@ export class SelectProductsComponent implements OnInit {
         this.isApplied = items[5];
         this.src = items[6];
 
+        for(var i=0;i<this.src[0].length;i++){
+          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        }
+
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -543,6 +547,10 @@ export class SelectProductsComponent implements OnInit {
         this.isApplied = items[5];
         this.src = items[6];
 
+        for(var i=0;i<this.src[0].length;i++){
+          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        }
+
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -590,16 +598,14 @@ export class SelectProductsComponent implements OnInit {
   }
 
   giveid(flag, value) {
-    var x = value.split(",");
-    var value1 = x[0];
-    var value2 = x[1];
+
     if (this.selectedAll) {
       for (var i = 0; i < this.showTitle.length; i++) {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.counter = this.showTitle.length;
-      var index = this.selectedids.indexOf(value1);
-      var index2 = this.selectedVids.indexOf(value2);
+      // var index = this.selectedids.indexOf(value1);
+      // var index2 = this.selectedVids.indexOf(value2);
       // console.log("value1 if: " + value1);
       this.selectedids = [];
       this.selectedVids = [];
@@ -628,6 +634,10 @@ export class SelectProductsComponent implements OnInit {
 
     }
     else if (flag) {
+      console.log("VAL:",value);
+      var x = value.split(",");
+      var value1 = x[0];
+      var value2 = x[1];
       this.counter = this.counter + 1;
 
       // this.selectedids.push(value1);
@@ -643,6 +653,7 @@ export class SelectProductsComponent implements OnInit {
       this.counter = this.counter - 1;
 
       var index = this.selectedids.indexOf(this.pids[value1]);
+      console.log("index",index);
       var index2 = this.selectedVids.indexOf(this.pids[value2]);
       // this.selectedids.splice(value1, 1);
       console.log("spliced: " + this.selectedids.splice(index, 1));

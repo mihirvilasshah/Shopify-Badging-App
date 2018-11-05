@@ -42,6 +42,7 @@ export class RemoveBadgesComponent implements OnInit {
   pr1;
   tag;
   src = [];
+  abid = [];
 
   selectedEntry;
   titles;
@@ -339,25 +340,33 @@ export class RemoveBadgesComponent implements OnInit {
         console.log("items:", items)
         this.titles = items[0];
         var temp_badges = items[2];
+        // var temp_abid = items[7];
         this.src = items[6];
         console.log(temp_badges);
         for (var i = 0; i < temp_badges.length; i++) {
           var temparray = temp_badges[i];
+          // var temparray2 = temp_abid[i];
           var tempsrc = this.src[i];
           var a1 = [];
           for (var j = 0; j < temparray.length; j++) {
 
-            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] });
+            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] }); //,  "abid": temparray2[j]
 
           }
 
           this.badges.push(a1);
         }
 
+
+
+
+
+
         this.pids = items[1];
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.abid = items[7];
 
 
         this.structuredTitle = [];
@@ -366,7 +375,7 @@ export class RemoveBadgesComponent implements OnInit {
         for (var i = 0; i < +this.titles.length; i++) {
 
           var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], abid: this.abid[i]
           }
           this.structuredTitle.push(a);
         }
@@ -499,10 +508,12 @@ export class RemoveBadgesComponent implements OnInit {
     if (!flag) {
       var index1 = this.selectedids[index].bid.indexOf(x[1]);
       this.selectedids[index].bid.splice(index1, 1);
+      this.selectedids[index].abid.splice(index1, 1);
     }
     if (flag) {
 
       this.selectedids[index].bid.push(x[1]);
+      // this.selectedids[index].abid.push(x[1].abid);
     }
     console.log(this.selectedids);
 
@@ -515,9 +526,6 @@ export class RemoveBadgesComponent implements OnInit {
 
 
   giveid(flag, value) {
-    var x = value.split(",");
-    var value1 = x[0];
-    var value2 = x[1];
 
 
     if (this.selectedAll) {
@@ -534,17 +542,14 @@ export class RemoveBadgesComponent implements OnInit {
       for (var i = 0; i < this.pids.length; i++) {
         //var x = this.badges[i].split("picture/"); 
         console.log("x", this.badges[i]);
-        this.selectedids.push({ "prodid": this.pids[i], "bid": this.badges[i].badg });
+        this.selectedids.push({ "prodid": this.pids[i], "bid": this.badges[i].badg, "abid": this.badges[i].abid, "vid": this.variantsId[i] });
         this.badges[i].selected = true;
       }
-      for (var i = 0; i < this.variantsId.length; i++) {
-        this.selectedVids.push({ "vid": this.variantsId[i], "prodid": this.pids[i], "bid": this.badges[i].badg });
-      }
+
       // this.selectedids.splice(index, 1);
       console.log("selectedIDS(selected all): ")
       console.log(this.selectedids);
-      console.log("selectedVIDS(selected all): " + this.selectedVids);
-      console.log(this.selectedVids);
+
       console.log("selectedAll value: " + this.selectedAll);
       // console.log("pid value if: " + this.pids);
 
@@ -556,12 +561,16 @@ export class RemoveBadgesComponent implements OnInit {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
-      this.selectedVids = [];
+
       this.counter = 0;
       console.log("selectedIDS (deselected all): " + this.selectedids);
 
     }
     else if (flag) {
+      var x = value.split(",");
+      var value1 = x[0];
+      var value2 = x[1];
+
       this.counter = this.counter + 1;
 
       // this.selectedids.push(value);
@@ -571,30 +580,41 @@ export class RemoveBadgesComponent implements OnInit {
 
       this.prodsel = false;
 
-      var index = this.showTitle.findIndex(x => x.pids == value1);
+      // var index = this.showTitle.findIndex(x => x.pids == value1);
+      var index = this.showTitle.findIndex(x => x.variantsId == value2);
+      // var index = this.showTitle.indexOf(x => x.pids == value1);
 
 
       console.log(index);
       var b = [];
+      var ab = [];
       for (var i = 0; i < this.showTitle[index].badges.length; i++) {
 
         b.push(this.showTitle[index].badges[i].badg);
         this.showTitle[index].badges[i].selected = true;
+        ab.push(this.showTitle[index].badges[i].abid);
       }
 
-      this.selectedids.push({ "prodid": value1, "bid": b });
-      this.selectedVids.push({ "vid": value2,"prodid": value1, "bid": b });
+
+      this.selectedids.push({ "prodid": value1, "bid": b, "abid": ab, "vid": value2 });
+
       console.log("badges values")
       console.log(b);
       console.log(this.selectedids);
-      console.log(this.selectedVids);
+
 
 
       // console.log("pid value esle if: " + this.pids);
     }
     if (flag == false) {
+      var x = value.split(",");
+      var value1 = x[0];
+      var value2 = x[1];
       this.counter = this.counter - 1;
-      var index1 = this.showTitle.findIndex(x => x.pids == value);
+      // var index1 = this.showTitle.findIndex(x => x.pids == value1);
+      var index1 = this.showTitle.findIndex(x => x.variantsId == value2);
+      console.log("INDEX1", index1);
+      // var index2 = this.showTitle.findIndex(x => x.variantsId == value2);
 
       this.prodsel = true;
 
@@ -606,10 +626,12 @@ export class RemoveBadgesComponent implements OnInit {
       }
 
       var index = this.selectedids.findIndex(x => x.prodid == value1);
+
       console.log("index " + index);
 
       // this.selectedids.splice(value, 1);
       console.log("spliced: " + this.selectedids.splice(index, 1));
+
       console.log("after removing");
 
       console.log(this.selectedids);
@@ -619,6 +641,7 @@ export class RemoveBadgesComponent implements OnInit {
 
     console.log("flag: " + flag);
     console.log("value: " + value1);
+    console.log("value: " + value2);
 
     console.log("COUNTER:" + this.counter)
     if (this.counter == this.showTitle.length)
@@ -693,7 +716,7 @@ export class RemoveBadgesComponent implements OnInit {
     //   })
     // };
 
-    let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids, "filter": this.selectedFilter, "vid":this.selectedVids });
+    let obs = this.http.post("http://localhost:3000/unpublishBadges", { "pid": this.selectedids, "filter": this.selectedFilter });
     obs.subscribe(data => {
       if (data.hasOwnProperty('pid')) {
         console.log("in unpublish");
