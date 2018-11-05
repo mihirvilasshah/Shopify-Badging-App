@@ -285,6 +285,52 @@ exports.auth = (req, res) => {
         res.status(400).send('Required parameters missing');
     }
 };
+exports.getbadges = (req, res) => {
+    
+    console.log('body: ', req.body.src);
+    pagesrcs = req.body.src;
+    
+    flag = 0;
+    prod = [];
+
+async function srcs(pagesrcs){
+    
+    for (i = 0; i < pagesrcs.length; i++) {
+        var s = pagesrcs[i].split("_300x300");
+        src = "https:" + s[0] + s[1];
+        //console.log(src);
+        myquery = {
+            "image.src": src
+        }
+       
+         await findProd(myquery,i);
+        console.log("1st");
+        console.log(prod);
+    }
+    console.log("2st");
+    return  prod;    
+}
+
+ async function findProd(myquery,i){
+          MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("shopifydbclone");
+            dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+                if (err) throw err;
+                //console.log("badge");
+               console.log(obj);
+                prod[i]=obj;
+             })
+        });
+
+    }
+    srcs(pagesrcs).then((prod)=>{
+        console.log(prod);
+        res.send(prod)});
+   
+    //console.log(prod);
+    //res.send(prod);
+}
 var Aid;
 exports.getSrc = (req, res) => {
 
