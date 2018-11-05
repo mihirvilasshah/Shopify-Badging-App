@@ -1155,7 +1155,7 @@ exports.getProductPriceRange = (req, res) => {
     var variants3 = [];
     var variantsId = [];
 
-    var bids = [];
+    var abids = [];
     var srcs = [];
 
     var pids = [];
@@ -1217,7 +1217,7 @@ exports.getProductPriceRange = (req, res) => {
             //var ids = result[0];
 
             for (var i = 0; i < products.length; i++) {
-                var b = [];
+                var ab = [];
                 var src = [];
                 titles[i] = products[i].title;
                 variants1[i] = products[i].variants.option1;
@@ -1234,13 +1234,13 @@ exports.getProductPriceRange = (req, res) => {
                 var x = products[i].created_at.split("T");
                 created_At[i] = x[0];
                 tags[i] = products[i].tags;
-                if (products[i].variants.bids && products[i].variants.bids.length > 0) {
+                if (products[i].variants.badge && products[i].variants.badge.length > 0) {
 
                     var j = 0;
 
-                    while (products[i].variants.bids[j]) {
-                        b[j] = products[i].variants.bids[j];
-                        src[j] = products[i].variants.thumbnailSource[j];
+                    while (products[i].variants.badge[j]) {
+                        ab[j] = products[i].variants.badge[j].abid;
+                        src[j] = products[i].variants.badge[j].thumbnailSource;
                         // var q = { "badge.Bid": products[i].variants.bids[j] };
 
                         // console.log(q);
@@ -1254,15 +1254,15 @@ exports.getProductPriceRange = (req, res) => {
 
                         // });
                         // src[j] = products[i].variants.bids[j].thumbnailSource;
-                        console.log("b", b[j]);
+                        console.log("ab", ab[j]);
                         console.log("src", src[j]);
                         j++;
 
                     }
-                    bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
 
-                    console.log("bids", bids[i]);
+                    console.log("abids", abids[i]);
                     isApplied[i] = "yes";
 
                 }
@@ -1271,25 +1271,25 @@ exports.getProductPriceRange = (req, res) => {
                     isApplied[i] = "no";
                     var j = 0;
 
-                    b[j] = "-";
+                    ab[j] = "-";
                     src[j] = "-";
-                    console.log("b", b[j]);
+                    console.log("ab", ab[j]);
                     j++;
-                    bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
 
                 }
 
-                console.log("bids", bids[i]);
+                console.log("abids", abids[i]);
                 console.log("src", srcs[i]);
 
 
 
             }
-            console.log("bids", bids);
+            console.log("abids", abids);
             console.log("SRC--", srcs);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "variants": variants, "variantsId": variantsId });
+            res.send({ "items": titles, "pids": pids, "badge": abids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "variants": variants, "variantsId": variantsId });
 
 
         });
@@ -1303,6 +1303,7 @@ exports.getProductDateRange = (req, res) => {
     var myquery;
     var titles = [];
     var bids = [];
+    var abids = [];
     var srcs = [];
     var pids = [];
     var tags = [];
@@ -1356,6 +1357,7 @@ exports.getProductDateRange = (req, res) => {
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var ab = [];
                 var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
@@ -1367,6 +1369,7 @@ exports.getProductDateRange = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        ab[j] = products[i].badge[j].abid;
                         src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
                         console.log("src", src[j]);
@@ -1374,6 +1377,7 @@ exports.getProductDateRange = (req, res) => {
 
                     }
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
@@ -1384,10 +1388,12 @@ exports.getProductDateRange = (req, res) => {
                     var j = 0;
 
                     b[j] = "-";
+                    ab[j] = "-";
                     src[j] = "-";
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
 
                 }
@@ -1398,7 +1404,7 @@ exports.getProductDateRange = (req, res) => {
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
+            res.send({ "items": titles, "pids": pids, "badge": abids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
         });
 
 
@@ -1415,6 +1421,7 @@ exports.getProductTitle = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var abids = [];
     var srcs = [];
     var pids = [];
     var tags = [];
@@ -1453,6 +1460,7 @@ exports.getProductTitle = (req, res) => {
 
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var ab = [];
                 var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
@@ -1464,12 +1472,14 @@ exports.getProductTitle = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        ab[j] = products[i].badge[j].abid;
                         src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
                         j++;
 
                     }
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
@@ -1480,9 +1490,11 @@ exports.getProductTitle = (req, res) => {
                     var j = 0;
 
                     b[j] = "-";
+                    ab[j] = "-";
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
 
                 }
@@ -1495,7 +1507,7 @@ exports.getProductTitle = (req, res) => {
 
             console.log("src:" + badge);
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
+            res.send({ "items": titles, "pids": pids, "badge": abids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs, "abids": abids }); // , "abids": abids
         });
 
 
@@ -1516,6 +1528,7 @@ exports.getProductTag = (req, res) => {
 
     var titles = [];
     var bids = [];
+    var abids = [];
     var srcs = [];
     var pids = [];
     var tags = [];
@@ -1567,6 +1580,7 @@ exports.getProductTag = (req, res) => {
             //var ids = result[0];
             for (var i = 0; i < products.length; i++) {
                 var b = [];
+                var ab = [];
                 var src = [];
                 titles[i] = products[i].title;
                 pids[i] = products[i]._id;
@@ -1578,12 +1592,14 @@ exports.getProductTag = (req, res) => {
 
                     while (products[i].badge[j]) {
                         b[j] = products[i].badge[j].Bid;
+                        ab[j] = products[i].badge[j].abid;
                         src[j] = products[i].badge[j].thumbnailSource;
                         console.log("b", b[j]);
                         j++;
 
                     }
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
                     console.log("bids", bids[i]);
                     isApplied[i] = "yes";
@@ -1594,9 +1610,11 @@ exports.getProductTag = (req, res) => {
                     var j = 0;
 
                     b[j] = "-";
+                    ab[j] = "-";
                     console.log("b", b[j]);
                     j++;
                     bids[i] = b;
+                    abids[i] = ab;
                     srcs[i] = src;
 
                 }
@@ -1607,7 +1625,7 @@ exports.getProductTag = (req, res) => {
 
             }
 
-            res.send({ "items": titles, "pids": pids, "badge": bids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
+            res.send({ "items": titles, "pids": pids, "badge": abids, "tags": tags, "created_at": created_At, "isApplied": isApplied, "src": srcs });
 
 
         });
@@ -1647,19 +1665,21 @@ exports.publishBadges = (req, res) => {
             console.log(obj);
             imgsrc = obj.imageSource;
             thumbnailSrc = obj.thumbnailSource;
+            var newoid = ObjectId();
 
-            var newvalues = { $push: { "badge": { Bid: req.body.bid, left: req.body.xvalue, top: req.body.yvalue, opvalue: req.body.opval, width: req.body.width, height: req.body.height, borderRadius: req.body.borderRadius, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
+            var newvalues = { $push: { "badge": { abid: newoid, Bid: req.body.bid, left: req.body.xvalue, top: req.body.yvalue, opvalue: req.body.opval, width: req.body.width, height: req.body.height, borderRadius: req.body.borderRadius, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
 
             for (var i = 0; i < req.body.pid.length; i++) {
                 var myquery = {
                     "_id": ObjectId(req.body.pid[i])
                 };
                 console.log("pids: " + req.body.pid[i]);
-
-                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                    if (err) throw err;
-                    console.log("product updated ABid: " + obj);
-                })
+                if (i == 0 || req.body.pid[i] != req.body.pid[i - 1]) {
+                    dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product updated abid: " + obj);
+                    });
+                }
 
                 if (req.body.filter == "Price") {
                     var v = parseFloat(req.body.vid[i]);
@@ -1668,14 +1688,14 @@ exports.publishBadges = (req, res) => {
                         "_id": ObjectId(req.body.pid[i]),
                         "variants.id": v
                     };
-                    var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+                    var newvalues1 = { $push: { "variants.$.bids": newoid } };
                     console.log("vids: " + req.body.vid[i]);
                     console.log("v: " + v);
 
-                    dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.bids": req.body.bid, "variants.$.thumbnailSource": req.body.thumbnailSource } }, function (err, obj) {
+                    dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, obj) {
                         if (err) throw err;
                         console.log("product updated Vid: " + obj);
-                        console.log("product updated Bid: " + req.body.bid);
+                        console.log("product updated abid: " + req.body.bid);
                         console.log("product updated Vid: " + v);
                         console.log("product updated Vid: " + req.body.vid.length);
                     });
@@ -1700,10 +1720,10 @@ exports.publishBadges = (req, res) => {
                                 var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
 
 
-                                dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.bids": req.body.bid, "variants.$.thumbnailSource": req.body.thumbnailSource } }, function (err, res) {
+                                dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, res) {
                                     if (err) throw err;
                                     console.log("product updated Vid: " + res);
-                                    console.log("product updated Bid: " + req.body.bid);
+                                    console.log("product updated abid: " + req.body.bid);
 
                                 });
                             }
@@ -1793,69 +1813,181 @@ exports.unpublishBadges = (req, res) => {
 
         console.log(req.body.pid);
 
-        for (var i = 0; i < req.body.pid.length; i++) {
+        async function getIds() {
+            for (var i = 0; i < req.body.pid.length; i++) {
+
+
+                //var i=0;
+                // while(i<req.body.pid.length){
+
+
+
+
+                for (var j = 0; j < req.body.pid[i].abid.length; j++) {
+                    console.log(req.body.pid[i].abid[j]);
+                    console.log("i" + i);
+                    await dbRemove(i, j, globalShop);
+                }
+            }
+        }
+        async function dbRemove(i, j, globalShop) {
             var myquery = {
                 "_id": ObjectId(req.body.pid[i].prodid)
             };
             var badges = [];
-
-
             if (req.body.filter == "Price") {
-                for (var j = 0; j < req.body.pid[i].bid.length; j++) {
-                    console.log(req.body.pid[i].bid[j]);
+                var myquery3 = {
+                    "variants.id": parseFloat(req.body.pid[i].vid)
+                };
 
-                    var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
+                console.log("myquery3");
+                console.log(myquery3);
+
+
+                dbo.collection(globalShop).updateOne(myquery3, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery3), function (err, res) {
+                    if (err) throw err;
+                    console.log("product updated Vid: " + res);
+
+                    console.log(myquery3);
+                    //console.log("product updated Bid: " + req.body.bid);
+
+
+                });
+
+                await checkAllVariants(ObjectId(req.body.pid[i].bid[j]), myquery);
+                if (checkAllVariants) {
+                    var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
 
                     dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                         if (err) throw err;
+                        console.log(globalShop);
                         console.log("removed badge from product: " + obj);
                     });
 
                     console.log(myquery);
-                    
                 }
 
             } else {
-                for (var j = 0; j < req.body.pid[i].bid.length; j++) {
-                    console.log(req.body.pid[i].bid[j]);
-
-                    var newvalues = { $pull: { "badge": { Bid: req.body.pid[i].bid[j] } } };
-
-                    dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                        if (err) throw err;
-                        console.log("removed badge from product: " + obj);
-                    });
-                }
-
-                for (var i = 0; i < req.body.pid.length; i++) {
-                    var myquery = {
-                        "_id": ObjectId(req.body.pid[i])
-                    };
-                    console.log(myquery);
-                    dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
-                        console.log("varID");
-                        console.log(obj);
-                        for (var j = 0; j < obj.variants.length; j++) {
-                            var myquery = {
-                                "variants.id": obj.variants[j].id
-                            };
-
-                            var newvalues1 = { $pull: { "variants.$.bids": req.body.pid[i].bid[j] } };
 
 
-                            dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.bids": req.body.bid, "variants.$.thumbnailSource": req.body.thumbnailSource } }, function (err, res) {
-                                if (err) throw err;
-                                console.log("product updated Vid: " + res);
-                                console.log("product updated Bid: " + req.body.bid);
+                var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
+                console.log(req.body.pid[i].abid[j]);
 
-                            });
-                        }
-                    });
-                }
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log("removed badge from product: " + obj);
+                    console.log("i2" + i);
+                    console.log(globalShop);
+                });
 
+
+
+
+                console.log(myquery);
+
+                dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                    console.log("varID");
+                    console.log(obj);
+                    console.log("i3" + i);
+                    for (var k = 0; k < obj.variants.length; k++) {
+                        var myquery2 = {
+                            "variants.id": obj.variants[k].id
+                        };
+
+                        console.log(myquery2);
+                        console.log(j);
+                        console.log(i);
+                        console.log(k);
+                        console.log(globalShop);
+                        console.log(obj.variants.length);
+                        console.log(req.body.pid[i]);
+                        console.log(req.body.pid[i].abid[j]);
+                        // await dbRemove(i, j, globalShop);
+
+                        //     }
+
+                        // });// await variantRemove(i, j, globalShop,myquery2)
+
+                        // }
+
+                        // var newvalues1 = { $pull: { "variants.$.badge.abid": req.body.pid[i].abid[j] } };
+
+                        //async function variantRemove(i, j, globalShop,myquery2) {
+                        dbo.collection(globalShop).updateOne(myquery2, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery2), function (err, res) {
+                            if (err) throw err;
+                            console.log("product updated Vid: " + res);
+                            console.log("product updated Vid: " + k);
+                            console.log(myquery2);
+                            //console.log("product updated Bid: " + req.body.bid);
+
+
+                        });
+
+                    }
+
+                });// await variantRemove(i, j, globalShop,myquery2)
             }
 
         }
+        // }
+
+        async function checkAllVariants(abid, myquery) {
+            var promise =  new Promise((resolve,reject)=>{
+                var deleteBadge = true;
+            dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                console.log("varID");
+                console.log(obj);
+                for (var k = 0; k < obj.variants.length; k++) {
+                    var myquery2 = {
+                        "variants.id": 14512124690521, //obj.variants[k].id,
+                        "variants.badge.abid": ObjectId("5be0490449f28420b8730375") //abid
+                    };
+
+                    // await dbcheck(myquery2);
+
+                    dbo.collection(globalShop).findOne(myquery2, function (err, res) {
+                        if (err) throw err;
+                        console.log("product check Vid: " + res);
+                        // console.log(res);
+                        if (res != null) {
+                            deleteBadge = false;
+                            console.log("DBL:"+deleteBadge);
+                            break;
+                        }
+        
+                    });
+
+                }
+
+            });
+            resolve(deleteBadge);
+            });
+            
+            promise.then((deleteBadge)=>{
+                console.log("delete badge check:"+deleteBadge);
+                return deleteBadge;
+                
+            })
+            
+            // console.log("delete badge check:"+deleteBadge);
+            // return deleteBadge;
+            
+        }
+
+        // async function dbcheck(myquery2){
+        //     dbo.collection(globalShop).findOne(myquery2, function (err, res) {
+        //         if (err) throw err;
+        //         console.log("product check Vid: " + res);
+        //         // console.log(res);
+        //         if (res != null) {
+        //             deleteBadge = false;
+        //         }
+
+        //     });
+        // }
+
+        getIds();
+
     });
 };
 

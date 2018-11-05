@@ -3,7 +3,7 @@
 aren’t available to the outside world. */
  
 (function () {
-  const forwardingAddress = "https://2e7efc2a.ngrok.io"; // we use this to call apis from this url
+  const forwardingAddress = "https://f44ae445.ngrok.io"; // we use this to call apis from this url
   // function to load the jquery script to the page and calls one callback fuction in which we write our logic
   //-------------------------------------------------------------------------------------------------------------------
   var loadScript = function (url, callback) {
