@@ -504,8 +504,9 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(index);
     console.log(x[1]);
     //this.selectedids[index].bid.splice(index, 1);
-    console.log(this.selectedids[index].bid);
+    //console.log(this.selectedids[index].bid);
     if (!flag) {
+
       var index1 = this.selectedids[index].bid.indexOf(x[1]);
       this.selectedids[index].bid.splice(index1, 1);
       this.selectedids[index].abid.splice(index1, 1);
@@ -581,7 +582,14 @@ export class RemoveBadgesComponent implements OnInit {
       this.prodsel = false;
 
       // var index = this.showTitle.findIndex(x => x.pids == value1);
-      var index = this.showTitle.findIndex(x => x.variantsId == value2);
+      console.log("filter:",this.selectedFilter);
+      console.log("value1:",value1);
+
+      if (this.selectedFilter == 'Price') {
+        var index = this.showTitle.findIndex(x => x.variantsId == value2);
+      } else {
+        var index = this.showTitle.findIndex(x => x.pids == value1);
+      }
       // var index = this.showTitle.indexOf(x => x.pids == value1);
 
 
