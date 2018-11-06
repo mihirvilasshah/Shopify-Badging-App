@@ -195,11 +195,12 @@ export class RemoveBadgesComponent implements OnInit {
         self["items"] = items;
         var x;
         for (var i = 0; i < +this.titles.length; i++) {
-
-          var a = {
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
+          if (this.src[i][0] != '-') {
+            var a = {
+              name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
+            }
+            this.structuredTitle.push(a);
           }
-          this.structuredTitle.push(a);
         }
 
 
@@ -582,8 +583,8 @@ export class RemoveBadgesComponent implements OnInit {
       this.prodsel = false;
 
       // var index = this.showTitle.findIndex(x => x.pids == value1);
-      console.log("filter:",this.selectedFilter);
-      console.log("value1:",value1);
+      console.log("filter:", this.selectedFilter);
+      console.log("value1:", value1);
 
       if (this.selectedFilter == 'Price') {
         var index = this.showTitle.findIndex(x => x.variantsId == value2);
