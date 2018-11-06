@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = undefined;
+var globalShop = "tricon-dev-store.myshopify.com" //undefined;
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -286,48 +286,49 @@ exports.auth = (req, res) => {
     }
 };
 exports.getbadges = (req, res) => {
-    
+
     console.log('body: ', req.body.src);
     pagesrcs = req.body.src;
-    
+
     flag = 0;
     prod = [];
 
-async function srcs(pagesrcs){
-    
-    for (i = 0; i < pagesrcs.length; i++) {
-        var s = pagesrcs[i].split("_300x300");
-        src = "https:" + s[0] + s[1];
-        //console.log(src);
-        myquery = {
-            "image.src": src
-        }
-       
-         await findProd(myquery,i);
-        console.log("1st");
-        console.log(prod);
-    }
-    console.log("2st");
-    return  prod;    
-}
+    async function srcs(pagesrcs) {
 
- async function findProd(myquery,i){
-          MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+        for (i = 0; i < pagesrcs.length; i++) {
+            var s = pagesrcs[i].split("_300x300");
+            src = "https:" + s[0] + s[1];
+            //console.log(src);
+            myquery = {
+                "image.src": src
+            }
+
+            await findProd(myquery, i);
+            console.log("1st");
+            console.log(prod);
+        }
+        console.log("2st");
+        return prod;
+    }
+
+    async function findProd(myquery, i) {
+        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
             if (err) throw err;
             var dbo = db.db("shopifydbclone");
             dbo.collection(globalShop).findOne(myquery, function (err, obj) {
                 if (err) throw err;
                 //console.log("badge");
-               console.log(obj);
-                prod[i]=obj;
-             })
+                console.log(obj);
+                prod[i] = obj;
+            })
         });
 
     }
-    srcs(pagesrcs).then((prod)=>{
+    srcs(pagesrcs).then((prod) => {
         console.log(prod);
-        res.send(prod)});
-   
+        res.send(prod)
+    });
+
     //console.log(prod);
     //res.send(prod);
 }
@@ -1858,6 +1859,8 @@ exports.unpublishBadges = (req, res) => {
         console.log("response result");
 
         console.log(req.body.pid);
+        
+        getIds();
 
         async function getIds() {
             for (var i = 0; i < req.body.pid.length; i++) {
@@ -1869,173 +1872,197 @@ exports.unpublishBadges = (req, res) => {
 
 
 
-                for (var j = 0; j < req.body.pid[i].abid.length; j++) {
-                    console.log(req.body.pid[i].abid[j]);
+                for (var j = 0; j < req.body.pid[i].bid.length; j++) {
+                    console.log(req.body.pid[i].bid[j]);
                     console.log("i" + i);
-                    await dbRemove(i, j, globalShop);
+                    if (req.body.filter == "Price") {
+                        var rem = await dbRemove(i, j, globalShop,dbo);
+                        console.log("rem", rem);
+                        var object = await checkAllVariants(ObjectId(req.body.pid[i].bid[j]), myquery,dbo);
+                        console.log("deleteBadge", object);
+                        for (var k = 0; k < object.variants.length; k++) {
+                           var deleteBadge  = await check(object,ObjectId(req.body.pid[i].bid[j]),k,dbo);
+                           console.log("deleteBadge", deleteBadge);
+                           if(deleteBadge==false){
+                               break;
+                           }
+
+                        }
+                        var remP = await removeProdLevel(deleteBadge,i,j,dbo);
+                        console.log("remP", remP);
+
+                        
+
+                    } else {
+                        var others = await other(i,j,dbo);
+                        console.log("others", others);
+                    }
                 }
             }
         }
-        async function dbRemove(i, j, globalShop) {
-            var myquery = {
-                "_id": ObjectId(req.body.pid[i].prodid)
-            };
-            var badges = [];
-            if (req.body.filter == "Price") {
-                var myquery3 = {
-                    "variants.id": parseFloat(req.body.pid[i].vid)
+    });
+
+    async function other(i,j,dbo){
+        return new Promise(function (resolve, reject) {
+        var myquery = {
+            "_id": ObjectId(req.body.pid[i].prodid)
+        };
+        var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
+        console.log(req.body.pid[i].abid[j]);
+
+        dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+            if (err) throw err;
+            console.log("removed badge from product: " + obj);
+            console.log("i2" + i);
+            console.log(globalShop);
+        });
+
+
+
+
+        console.log(myquery);
+
+        dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+            console.log("varID");
+            console.log(obj);
+            console.log("i3" + i);
+            for (var k = 0; k < obj.variants.length; k++) {
+                var myquery2 = {
+                    "variants.id": obj.variants[k].id
                 };
 
-                console.log("myquery3");
-                console.log(myquery3);
+                console.log(myquery2);
+                console.log(j);
+                console.log(i);
+                console.log(k);
+                console.log(globalShop);
+                console.log(obj.variants.length);
+                // console.log(req.body.pid[i]);
+                // console.log(req.body.pid[i].bid[j]);
+                // await dbRemove(i, j, globalShop);
 
+                //     }
 
-                dbo.collection(globalShop).updateOne(myquery3, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery3), function (err, res) {
+                // });// await variantRemove(i, j, globalShop,myquery2)
+
+                // }
+
+                // var newvalues1 = { $pull: { "variants.$.badge.abid": req.body.pid[i].abid[j] } };
+
+                //async function variantRemove(i, j, globalShop,myquery2) {
+                dbo.collection(globalShop).updateOne(myquery2, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery2), function (err, res) {
                     if (err) throw err;
                     console.log("product updated Vid: " + res);
-
-                    console.log(myquery3);
+                    console.log("product updated Vid: " + k);
+                    console.log(myquery2);
                     //console.log("product updated Bid: " + req.body.bid);
 
 
                 });
 
-                await checkAllVariants(ObjectId(req.body.pid[i].bid[j]), myquery);
-                if (checkAllVariants) {
-                    var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
-
-                    dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                        if (err) throw err;
-                        console.log(globalShop);
-                        console.log("removed badge from product: " + obj);
-                    });
-
-                    console.log(myquery);
-                }
-
-            } else {
-
-
-                var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
-                console.log(req.body.pid[i].abid[j]);
-
-                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                    if (err) throw err;
-                    console.log("removed badge from product: " + obj);
-                    console.log("i2" + i);
-                    console.log(globalShop);
-                });
-
-
-
-
-                console.log(myquery);
-
-                dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
-                    console.log("varID");
-                    console.log(obj);
-                    console.log("i3" + i);
-                    for (var k = 0; k < obj.variants.length; k++) {
-                        var myquery2 = {
-                            "variants.id": obj.variants[k].id
-                        };
-
-                        console.log(myquery2);
-                        console.log(j);
-                        console.log(i);
-                        console.log(k);
-                        console.log(globalShop);
-                        console.log(obj.variants.length);
-                        console.log(req.body.pid[i]);
-                        console.log(req.body.pid[i].abid[j]);
-                        // await dbRemove(i, j, globalShop);
-
-                        //     }
-
-                        // });// await variantRemove(i, j, globalShop,myquery2)
-
-                        // }
-
-                        // var newvalues1 = { $pull: { "variants.$.badge.abid": req.body.pid[i].abid[j] } };
-
-                        //async function variantRemove(i, j, globalShop,myquery2) {
-                        dbo.collection(globalShop).updateOne(myquery2, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery2), function (err, res) {
-                            if (err) throw err;
-                            console.log("product updated Vid: " + res);
-                            console.log("product updated Vid: " + k);
-                            console.log(myquery2);
-                            //console.log("product updated Bid: " + req.body.bid);
-
-
-                        });
-
-                    }
-
-                });// await variantRemove(i, j, globalShop,myquery2)
             }
 
-        }
-        // }
+        });
+        resolve("done others");
+    })
+    }
 
-        async function checkAllVariants(abid, myquery) {
-            var promise =  new Promise((resolve,reject)=>{
-                var deleteBadge = true;
+
+    async function dbRemove(i, j, globalShop,dbo) {
+        return new Promise(function (resolve, reject) {
+            var myquery3 = {
+                "variants.id": parseFloat(req.body.pid[i].vid)
+            };
+            // var badges = [];
+
+            dbo.collection(globalShop).updateOne(myquery3, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery3), function (err, res) {
+                if (err) throw err;
+                console.log("product updated Vid: " + res);
+
+                console.log(myquery3);
+                //console.log("product updated Bid: " + req.body.bid);
+                resolve("done removing from variant")
+
+
+            });
+        });
+
+    }
+
+    async function checkAllVariants(abid, myquery,dbo) {
+        return new Promise((resolve, reject) => {
+            
             dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
                 console.log("varID");
                 console.log(obj);
-                for (var k = 0; k < obj.variants.length; k++) {
-                    var myquery2 = {
-                        "variants.id": 14512124690521, //obj.variants[k].id,
-                        "variants.badge.abid": ObjectId("5be0490449f28420b8730375") //abid
-                    };
+                // for (var k = 0; k < obj.variants.length; k++) {
+                //     var myquery2 = {
+                //         "variants.id": obj.variants[k].id,  //14512124690521,
+                //         "variants.badge.abid": abid  // ObjectId("5be0490449f28420b8730375")
+                //     };
 
-                    // await dbcheck(myquery2);
+                //     console.log("myquery 2",myquery2);
+                //     // var check1 = await check(myquery2);
 
-                    dbo.collection(globalShop).findOne(myquery2, function (err, res) {
-                        if (err) throw err;
-                        console.log("product check Vid: " + res);
-                        // console.log(res);
-                        if (res != null) {
-                            deleteBadge = false;
-                            console.log("DBL:"+deleteBadge);
-                            break;
-                        }
-        
-                    });
 
+                //     console.log("check1",check1);
+                // }
+                resolve(obj);
+            });
+            
+        });
+
+    };
+
+    async function check(object, abid,k,dbo) {
+        return new Promise(function (resolve, reject) {
+            var myquery2 = {
+                "variants.id": object.variants[k].id,  //14512124690521,
+                "variants.badge.abid": abid  // abid - ObjectId("5be0490449f28420b8730375")
+            };
+
+            dbo.collection(globalShop).findOne(myquery2, function (err, res) {
+                if (err) throw err;
+                console.log("product check Vid: " + res);
+                var deleteBadge = true;
+                // console.log(res);
+                if (res != null) {
+                    deleteBadge = false;
+                    console.log("DBL:" + deleteBadge);
+                    // break;
                 }
 
+                resolve(deleteBadge);
+
             });
-            resolve(deleteBadge);
-            });
-            
-            promise.then((deleteBadge)=>{
-                console.log("delete badge check:"+deleteBadge);
-                return deleteBadge;
-                
-            })
-            
-            // console.log("delete badge check:"+deleteBadge);
-            // return deleteBadge;
-            
-        }
 
-        // async function dbcheck(myquery2){
-        //     dbo.collection(globalShop).findOne(myquery2, function (err, res) {
-        //         if (err) throw err;
-        //         console.log("product check Vid: " + res);
-        //         // console.log(res);
-        //         if (res != null) {
-        //             deleteBadge = false;
-        //         }
+           
+        })
+    }
 
-        //     });
-        // }
+    async function removeProdLevel(deleteBadge,i,j,dbo) {
+        return new Promise(function (resolve, reject) {
+            if (deleteBadge) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i].prodid)
+                };
+                var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
 
-        getIds();
+                dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                    if (err) throw err;
+                    console.log(globalShop);
+                    console.log("removed badge from product: " + obj);
+                });
 
-    });
-};
+                console.log(myquery);
+            }
+            resolve("done");
+
+        })
+
+    };
+
+}
 
 exports.getIDS = (req, res) => {
     console.log("inside get IDS");
