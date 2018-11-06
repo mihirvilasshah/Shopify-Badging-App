@@ -24,7 +24,7 @@ const apiKey = process.env.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 
 var globalToken = undefined;
-var globalShop = undefined;
+var globalShop = "tricon-jewel-store.myshopify.com";
 var globalShopResponse = undefined;
 
 var MongoClient = require('mongodb').MongoClient;
@@ -309,9 +309,62 @@ exports.getSrc = (req, res) => {
     });
 };
 exports.getbadges = (req, res) => {
-console.log(req.body);  
+
+    console.log('body: ', req.body.src);
+    pagesrcs = req.body.src;
+
+    flag = 0;
 
 
+    async function srcs(pagesrcs) {
+        prod = [];
+
+        for (i = 0; i < pagesrcs.length; i++) {
+            var s = pagesrcs[i].split("_300x300");
+            src = "https:" + s[0] + s[1];
+            //console.log(src);
+            myquery = {
+                "image.src": src
+            }
+
+            prod[i] = await findProd(myquery);
+            console.log("1st");
+           console.log(prod);
+        }
+        flag = await loopdone(flag);
+        res.send(prod);
+    }
+
+
+    function loopdone(flag) {
+        return new Promise(function (resolve, reject) {
+            flag++;
+            resolve(flag)
+        })
+
+
+    }
+    function findProd(myquery) {
+        return new Promise(function (resolve, reject) {
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("shopifydbclone");
+                dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+                    if (err) throw err;
+                    resolve(obj)
+
+                })
+            });
+
+
+
+        })
+
+    }
+    srcs(pagesrcs)
+
+    //console.log(prod);
+    //res.send(prod);
 }
 exports.getcollections = (req, res) => {
     const shopRequestUrl = 'https://' + globalShop + '/admin/smart_collections.json';
