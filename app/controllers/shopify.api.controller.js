@@ -285,15 +285,16 @@ exports.auth = (req, res) => {
         res.status(400).send('Required parameters missing');
     }
 };
+
 exports.getbadges = (req, res) => {
 
     console.log('body: ', req.body.src);
     pagesrcs = req.body.src;
 
     flag = 0;
-    prod = [];
 
     async function srcs(pagesrcs) {
+        prod = [];
 
         for (i = 0; i < pagesrcs.length; i++) {
             var s = pagesrcs[i].split("_300x300");
@@ -303,35 +304,44 @@ exports.getbadges = (req, res) => {
                 "image.src": src
             }
 
-            await findProd(myquery, i);
+            prod[i] = await findProd(myquery);
             console.log("1st");
             console.log(prod);
         }
-        console.log("2st");
-        return prod;
+        flag = await loopdone(flag);
+        res.send(prod);
     }
 
-    async function findProd(myquery, i) {
-        MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
-            if (err) throw err;
-            var dbo = db.db("shopifydbclone");
-            dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+    function loopdone(flag) {
+        return new Promise(function (resolve, reject) {
+            flag++;
+            resolve(flag)
+        })
+
+    }
+    function findProd(myquery) {
+        return new Promise(function (resolve, reject) {
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
                 if (err) throw err;
-                //console.log("badge");
-                console.log(obj);
-                prod[i] = obj;
-            })
-        });
+                var dbo = db.db("shopifydbclone");
+                dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+                    if (err) throw err;
+                    resolve(obj)
+
+                })
+            });
+
+
+
+        })
 
     }
-    srcs(pagesrcs).then((prod) => {
-        console.log(prod);
-        res.send(prod)
-    });
+    srcs(pagesrcs)
 
     //console.log(prod);
     //res.send(prod);
 }
+
 var Aid;
 exports.getSrc = (req, res) => {
 
@@ -528,83 +538,97 @@ exports.gettheme = (req, res) => {
                     const Scriptjson2 = {
                         asset: {
                             key: "snippets/tricon-badge.liquid",
-                            value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
-                        }
+                            // value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
+                            //formatted
+                                // {% if template contains 'product' %}
+                                // <script>
+                                // var id ={{ product.id }}
+                                // page = 'product'
+                                // </script>
+                                // {% endif %}
+                                // {% if template contains 'collection' or template contains 'index' or template contains 'search' %}
+                                // <script>
+                                // page = 'collection'
+                                // </script>
+                                // {% endif %}
+                                // <script src=\"{{ 'tricon-label.js' | asset_url }}\" async></script>
+                            value: "{% if template contains 'product' %} <script> var id ={{ product.id }} page = 'product' </script> {% endif %} {% if template contains 'collection' or template contains 'index' or template contains 'search' %} <script> page = 'collection' </script> {% endif %} <script src=\"{{ 'tricon-label.js' | asset_url }}\" async></script>"
+                }
                     };
 
-                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
-                        .then((response) => {
-                            console.log(response);
-                        })
-                        .catch((error) => {
-                            if (error) throw error;
-                        });
-
-                    const Script1json = {
-                        asset: {
-                            key: "assets/tricon-label.js.liquid",
-                            src: forwardingAddress + "/static/script.js"
-                        }
-                    };
-
-                    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
-                        .then((response) => {
-                            console.log(response);
-                        })
-                        .catch((error) => {
-                            if (error) throw error;
-                        });
-
-
-
-                    //product-template
-                    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
-
-                    // request.get(assetUrl, { headers: shopRequestHeaders })
-                    //     .then((template) => {
-                    //         template = JSON.parse(template).asset.value;
-                    //         var split = template.split('data-section-id="{{ section.id }}"');
-                    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
-                    //         console.log("TEMPLATE Changed:", template);
-
-
-                    //         const Scriptjson3 = {
-                    //             asset: {
-                    //                 key: "sections/product-template.liquid",
-                    //                 value: template
-                    //             }
-                    //         };
-
-                    //         const Scriptheaders = {
-                    //             'X-Shopify-Access-Token': globalToken,
-                    //             // 'X-Shopify-Topic': "products/create",
-                    //             // 'X-Shopify-Shop-Domain': globalShop,
-                    //             'Content-Type': "application/json"
-                    //         };
-                    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
-                    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
-                    //             .then((response) => {
-                    //                 console.log(response);
-                    //             })
-                    //             .catch((error) => {
-                    //                 if (error) throw error;
-                    //             });
-                    //     }).catch((err) => {
-                    //         console.log(err);
-                    //         res.send(err);
-                    //     });
-
-
-                }).catch((err) => {
-                    console.log(err);
-                    res.send(err);
-                });
-
-
-        }).catch((err) => {
-            console.log(err);
-            res.send(err);
+    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            if (error) throw error;
         });
+
+    const Script1json = {
+        asset: {
+            key: "assets/tricon-label.js.liquid",
+            src: forwardingAddress + "/static/script.js"
+        }
+    };
+
+    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+
+
+
+    //product-template
+    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
+
+    // request.get(assetUrl, { headers: shopRequestHeaders })
+    //     .then((template) => {
+    //         template = JSON.parse(template).asset.value;
+    //         var split = template.split('data-section-id="{{ section.id }}"');
+    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
+    //         console.log("TEMPLATE Changed:", template);
+
+
+    //         const Scriptjson3 = {
+    //             asset: {
+    //                 key: "sections/product-template.liquid",
+    //                 value: template
+    //             }
+    //         };
+
+    //         const Scriptheaders = {
+    //             'X-Shopify-Access-Token': globalToken,
+    //             // 'X-Shopify-Topic': "products/create",
+    //             // 'X-Shopify-Shop-Domain': globalShop,
+    //             'Content-Type': "application/json"
+    //         };
+    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
+    //             .then((response) => {
+    //                 console.log(response);
+    //             })
+    //             .catch((error) => {
+    //                 if (error) throw error;
+    //             });
+    //     }).catch((err) => {
+    //         console.log(err);
+    //         res.send(err);
+    //     });
+
+
+}).catch ((err) => {
+    console.log(err);
+    res.send(err);
+});
+
+
+        }).catch ((err) => {
+    console.log(err);
+    res.send(err);
+});
 
 
 
@@ -1721,7 +1745,7 @@ exports.publishBadges = (req, res) => {
                     "_id": ObjectId(req.body.pid[i])
                 };
                 console.log("pids: " + req.body.pid[i]);
-                if (i == 0 || req.body.pid[i] != req.body.pid[i - 1]) {
+                if (i == 0 || req.body.pid[i] != req.body.pid[i - 1] || req.body.filter != "Price") {
                     dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
                         if (err) throw err;
                         console.log("product updated abid: " + obj);
@@ -1859,7 +1883,7 @@ exports.unpublishBadges = (req, res) => {
         console.log("response result");
 
         console.log(req.body.pid);
-        
+
         getIds();
 
         async function getIds() {
@@ -1876,25 +1900,25 @@ exports.unpublishBadges = (req, res) => {
                     console.log(req.body.pid[i].bid[j]);
                     console.log("i" + i);
                     if (req.body.filter == "Price") {
-                        var rem = await dbRemove(i, j, globalShop,dbo);
+                        var rem = await dbRemove(i, j, globalShop, dbo);
                         console.log("rem", rem);
-                        var object = await checkAllVariants(ObjectId(req.body.pid[i].bid[j]), myquery,dbo);
+                        var object = await checkAllVariants(ObjectId(req.body.pid[i].bid[j]), myquery, dbo);
                         console.log("deleteBadge", object);
                         for (var k = 0; k < object.variants.length; k++) {
-                           var deleteBadge  = await check(object,ObjectId(req.body.pid[i].bid[j]),k,dbo);
-                           console.log("deleteBadge", deleteBadge);
-                           if(deleteBadge==false){
-                               break;
-                           }
+                            var deleteBadge = await check(object, ObjectId(req.body.pid[i].bid[j]), k, dbo);
+                            console.log("deleteBadge", deleteBadge);
+                            if (deleteBadge == false) {
+                                break;
+                            }
 
                         }
-                        var remP = await removeProdLevel(deleteBadge,i,j,dbo);
+                        var remP = await removeProdLevel(deleteBadge, i, j, dbo);
                         console.log("remP", remP);
 
-                        
+
 
                     } else {
-                        var others = await other(i,j,dbo);
+                        var others = await other(i, j, dbo);
                         console.log("others", others);
                     }
                 }
@@ -1902,73 +1926,73 @@ exports.unpublishBadges = (req, res) => {
         }
     });
 
-    async function other(i,j,dbo){
+    async function other(i, j, dbo) {
         return new Promise(function (resolve, reject) {
-        var myquery = {
-            "_id": ObjectId(req.body.pid[i].prodid)
-        };
-        var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
-        console.log(req.body.pid[i].abid[j]);
+            var myquery = {
+                "_id": ObjectId(req.body.pid[i].prodid)
+            };
+            var newvalues = { $pull: { "badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } };
+            console.log(req.body.pid[i].abid[j]);
 
-        dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-            if (err) throw err;
-            console.log("removed badge from product: " + obj);
-            console.log("i2" + i);
-            console.log(globalShop);
-        });
-
-
-
-
-        console.log(myquery);
-
-        dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
-            console.log("varID");
-            console.log(obj);
-            console.log("i3" + i);
-            for (var k = 0; k < obj.variants.length; k++) {
-                var myquery2 = {
-                    "variants.id": obj.variants[k].id
-                };
-
-                console.log(myquery2);
-                console.log(j);
-                console.log(i);
-                console.log(k);
+            dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                if (err) throw err;
+                console.log("removed badge from product: " + obj);
+                console.log("i2" + i);
                 console.log(globalShop);
-                console.log(obj.variants.length);
-                // console.log(req.body.pid[i]);
-                // console.log(req.body.pid[i].bid[j]);
-                // await dbRemove(i, j, globalShop);
+            });
 
-                //     }
 
-                // });// await variantRemove(i, j, globalShop,myquery2)
 
-                // }
 
-                // var newvalues1 = { $pull: { "variants.$.badge.abid": req.body.pid[i].abid[j] } };
+            console.log(myquery);
 
-                //async function variantRemove(i, j, globalShop,myquery2) {
-                dbo.collection(globalShop).updateOne(myquery2, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery2), function (err, res) {
-                    if (err) throw err;
-                    console.log("product updated Vid: " + res);
-                    console.log("product updated Vid: " + k);
+            dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                console.log("varID");
+                console.log(obj);
+                console.log("i3" + i);
+                for (var k = 0; k < obj.variants.length; k++) {
+                    var myquery2 = {
+                        "variants.id": obj.variants[k].id
+                    };
+
                     console.log(myquery2);
-                    //console.log("product updated Bid: " + req.body.bid);
+                    console.log(j);
+                    console.log(i);
+                    console.log(k);
+                    console.log(globalShop);
+                    console.log(obj.variants.length);
+                    // console.log(req.body.pid[i]);
+                    // console.log(req.body.pid[i].bid[j]);
+                    // await dbRemove(i, j, globalShop);
+
+                    //     }
+
+                    // });// await variantRemove(i, j, globalShop,myquery2)
+
+                    // }
+
+                    // var newvalues1 = { $pull: { "variants.$.badge.abid": req.body.pid[i].abid[j] } };
+
+                    //async function variantRemove(i, j, globalShop,myquery2) {
+                    dbo.collection(globalShop).updateOne(myquery2, { $pull: { "variants.$.badge": { "abid": ObjectId(req.body.pid[i].bid[j]) } } }, console.log(myquery2), function (err, res) {
+                        if (err) throw err;
+                        console.log("product updated Vid: " + res);
+                        console.log("product updated Vid: " + k);
+                        console.log(myquery2);
+                        //console.log("product updated Bid: " + req.body.bid);
 
 
-                });
+                    });
 
-            }
+                }
 
-        });
-        resolve("done others");
-    })
+            });
+            resolve("done others");
+        })
     }
 
 
-    async function dbRemove(i, j, globalShop,dbo) {
+    async function dbRemove(i, j, globalShop, dbo) {
         return new Promise(function (resolve, reject) {
             var myquery3 = {
                 "variants.id": parseFloat(req.body.pid[i].vid)
@@ -1989,9 +2013,9 @@ exports.unpublishBadges = (req, res) => {
 
     }
 
-    async function checkAllVariants(abid, myquery,dbo) {
+    async function checkAllVariants(abid, myquery, dbo) {
         return new Promise((resolve, reject) => {
-            
+
             dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
                 console.log("varID");
                 console.log(obj);
@@ -2009,12 +2033,12 @@ exports.unpublishBadges = (req, res) => {
                 // }
                 resolve(obj);
             });
-            
+
         });
 
     };
 
-    async function check(object, abid,k,dbo) {
+    async function check(object, abid, k, dbo) {
         return new Promise(function (resolve, reject) {
             var myquery2 = {
                 "variants.id": object.variants[k].id,  //14512124690521,
@@ -2036,11 +2060,11 @@ exports.unpublishBadges = (req, res) => {
 
             });
 
-           
+
         })
     }
 
-    async function removeProdLevel(deleteBadge,i,j,dbo) {
+    async function removeProdLevel(deleteBadge, i, j, dbo) {
         return new Promise(function (resolve, reject) {
             if (deleteBadge) {
                 var myquery = {

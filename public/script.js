@@ -61,13 +61,14 @@ aren’t available to the outside world. */
             var varlen = data.variants.length;
             for (var i = 0; i < varlen; i++) {       //get the badges for that variant
               if (variantid == data.variants[i].id) {
-                applydbadges = data.variants[i].bids;
+                applydbadges = data.variants[i].badge;
 
 
 
                 break;
               }
             }
+            console.log(applydbadges);
             var imageslen = data.images.length;
             for (var j = 0; j < imageslen; j++) {                     //loop through the images array and apply badges for all the variants
               console.log(data.images.length);
@@ -90,16 +91,16 @@ aren’t available to the outside world. */
                  var width = data.badge[i].width;
                     var height = data.badge[i].height;
                     var borderRadius = data.badge[i].borderRadius;
-                badgeids[i] = data.badge[i].Bid;
+                badgeids[i] = data.badge[i].abid;
                 left = (left*85)/350;
                     
                     top= (top*77)/225;
-                console.log('in badge image success' + data.badge[i].Bid);
+                console.log('in badge image success' + data.badge[i].abid);
                 var link = data.badge[i].imageSource.replace("http://localhost:3000", forwardingAddress);
                 var flag = true;
-                applydbadgeslength = applydbadges.length
+                applydbadgeslength = applydbadges.length;
                 for (var k = 0; k < applydbadgeslength; k++) {                         //based on the apply badges to this variant we create the badge image to display or not
-                  if (data.badge[i].Bid == applydbadges[k]) {
+                  if (data.badge[i].abid == applydbadges[k].abid) {
                     flag = true;
                     break;
                   }
@@ -108,10 +109,10 @@ aren’t available to the outside world. */
                   }
                 }
                 if (flag == false) {                                                //if badge not there in applybadges array we will display none
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:none" ><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].abid + ' style="display:none" ><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
                 }
                 if (flag == true) {                                                    //else display block
-                  xi.eq(0).after('<div class= ' + data.badge[i].Bid + ' style="display:block"><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
+                  xi.eq(0).after('<div class= ' + data.badge[i].abid + ' style="display:block"><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
                 }
               }                                                                              //end of badge array lopp
               console.log("append", trim);
@@ -121,19 +122,21 @@ aren’t available to the outside world. */
             $("select").change(function () {                                                 // when user change the select input we get the variant id and change the css properties of the badge 
               var variantid = getUrlParam('variant', data.variants[0].id);
               console.log("variantid", variantid);
+              var applydbadges= [];
               for (var i = 0; i < data.variants.length; i++) {
                 if (variantid == data.variants[i].id) {
-                  applydbadges = data.variants[i].bids;
+                  applydbadges = data.variants[i].badge;
                   break;
                 }
               }
-              var flag = true;
+              var flag = false;
               var badgelen = data.badge.length;
               console.log(applydbadges);
+             if(applydbadges){
               for (var i = 0; i < badgelen; i++) {
                 var applydbadgeslength = applydbadges.length
                 for (var k = 0; k < applydbadgeslength; k++) {
-                  if (data.badge[i].Bid == applydbadges[k]) {
+                  if (data.badge[i].abid == applydbadges[k].abid) {
                     flag = true;
                     break;
                   }
@@ -144,19 +147,30 @@ aren’t available to the outside world. */
                  if (flag == false) {
                 
                    
-                  $("."+data.badge[i].Bid).css("display", "none");
-                   console.log("none",data.badge[i].Bid);
+                  $("."+data.badge[i].abid).css("display", "none");
+                   console.log("none",data.badge[i].abid);
                  
 
                 }
                 if (flag == true) {
                 
-                  $("."+data.badge[i].Bid).css("display", "block");
-                  console.log("block",data.badge[i].Bid);
+                  $("."+data.badge[i].abid).css("display", "block");
+                  console.log("block",data.badge[i].abid);
                       
 
                 }
               }
+             
+            }
+                else{
+                 for (var i = 0; i < badgelen; i++) {
+                 $("."+data.badge[i].abid).css("display", "none");
+                   console.log("done")
+                 
+                 }
+               
+               
+               }
             }).change();
           }
         }
@@ -164,14 +178,65 @@ aren’t available to the outside world. */
     }
 
     function collectionpage() {
+   var pageimages = []
+      var images = jQuery('img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".jp"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".JP"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".png"],img[src*="/products/"][src*="/cdn.shopify.com/s/files/"][src*=".PNG"]')
+      images.each(function (index, image) {
+        var src = jQuery(image).attr('src');
+        pageimages.push(src);
+        console.log(src);
+      })
+      console.log(pageimages);
+      var data = {};
+					data.src = pageimages;
+    $.ajax({                                     //ajax call to get the product details based on product id
+        url: forwardingAddress + '/getbadges',
+        	type: 'POST',
+			data: JSON.stringify(data),
+		   contentType: 'application/json',
+          success: function (result) {
+          console.log(result);
+          console.log(pageimages);
+          prolength = result.length;
+
+          for(i=0;i<prolength;i++){
+
+            imgsrc = result[i].image.src;
+            imgsrc = imgsrc.replace("https:", "");
+            trim = imgsrc.replace(".jpg", "_300x300.jpg");
+            var xi = $("img[src^='" + trim + "']");
+            var badgeids = [];
+            for (var j = 0; j < result[i].badge.length; j++) {                           //loop through the badge array and get all badge details to apply for each image 
+        
+              console.log('in badge image success' + result[i].badge[j].left);
+              console.log('in badge image success' + result[i].badge[j].top);
+              var left = result[i].badge[j].left;
+              var top = result[i].badge[j].top;
+               var width = result[i].badge[j].width;
+                  var height = result[i].badge[j].height;
+                  var borderRadius = result[i].badge[j].borderRadius;
+              badgeids[i] = result[i].badge[j].abid;
+              left = (left*85)/350;
+                  
+                  top= (top*77)/225;
+              console.log('in badge image success' + result[i].badge[j].abid);
+              var link = result[i].badge[j].imageSource.replace("http://localhost:3000", forwardingAddress);
+           
+
+            xi.eq(0).after('<div class= ' + result[i].badge[j].abid + ' ><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
+            }
+          }
+
+        }
+    })
+
       
     }
     var storeURL = window.location.pathname;                                             // based on url identify page and call that function to apply badge to that page
     if (storeURL) {
       var matches = storeURL.match(/(.*)\/(.[products]+)\/(.*)/);
-      if (matches && matches[3]) {
+      if (page == 'product') {
         productpage();
-      } else if (storeURL.indexOf('collections') > 0) {
+      } else if (page == 'collection') {
         collectionpage();
       }
     }
