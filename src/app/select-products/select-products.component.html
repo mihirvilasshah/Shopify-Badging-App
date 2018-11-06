@@ -45,19 +45,19 @@
     </div>
     <div *ngIf="selectedFilter=='Created Date'">
         <form>
-            <div class="mdl-textfield mdl-js-textfield" >
+            <div class="mdl-textfield mdl-js-textfield">
                 <!-- <label for="d1"> -->
                 <h6>From:</h6>
                 <!-- <input class="mdl-textfield__input" type="date" id="d1" name="bday" [(ngModel)]="date1" (input)="applyDateFn()"
                         placeholder="12/01/2017"> -->
 
                 <my-date-picker name="mydate" [options]="myDatePickerOptions" [(ngModel)]="model1" required placeholder="yyyy-mm-dd"
-                    id="d1" ></my-date-picker>
+                    id="d1"></my-date-picker>
                 <!-- </label> -->
             </div>
             <div class="mdl-textfield mdl-js-textfield">
                 <!-- <label for="d2"> -->
-                        <h6>To:</h6>
+                <h6>To:</h6>
                 <!-- <input class="mdl-textfield__input" type="date" id="d2" name="bday" [(ngModel)]="date2" (input)="applyDateFn()"
                         placeholder="12/01/2017"> -->
 
@@ -146,6 +146,7 @@
                     <th> Tags</th>
                     <th> Created Date </th>
                     <th>Badge applied</th>
+                    <th *ngIf="selectedFilter=='Price'">variants</th>
                     <!-- <th> Thumbail</th> -->
 
                 </tr>
@@ -158,22 +159,26 @@
                     </tr>
                 </thead> -->
                 <!-- <label class="form-check-label; "> -->
-                    <tr  *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
-                        
-                        
-                            <td style="text-align: left">
-                                <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
-                           
-                            <td>{{title.tags}} </td>
-                            <td>{{title.created_at}}</td>
-                            <td><div  *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
-                                <div  *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.src" src = {{badge}} style="height: 40px; width: 40px; margin-right: 15px"> </div>
-                                    
-                                 </td>
-                         
+                <tr *ngFor="let title of showTitle | paginate: { itemsPerPage: 5, currentPage: p } ; let i = index ">
 
-                        
-                    </tr>
+
+                    <td style="text-align: left">
+                        <input class="form-check-input" #box type="checkbox" [(ngModel)]="title.selected" [value]="[title.pids,title.variantsId]"
+                            (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
+
+                    <td>{{title.tags}} </td>
+                    <td>{{title.created_at}}</td>
+                    <td>
+                        <div *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
+                        <div *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.src" src="{{badge}}"
+                                style="height: 40px; width: 40px; margin-right: 15px"> </div>
+
+                    </td>
+                    <td *ngIf="selectedFilter=='Price'">{{title.variants}}</td>
+
+
+
+                </tr>
                 <!-- </label> -->
 
                 <!-- </div> -->

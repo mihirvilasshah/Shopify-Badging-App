@@ -159,7 +159,9 @@ export class SelectBadgeComponent implements OnInit {
   deleteBadge(index: number): void {
     if (confirm("Are You sure you want to delete?")) {
       console.log("deletebadge front end");
-      var x = this.UserPictures[index].split("/image/");
+      var x = this.UserPictures[index].imageSource.split("/image/");
+      console.log(this.UserPictures[index].imageSource);
+      console.log("x",x);
       var deleted = this.http.post("http://localhost:3000/deleteUserBadge", { "name": x[1] });
       // var deleted = this.http.post("http://localhost:3000/deleteUserBadge/",{"id":"5ba4c859767a3337741a66e8"});
 
