@@ -156,7 +156,7 @@ exports.getThumbnail = (req, res) => {
 //                   if(obj){
 //                     console.log("obj  inside sdjk ");
 //                     console.log(obj);
-//                     send ="http://172.16.18.189:7000/picture/"+obj;
+//                     send ="http://172.16.18.189:3000/picture/"+obj;
 //                   }
 
 //                   else{
@@ -324,8 +324,8 @@ exports.getProductTitle = (req, res) => {
 
 
  if(this.badges[i]){
-            // this.http.post("http://172.16.18.189:7000/unpublishBadges", { "pid": this.selectedids })
-            let obsx = this.http.post("http://172.16.18.189:7000/thumbnail/",{"abid":this.badges[0]});
+            // this.http.post("http://172.16.18.189:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://172.16.18.189:3000/thumbnail/",{"abid":this.badges[0]});
               obsx.subscribe(data1 => {
           x=Object.values(data1)[0];
           // console.log(data1);
@@ -337,7 +337,7 @@ exports.getProductTitle = (req, res) => {
 
 
 
-          let obs = this.http.get("http://172.16.18.189:7000/getProductTitle/" + this.title1 + "/all");
+          let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/all");
     obs.subscribe(data => {
       // console.log("here is the response for title products", data);
       // console.log(this.pr);
@@ -363,8 +363,8 @@ exports.getProductTitle = (req, res) => {
         for (var i= 0;i<+this.titles.length;i++){
 
           if(this.badges[i]){
-            // this.http.post("http://172.16.18.189:7000/unpublishBadges", { "pid": this.selectedids })
-            let obsx = this.http.post("http://172.16.18.189:7000/thumbnail/",{"abid":this.badges[0]});
+            // this.http.post("http://172.16.18.189:3000/unpublishBadges", { "pid": this.selectedids })
+            let obsx = this.http.post("http://172.16.18.189:3000/thumbnail/",{"abid":this.badges[0]});
               obsx.toPromise().then(data1 => {
 
                 this.titles = items[0];
@@ -415,7 +415,7 @@ exports.getProductTitle = (req, res) => {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://172.16.18.189:7000/getProductTitle/" + this.title1 + "/all");
+      let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/all");
       obs.subscribe(data => {
         // console.log("here is the response for title products", data);
         // console.log(this.pr);
@@ -450,8 +450,8 @@ exports.getProductTitle = (req, res) => {
 
           // if (this.badges[i]) {
             
-            // this.http.post("http://172.16.18.189:7000/unpublishBadges", { "pid": this.selectedids })
-            // let obsx = this.http.post("http://172.16.18.189:7000/thumbnail/", { "abid": this.badges[0] });
+            // this.http.post("http://172.16.18.189:3000/unpublishBadges", { "pid": this.selectedids })
+            // let obsx = this.http.post("http://172.16.18.189:3000/thumbnail/", { "abid": this.badges[0] });
             // obsx.subscribe(data1 => {
              isbadge=true;
               // console.log("titles1:" + this.titles);
@@ -511,7 +511,7 @@ exports.getProductTitle = (req, res) => {
           // if(this.badges[i]){
           //   // let promise=  
 
-          //   this.http.post("http://172.16.18.189:7000/thumbnail/",{"abid":this.badges[0]}).subscribe(
+          //   this.http.post("http://172.16.18.189:3000/thumbnail/",{"abid":this.badges[0]}).subscribe(
           //     suc => {
           //         console.log(suc);
           //     },

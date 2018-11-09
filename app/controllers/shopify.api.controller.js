@@ -898,8 +898,8 @@ exports.upload = (req, res) => {
                 // size: req.file.size,
                 // img: Buffer(encImg, 'base64'),
                 imageName: codedPicName,
-                imageSource: "http://172.16.18.189:7000/Badges/" + globalShop + "/image/" + codedPicName, // not name, it should be id
-                thumbnailSource: "http://172.16.18.189:7000/Badges/" + globalShop + "/thumbnail/" + newpicname,
+                imageSource: "http://172.16.18.189:3000/Badges/" + globalShop + "/image/" + codedPicName, // not name, it should be id
+                thumbnailSource: "http://172.16.18.189:3000/Badges/" + globalShop + "/thumbnail/" + newpicname,
                 contentType: req.file.mimetype,
                 // default: false 
             };

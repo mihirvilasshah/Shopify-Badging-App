@@ -4,8 +4,8 @@ var mongodb = require('mongodb');
 var mongoClient = mongodb.MongoClient;
 var fs = require('fs');
 
-app.listen(7000, () => {
-    console.log('App listening on port 7000!');
+app.listen(3000, () => {
+    console.log('App listening on port 3000!');
 });
 
  

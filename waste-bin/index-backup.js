@@ -30,13 +30,13 @@ app.get('/', (req, res) => {
   res.send('Hello World! from TRICON BADGER');
 });
 
-app.listen(7000, () => {
-  console.log('Example app listening on port 7000!');
+app.listen(3000, () => {
+  console.log('Example app listening on port 3000!');
 });
 
 app.use('/static', express.static('public'));
 
-// 172.16.18.189:7000/shopify?shop=triconbadger.myshopify.com
+// 172.16.18.189:3000/shopify?shop=triconbadger.myshopify.com
 
 app.get('/shopify', (req, res) => {
   const shop = req.query.shop;

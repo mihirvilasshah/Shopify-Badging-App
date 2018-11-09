@@ -8,7 +8,7 @@ express = require('express')
     , multer = require('multer')
     , util = require('util')
     , upload = multer({ limits: { fileSize: 2000000 }, dest: '/uploads/' })
-// Default route http://172.16.18.189:7000/
+// Default route http://172.16.18.189:3000/
 router.get('/', function (req, res) { res.render('indexPic'); });
 // Form POST action handler
 router.post('/uploadpicture', upload.single('picture'), function (req, res) {

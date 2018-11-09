@@ -17,8 +17,8 @@ app.get('/', (req, res) => {
 require('./app/routes/shopify.api.routes.js')(app);
 // require('./app/routes/custom.api.routes.js')(app);
 
-app.listen(7000, () => {
-    console.log('App listening on port 7000!');
+app.listen(3000, () => {
+    console.log('App listening on port 3000!');
 });
 
 app.set('view engine','ejs');
@@ -38,6 +38,6 @@ app.get('/modal_content', function(req, res) {
 })
 
 // TODO: change the location to store the token, use redis or any other DB. or use session.
-// 172.16.18.189:7000/shopify?shop=triconbadger.myshopify.com
+// 172.16.18.189:3000/shopify?shop=triconbadger.myshopify.com
 // {your ngrok forwarding address}/shopify?shop=your-development-shop.myshopify.com
 // https://3617ee8d.ngrok.io/shopify?shop=tricon-dev-store.myshopify.com

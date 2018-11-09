@@ -89,7 +89,7 @@ aren’t available to the outside world. */
                     // var id = $('.productid').eq(0).html;
                     // console.log("id:::::",id);
     
-                    var link = data.badge[i].imageSource.replace("http://172.16.18.189:7000", forwardingAddress);
+                    var link = data.badge[i].imageSource.replace("http://172.16.18.189:3000", forwardingAddress);
                     //  $('.product-single__photo-wrapper').eq(0).css('position', 'relative');
     
                     zi.eq(0).after('<div class="badge-wrapper"><img style="position:absolute ; top :' + top + '%;height:' + height +'%;width:' + width +'%; left:' + left + '%;border-radius:'+borderRadius+'%;" src="' + link + '"></div>');
