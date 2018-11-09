@@ -1,0 +1,140 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+@import url('https://fonts.googleapis.com/css?family=Arvo');
+
+h6{
+font-family: 'Arvo', serif !important; 
+    font-size: 1.5em !important;
+}
+
+.flex-container {
+  display: flex;
+}
+
+button {
+  margin: 10px;
+}  
+
+input{
+  margin: 10px;
+}
+
+span{
+  text-align: center;
+  color : red; 
+}
+
+.important{
+  height:60px;
+  width: 200px;
+  background-color:green;
+  color: white;
+}
+
+// table {
+//   font-family: arial, sans-serif;
+//   border-collapse: collapse;
+//   // width: 100%;
+//   margin: 10px;
+
+//   td, th {
+//     border: 1px solid #dddddd;
+//     text-align: left;
+//     padding: 8px;
+//     width: 100px;
+//   }
+
+//   .even {
+//     background-color: #aaaaaa;
+//   }
+// }
+// .even {
+//   background-color: rgba(0,0,0,.26);
+// }
+
+// .even:hover {
+//   background-color: rgba(0,0,0,.4);
+// }
+
+// .odd:hover{
+//   background-color:  rgba(0,0,0,.1);
+// }
+
+td,th{
+  width: 300px;
+}
+
+/deep/ .mdl-data-table th,td{
+  text-align: left !important;
+
+}
+
+/deep/ .mdl-data-table td{
+  padding-left: 37px !important;
+}
+
+.current{
+  background-color: red;
+
+}
+
+span{
+  color:black;
+}
+
+.form-check-input{
+  margin-left: -23px;
+}
+
+.mdl-button--colored[disabled]{
+  color: rgba(0,0,0,.9) !important;
+} 
+
+input[type="date"]::-webkit-clear-button {
+  display: none;
+}
+
+/* Removes the spin button */
+input[type="date"]::-webkit-inner-spin-button { 
+  display: none;
+}
+
+/* Always display the drop down caret */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: #000000;
+  display: block;
+}
+
+/* A few custom styles for date inputs */
+input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  color: #95a5a6;
+  font-family: "Helvetica", arial, sans-serif;
+  font-size: 18px;
+  border:1px solid #ecf0f1;
+  background:white;
+  padding:5px;
+  display: inline-block !important;
+  visibility: visible !important;
+}
+
+input[type="date"], focus {
+  color: #95a5a6;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+
+h1{
+  color: rgb(63,81,181);
+}
+
+h2{
+  color: red;
+  margin: 117px;
+}
+
+
+/deep/ .ngx-pagination .current{
+  background: rgb(63,81,181) !important;
+}
