@@ -12,15 +12,29 @@
         <i class="material-icons">card_membership</i><div>Select Badge</div>
       </a>
     </li>
-    <li>
-      <a routerLink="customize" [routerLinkActive]="['activated']">
+    <li >
+        <div *ngIf = !selected style = "opacity: 0.3">
+            <a>
+              <i class="material-icons">edit</i><div>Customize</div>
+            </a>
+            </div>
+      <div *ngIf = selected>
+      <a  routerLink="customize" [routerLinkActive]="['activated']" >
         <i class="material-icons">edit</i><div>Customize</div>
       </a>
+      </div>
     </li>
     <li>
-      <a routerLink="products" [routerLinkActive]="['activated']">
+      <div *ngIf = !selected style = "opacity: 0.3">
+      <a>
         <i class="material-icons">add_shopping_cart</i><div>Select Products</div>
       </a>
+      </div>
+      <div *ngIf = selected>
+      <a routerLink="products" [routerLinkActive]="['activated']">
+          <i class="material-icons">add_shopping_cart</i><div>Select Products</div>
+        </a>
+      </div>
     </li>
     <li>
       <a routerLink="remove" [routerLinkActive]="['activated']">

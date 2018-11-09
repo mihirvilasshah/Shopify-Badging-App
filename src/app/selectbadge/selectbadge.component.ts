@@ -146,6 +146,9 @@ export class SelectBadgeComponent implements OnInit {
     console.log("selected" + this.selectedindex);
     // debugger;
     this.sel = true;
+    this.badge.sendMessage(this.sel)
+   
+
   }
 
   // checkSelected(index: number): string {

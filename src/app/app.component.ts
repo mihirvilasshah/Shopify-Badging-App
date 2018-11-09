@@ -9,6 +9,7 @@ import { BadgeService } from './badge.service';
 export class AppComponent {
 
   products={}
+  selected = false;
   title = 'badger';
 
   // constructor(private productService:BadgeService){

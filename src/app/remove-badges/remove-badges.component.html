@@ -145,6 +145,7 @@
                     <th> Tags</th>
                     <th> Created Date </th>
                     <th>Badge applied</th>
+                    <th *ngIf="selectedFilter=='Price'">Variants</th>
                     <!-- <th> Thumbail</th> -->
 
                 </tr>
@@ -162,7 +163,7 @@
 
 
                         <td style="text-align: left">
-                            <input class="form-check-input" #box1 type="checkbox" [(ngModel)]="title.selected" [value]="title.pids" (click)="giveid($event.target.checked, box1.value)">{{title.name}}</td>
+                            <input class="form-check-input" #box1 type="checkbox" [(ngModel)]="title.selected" [value]="[title.pids,title.variantsId]" (click)="giveid($event.target.checked, box1.value)">{{title.name}}</td>
                          
                         <td>{{title.tags}} </td>
                         <td>{{title.created_at}}</td>
@@ -171,13 +172,14 @@
 
 
                             <div *ngFor="let badge of title.badges" style="display: inline">  
-                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
+                                <input class="form-check-input" #box type="checkbox"  [(ngModel)]="badge.selected"  [value]="[title.pids,badge.badg]" (click)="givebid($event.target.checked, box.value)"[disabled]="!title.selected">
 
                                 <img src="{{badge.src}}" style="height: 40px; width: 40px; margin-right: 30px">
                                 </div>
 
 
                         </td>
+                        <td *ngIf="selectedFilter=='Price'">{{title.variants}}</td>
 
 
 

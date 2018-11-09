@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,OnChanges, SimpleChanges, Input } from '@angular/core';
+import { BadgeService } from '../badge.service';
 
 
 @Component({
@@ -6,12 +7,35 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss']
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements  OnInit {
 
-  constructor() { }
+
+  selected;
+  constructor(private badge: BadgeService) { 
+  
+
+   
+  }
 
   ngOnInit() {
-    
+
+    this.badge.badgemessage$.subscribe(
+      message=>{
+        this.selected= message;
+
+
+      }
+    );
+ 
   }
+  ngOnChanges(changes: SimpleChanges) {
+
+    console.log("asdf",changes);
+
+  }
+  
+  
+    
+  
 
 }

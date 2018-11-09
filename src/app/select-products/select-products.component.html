@@ -139,14 +139,14 @@
 
             <table class="mdl-data-table">
                 <tr>
-                    <th>Title</th>
+                 <th class="text-center"> Title</th>
 
 
 
-                    <th> Tags</th>
-                    <th> Created Date </th>
-                    <th>Badge applied</th>
-                    <th *ngIf="selectedFilter=='Price'">variants</th>
+                    <th class="text-center">  Tags</th>
+                    <th class="text-center">  Created Date </th>
+                    <th class="text-center"> Badge applied</th>
+                    <th *ngIf="selectedFilter=='Price'">Variants</th>
                     <!-- <th> Thumbail</th> -->
 
                 </tr>
@@ -167,7 +167,7 @@
                             (click)="giveid($event.target.checked, box.value)"> {{title.name}}</td>
 
                     <td>{{title.tags}} </td>
-                    <td>{{title.created_at}}</td>
+                    <td >{{title.created_at}}</td>
                     <td>
                         <div *ngIf="title.badges[0]=='-'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{title.badges}}</div>
                         <div *ngIf="title.badges[0]!='-'"><img *ngFor="let badge of title.src" src="{{badge}}"
@@ -199,8 +199,11 @@
 
 </div>
 
-<ngx-smart-modal #myModal identifier="myModal">
-    <h3>Successfully published {{selectedids.length}} badge(s)</h3>
+<ngx-smart-modal #myModal identifier="myModal"> 
+    <h3 style ="border-bottom:1px black solid; padding: 10px">Successfully published {{selectedids.length}} badge(s)</h3>
 
-    <button (click)="myModal.close()" style="text-align: center;height: 40px;width: 94px;position: relative;left: 31%;">Ok</button>
+    <p style="font-size:18px;padding-top: 21px;">Select button to apply New badge or Same badge</p>
+    <button (click)="onSelect" style="height:33px;text-align: center;float:right">New Badge</button>
+    <button (click)="myModal.close()" style="height:33px;text-align: center;float:right">Same Badge</button>
+
 </ngx-smart-modal>
