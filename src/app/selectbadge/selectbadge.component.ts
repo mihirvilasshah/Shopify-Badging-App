@@ -28,7 +28,7 @@ export class SelectBadgeComponent implements OnInit {
   count1: number = 0;
   pic_name = "";
 
-  public uploader: FileUploader = new FileUploader({ url: "http://172.16.18.189:3000/api/upload", itemAlias: 'photo' });
+  public uploader: FileUploader = new FileUploader({ url: "http://172.16.18.189:7000/api/upload", itemAlias: 'photo' });
 
   constructor(private badge: BadgeService, private http: HttpClient, private router: Router, private spinner: NgxSpinnerService, public ngxSmartModalService: NgxSmartModalService) {
   }
@@ -55,7 +55,7 @@ export class SelectBadgeComponent implements OnInit {
       }
     };
     var count = 0;
-    var ids = this.http.get("http://172.16.18.189:3000/getMyLibrary");
+    var ids = this.http.get("http://172.16.18.189:7000/getMyLibrary");
     ids.subscribe(val => {
       var temp = Object.values(val);
       temp.forEach(pic => {
@@ -73,16 +73,16 @@ export class SelectBadgeComponent implements OnInit {
 
   loadBadges(): void {
 
-    // var ids = this.http.get("http://172.16.18.189:3000/getUserIDS");
+    // var ids = this.http.get("http://172.16.18.189:7000/getUserIDS");
     // ids.subscribe(val => {
     //   console.log(val);
     //   var temp = Object.values(val);
     //   temp.forEach(pic => {
-    //     this.UserPictures.push("http://172.16.18.189:3000/picture/" + pic);
+    //     this.UserPictures.push("http://172.16.18.189:7000/picture/" + pic);
     //   })
     // })
 
-    var ids = this.http.get("http://172.16.18.189:3000/getMyBadges");
+    var ids = this.http.get("http://172.16.18.189:7000/getMyBadges");
     ids.subscribe(val => {
       var temp = Object.values(val);
       temp.forEach(pic => {
@@ -120,7 +120,7 @@ export class SelectBadgeComponent implements OnInit {
 
   // public onTap() {
   //   console.log("inside on tap");
-  //   var cursor = this.http.get("http://172.16.18.189:3000/picture/");
+  //   var cursor = this.http.get("http://172.16.18.189:7000/picture/");
   //   console.log(cursor);
 
   // };
@@ -162,8 +162,8 @@ export class SelectBadgeComponent implements OnInit {
       var x = this.UserPictures[index].imageSource.split("/image/");
       console.log(this.UserPictures[index].imageSource);
       console.log("x",x);
-      var deleted = this.http.post("http://172.16.18.189:3000/deleteUserBadge", { "name": x[1] });
-      // var deleted = this.http.post("http://172.16.18.189:3000/deleteUserBadge/",{"id":"5ba4c859767a3337741a66e8"});
+      var deleted = this.http.post("http://172.16.18.189:7000/deleteUserBadge", { "name": x[1] });
+      // var deleted = this.http.post("http://172.16.18.189:7000/deleteUserBadge/",{"id":"5ba4c859767a3337741a66e8"});
 
       deleted.subscribe(val => {
         console.log(val);
@@ -186,7 +186,7 @@ export class SelectBadgeComponent implements OnInit {
 
   up() {
     console.log(this.fileList);
-    let obs = this.http.post("http://172.16.18.189:3000/api/upload", { "file": this.fileList });
+    let obs = this.http.post("http://172.16.18.189:7000/api/upload", { "file": this.fileList });
     obs.subscribe(data => {
       console.log("here is the response", data);
 

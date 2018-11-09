@@ -104,12 +104,12 @@ export class RemoveBadgesComponent implements OnInit {
 
       console.log(this.selected_image_src);
       console.log(this.badgeCss);
-      let cur = this.http.get("http://172.16.18.189:3000/currency")
+      let cur = this.http.get("http://172.16.18.189:7000/currency")
       cur.subscribe(dat => {
         console.log("here is the response", dat);
         this.currency = dat[0].currency;
       });
-      let tag = this.http.get("http://172.16.18.189:3000/tags")
+      let tag = this.http.get("http://172.16.18.189:7000/tags")
       tag.subscribe(data => {
         console.log("here is the response", data);
         this.tagArray = data;
@@ -147,12 +147,12 @@ export class RemoveBadgesComponent implements OnInit {
   getPriceProd() {
 
     console.log(this.price1);
-    // var result  =this.http.get("http://172.16.18.189:3000/getProductPriceRange/"+this.price1+"/"+this.price2);
+    // var result  =this.http.get("http://172.16.18.189:7000/getProductPriceRange/"+this.price1+"/"+this.price2);
 
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.get("http://172.16.18.189:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
+      let obs = this.http.get("http://172.16.18.189:7000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -238,7 +238,7 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/withBadges")
+      let obs = this.http.get("http://172.16.18.189:7000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/withBadges")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -324,7 +324,7 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/withBadges");
+      let obs = this.http.get("http://172.16.18.189:7000/getProductTitle/" + this.title1 + "/withBadges");
       obs.subscribe(data => {
 
 
@@ -406,7 +406,7 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://172.16.18.189:3000/getProductTag/" + this.tag + "/withBadges");
+      let obs = this.http.get("http://172.16.18.189:7000/getProductTag/" + this.tag + "/withBadges");
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -674,7 +674,7 @@ export class RemoveBadgesComponent implements OnInit {
     //   })
     // };
 
-    let obs = this.http.post("http://172.16.18.189:3000/unpublishBadges", { "pid": this.selectedids });
+    let obs = this.http.post("http://172.16.18.189:7000/unpublishBadges", { "pid": this.selectedids });
     obs.subscribe(data => {
       if (data.hasOwnProperty('pid')) {
         console.log("in unpublish");
