@@ -1356,8 +1356,8 @@ exports.getProductPriceRange = (req, res) => {
                 //console.log(products[i].variants.length);
                 console.log(variants[i]);
                 pids[i] = products[i]._id;
-                //var x = products[i].created_at.split("T");
-                //created_At[i] = x[0];
+                var x = products[i].created_at.split("T");
+                created_At[i] = x[0];
                 tags[i] = products[i].tags;
                 if (products[i].variants.badge && products[i].variants.badge.length > 0) {
 
