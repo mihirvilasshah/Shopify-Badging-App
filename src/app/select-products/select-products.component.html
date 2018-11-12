@@ -203,7 +203,11 @@
     <h3 style ="border-bottom:1px black solid; padding: 10px">Successfully published {{selectedids.length}} badge(s)</h3>
 
     <p style="font-size:18px;padding-top: 21px;">Select button to apply New badge or Same badge</p>
-    <button (click)="onSelect" style="height:33px;text-align: center;float:right">New Badge</button>
-    <button (click)="myModal.close()" style="height:33px;text-align: center;float:right">Same Badge</button>
+
+   
+    <button (click)="myModal.close();onSelect()" style="height:33px;text-align: center;float:right">New Badge</button>
+
+
+    <button (click)="myModal.close();onSelect1()" style="height:33px;text-align: center;float:right">Same Badge</button>
 
 </ngx-smart-modal>

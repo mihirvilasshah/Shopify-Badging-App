@@ -27,6 +27,8 @@ export class CustomizeComponent {
   pic_name = "";
   badge_css = "top-left";
   top = 200;
+  finalx;
+  finaly;
   left = 0;
   css = "top-left";
   dragevent;
@@ -105,30 +107,23 @@ export class CustomizeComponent {
 
   }
 
-  drag() {
-    this.endOffset.x = 0;
-    this.endOffset.y = 0;
-  }
-
-  input() {
-    this.img1.x = 0;
-    this.img1.y = 0;
-  }
+  
 
   leftpx() {
     var x = this.endOffset.x;
     // this.endOffset.x = this.img1x;
     console.log(x);
-    document.getElementById("image1").style.left = x + 'px';
-    this.badge.setCoor2(this.endOffset.x, this.img1.y);
+    //this.finalx = (this.endOffset.x-this.BadgeWidth*4.10)/100;
+    //document.getElementById("image1").style.left = x + 'px';
+    this.badge.setCoorx(this.endOffset.x);
 
   }
   toppx() {
     var y = this.endOffset.y;
     // this.endOffset.y = this.img1y;
     console.log(y);
-    document.getElementById("image1").style.top = y + 'px';
-    this.badge.setCoor2(this.endOffset.x, this.endOffset.y);
+    //document.getElementById("image1").style.top = y + 'px';
+    this.badge.setCoory(this.endOffset.y);
 
   }
 
@@ -175,7 +170,9 @@ export class CustomizeComponent {
   onMoveEnd(event) {
     this.dragevent = event;
     console.log("event", event);
+    
     this.endOffset.x = event.x;
+
     this.endOffset.y = event.y;
     this.badge.setCoorx(this.endOffset.x);
     this.badge.setCoory(this.endOffset.y);
@@ -218,13 +215,13 @@ export class CustomizeComponent {
       //   }
       // };
       // this.router.navigate(["/products"], navigationExtras);
+      
 
-      if (this.position == 'drag') {
+       this.finalx = (this.endOffset.x-this.BadgeWidth*4.10)/100;
+     
         this.badge.setCoorFinal(this.endOffset.x, this.endOffset.y);
-      }
-      else {
-        this.badge.setCoorFinal(this.img1.x, this.img1.y);
-      }
+      
+      
 
       this.router.navigate(["/products"]);
       this.spinner.hide();

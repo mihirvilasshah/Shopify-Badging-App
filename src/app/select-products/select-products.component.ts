@@ -122,11 +122,12 @@ export class SelectProductsComponent implements OnInit {
     this.endOffset = badge.getCoorFinal();
     this.opvalue = badge.getOpval();
     this.selected_image_src = badge.getBadgePic();
+
     this.BadgeWidth = badge.getBadgeWidth();
     this.BadgeHeight = badge.getBadgeHeight();
     this.BorderRadius = badge.getBorderRadius();
     // this.badgeCss=badge.getBadgeCss();
-    console.log("select products badge name" + this.selected_image_src);
+    console.log("select products badge name" + this.selected_image_src.thumbnailSource);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
     // let cur = this.http.get("http://localhost:3000/shopdet")
@@ -175,9 +176,28 @@ export class SelectProductsComponent implements OnInit {
   ngOnInit() {
 
   }
-  onSelect(){
+  onSelect() {
 
-    this.router.navigate(['products']);
+    this.router.navigate(["/badge"]);
+    this.badge.sendMessage(false);
+    console.log("working");
+    
+
+  }
+  onSelect1() {
+
+    // this.router.navigate(["/products"]);
+    if (this.selectedFilter == 'Price') {
+      this.getPriceProd();
+    } else if (this.selectedFilter == 'Created Date') {
+      this.getDateProd();
+    } else if (this.selectedFilter == 'Title') {
+      this.getTitleProd();
+    } else if (this.selectedFilter == 'Tag') {
+      this.getTagProd();
+    }
+
+    console.log("working");
 
   }
 
@@ -373,8 +393,8 @@ export class SelectProductsComponent implements OnInit {
         this.isApplied = items[5];
         this.src = items[6];
 
-        for(var i=0;i<this.src[0].length;i++){
-          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
         }
 
 
@@ -473,9 +493,9 @@ export class SelectProductsComponent implements OnInit {
         //   console.log("unique src",uSrc);
         // }
         // this.src = uSrc;
-        console.log("unique b src",this.src[0].length);
-        for(var i=0;i<this.src[0].length;i++){
-          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        console.log("unique b src", this.src[0].length);
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
         }
 
         // let uSrc = new Set(this.src);
@@ -552,8 +572,8 @@ export class SelectProductsComponent implements OnInit {
         this.isApplied = items[5];
         this.src = items[6];
 
-        for(var i=0;i<this.src[0].length;i++){
-          this.src[0] = this.src[0].filter((v, i,a) => a.indexOf(v) == i);
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
         }
 
 
@@ -638,7 +658,7 @@ export class SelectProductsComponent implements OnInit {
 
     }
     else if (flag) {
-      console.log("VAL:",value);
+      console.log("VAL:", value);
       var x = value.split(",");
       var value1 = x[0];
       var value2 = x[1];
@@ -656,7 +676,7 @@ export class SelectProductsComponent implements OnInit {
       this.counter = this.counter - 1;
 
       var index = this.selectedids.indexOf(this.pids[value1]);
-      console.log("index",index);
+      console.log("index", index);
       var index2 = this.selectedVids.indexOf(this.pids[value2]);
       // this.selectedids.splice(value1, 1);
       console.log("spliced: " + this.selectedids.splice(index, 1));
@@ -680,6 +700,7 @@ export class SelectProductsComponent implements OnInit {
     var id = this.selected_image_src._id;
     console.log(id);
     console.log(this.selectedids);
+    console.log(this.selected_image_src.thumbnailSource);
 
     this.spinner.show();
     setTimeout(() => {

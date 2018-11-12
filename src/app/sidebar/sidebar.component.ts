@@ -10,7 +10,7 @@ import { BadgeService } from '../badge.service';
 export class SidebarComponent implements  OnInit {
 
 
-  selected;
+  selected = false;
   constructor(private badge: BadgeService) { 
   
 
