@@ -293,6 +293,62 @@ exports.auth = (req, res) => {
     }
 };
 
+exports.getbadges = (req, res) => {
+
+    console.log('body: ', req.body.src);
+    pagesrcs = req.body.src;
+
+    flag = 0;
+
+    async function srcs(pagesrcs) {
+        prod = [];
+
+        for (i = 0; i < pagesrcs.length; i++) {
+            var s = pagesrcs[i].split("_300x300");
+            src = "https:" + s[0] + s[1];
+            //console.log(src);
+            myquery = {
+                "image.src": src
+            }
+
+            prod[i] = await findProd(myquery);
+            console.log("1st");
+            console.log(prod);
+        }
+        flag = await loopdone(flag);
+        res.send(prod);
+    }
+
+    function loopdone(flag) {
+        return new Promise(function (resolve, reject) {
+            flag++;
+            resolve(flag)
+        })
+
+    }
+    function findProd(myquery) {
+        return new Promise(function (resolve, reject) {
+            MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("shopifydbclone");
+                dbo.collection(globalShop).findOne(myquery, function (err, obj) {
+                    if (err) throw err;
+                    resolve(obj)
+
+                })
+            });
+
+
+
+        })
+
+    }
+    srcs(pagesrcs)
+
+    //console.log(prod);
+    //res.send(prod);
+}
+
 var Aid;
 exports.getSrc = (req, res) => {
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
@@ -539,43 +595,97 @@ exports.gettheme = (req, res) => {
                     const Scriptjson2 = {
                         asset: {
                             key: "snippets/tricon-badge.liquid",
-                            value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
-                        }
+                            // value: '<script>var id ={{ product.id }}</script> <script src=' + srcvalue + ' async></script>'
+                            //formatted
+                                // {% if template contains 'product' %}
+                                // <script>
+                                // var id ={{ product.id }}
+                                // page = 'product'
+                                // </script>
+                                // {% endif %}
+                                // {% if template contains 'collection' or template contains 'index' or template contains 'search' %}
+                                // <script>
+                                // page = 'collection'
+                                // </script>
+                                // {% endif %}
+                                // <script src=\"{{ 'tricon-label.js' | asset_url }}\" async></script>
+                            value: "{% if template contains 'product' %} <script> var id ={{ product.id }} page = 'product' </script> {% endif %} {% if template contains 'collection' or template contains 'index' or template contains 'search' %} <script> page = 'collection' </script> {% endif %} <script src=\"{{ 'tricon-label.js' | asset_url }}\" async></script>"
+                }
                     };
 
-                    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
-                        .then((response) => {
-                            console.log(response);
-                        })
-                        .catch((error) => {
-                            if (error) throw error;
-                        });
-
-                    const Script1json = {
-                        asset: {
-                            key: "assets/tricon-label.js.liquid",
-                            src: forwardingAddress + "/static/script.js"
-                        }
-                    };
-
-                    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
-                        .then((response) => {
-                            console.log(response);
-                        })
-                        .catch((error) => {
-                            if (error) throw error;
-                        });
-
-                }).catch((err) => {
-                    console.log(err);
-                    res.send(err);
-                });
-
-
-        }).catch((err) => {
-            console.log(err);
-            res.send(err);
+    request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson2 })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            if (error) throw error;
         });
+
+    const Script1json = {
+        asset: {
+            key: "assets/tricon-label.js.liquid",
+            src: forwardingAddress + "/static/script.js"
+        }
+    };
+
+    request.put(webhookUrl, { headers: Scriptheaders, json: Script1json })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            if (error) throw error;
+        });
+
+
+
+    //product-template
+    // const assetUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json?asset[key]=sections/product-template.liquid&theme_id=' + themeid;
+
+    // request.get(assetUrl, { headers: shopRequestHeaders })
+    //     .then((template) => {
+    //         template = JSON.parse(template).asset.value;
+    //         var split = template.split('data-section-id="{{ section.id }}"');
+    //         template = split[0] + 'data-section-id="{{ section.id }}" data-product-id="{{product.id}}"' + split[1];
+    //         console.log("TEMPLATE Changed:", template);
+
+
+    //         const Scriptjson3 = {
+    //             asset: {
+    //                 key: "sections/product-template.liquid",
+    //                 value: template
+    //             }
+    //         };
+
+    //         const Scriptheaders = {
+    //             'X-Shopify-Access-Token': globalToken,
+    //             // 'X-Shopify-Topic': "products/create",
+    //             // 'X-Shopify-Shop-Domain': globalShop,
+    //             'Content-Type': "application/json"
+    //         };
+    //         const webhookUrl = 'https://' + globalShop + '/admin/themes/' + themeid + '/assets.json';
+    //         request.put(webhookUrl, { headers: Scriptheaders, json: Scriptjson3 })
+    //             .then((response) => {
+    //                 console.log(response);
+    //             })
+    //             .catch((error) => {
+    //                 if (error) throw error;
+    //             });
+    //     }).catch((err) => {
+    //         console.log(err);
+    //         res.send(err);
+    //     });
+
+
+}).catch ((err) => {
+    console.log(err);
+    res.send(err);
+});
+
+
+        }).catch ((err) => {
+    console.log(err);
+    res.send(err);
+});
 
 
 
@@ -1654,9 +1764,8 @@ exports.publishBadges = (req, res) => {
     var map = 0;
     var abid;
     console.log('body: ' + JSON.stringify(req.body));
-    console.log("Badge selected is",req.body.bid);
+    console.log(req.body.bid);
     res.send(req.body);
-    
     MongoClient.connect(url, { useNewUrlParser: true }, function (err, db) {
         if (err) throw err;
 
@@ -1684,73 +1793,91 @@ exports.publishBadges = (req, res) => {
             var newoid = ObjectId();
 
             var newvalues = { $push: { "badge": { abid: newoid, Bid: req.body.bid, left: req.body.xvalue, top: req.body.yvalue, opvalue: req.body.opval, width: req.body.width, height: req.body.height, borderRadius: req.body.borderRadius, imageSource: imgsrc, thumbnailSource: thumbnailSrc } } };
-            
-                for (var i = 0; i < req.body.pid.length; i++) {
-                    var myquery = {
-                        "_id": ObjectId(req.body.pid[i])
-                    };
-                    console.log("pids: " + req.body.pid[i]);
-                    if (i == 0 || req.body.pid[i] != req.body.pid[i - 1]) {
-                        dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
-                            if (err) throw err;
-                            console.log("product updated abid: " + obj);
-                        });
-                    }
 
-                    if (req.body.filter == "Price") {
-                        var v = parseFloat(req.body.vid[i]);
-                        var v1 = req.body.vid[i];
-                        var myquery1 = {
-                            "_id": ObjectId(req.body.pid[i]),
-                            "variants.id": v
-                        };
-                        var newvalues1 = { $push: { "variants.$.bids": newoid } };
-                        console.log("vids: " + req.body.vid[i]);
-                        console.log("v: " + v);
-
-                        dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, obj) {
-                            if (err) throw err;
-                            console.log("product updated Vid: " + obj);
-                            console.log("product updated abid: " + req.body.bid);
-                            console.log("product updated Vid: " + v);
-                            console.log("product updated Vid: " + req.body.vid.length);
-                        });
-
-
-
-
-                    } else {
-                        for (var i = 0; i < req.body.pid.length; i++) {
-                            var myquery = {
-                                "_id": ObjectId(req.body.pid[i])
-                            };
-                            console.log(myquery);
-                            dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
-                                console.log("varID");
-                                console.log(obj);
-                                for (var j = 0; j < obj.variants.length; j++) {
-                                    var myquery = {
-                                        "variants.id": obj.variants[j].id
-                                    };
-
-                                    var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
-
-
-                                    dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, res) {
-                                        if (err) throw err;
-                                        console.log("product updated Vid: " + res);
-                                        console.log("product updated abid: " + req.body.bid);
-
-                                    });
-                                }
-                            });
-                        }
-
-                    }
+            for (var i = 0; i < req.body.pid.length; i++) {
+                var myquery = {
+                    "_id": ObjectId(req.body.pid[i])
+                };
+                console.log("pids: " + req.body.pid[i]);
+                if (i == 0 || req.body.pid[i] != req.body.pid[i - 1] || req.body.filter != "Price") {
+                    dbo.collection(globalShop).updateOne(myquery, newvalues, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product updated abid: " + obj);
+                    });
                 }
 
+                if (req.body.filter == "Price") {
+                    var v = parseFloat(req.body.vid[i]);
+                    var v1 = req.body.vid[i];
+                    var myquery1 = {
+                        "_id": ObjectId(req.body.pid[i]),
+                        "variants.id": v
+                    };
+                    var newvalues1 = { $push: { "variants.$.bids": newoid } };
+                    console.log("vids: " + req.body.vid[i]);
+                    console.log("v: " + v);
 
-            
+                    dbo.collection(globalShop).updateOne(myquery1, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, obj) {
+                        if (err) throw err;
+                        console.log("product updated Vid: " + obj);
+                        console.log("product updated abid: " + req.body.bid);
+                        console.log("product updated Vid: " + v);
+                        console.log("product updated Vid: " + req.body.vid.length);
+                    });
+
+
+
+
+                } else {
+                    for (var i = 0; i < req.body.pid.length; i++) {
+                        var myquery = {
+                            "_id": ObjectId(req.body.pid[i])
+                        };
+                        console.log(myquery);
+                        dbo.collection(globalShop).findOne(myquery, { projection: { "variants.id": 1 } }, function (err, obj) {
+                            console.log("varID");
+                            console.log(obj);
+                            for (var j = 0; j < obj.variants.length; j++) {
+                                var myquery = {
+                                    "variants.id": obj.variants[j].id
+                                };
+
+                                var newvalues1 = { $push: { "variants.$.bids": req.body.bid } };
+
+
+                                dbo.collection(globalShop).updateOne(myquery, { $push: { "variants.$.badge": { "abid": newoid, "thumbnailSource": req.body.thumbnailSource } } }, function (err, res) {
+                                    if (err) throw err;
+                                    console.log("product updated Vid: " + res);
+                                    console.log("product updated abid: " + req.body.bid);
+
+                                });
+                            }
+                        });
+                    }
+
+                }
+            }
+
+            // for (var j = 0; j < req.body.vid.length; j++) {
+            //     var v = parseFloat(req.body.vid[j]).toFixed(1);
+            //     var v1 = req.body.vid[j];
+            //     var myquery = {
+            //         "_id": ObjectId(req.body.pid[i]),
+            //         "variants.id": v
+            //     };
+            //     var newvalues1 = { $push:{"variants.$.bids":req.body.bid}};
+            //     console.log("vids: " + req.body.vid[j]);
+            //     console.log("v: " + v);
+
+            //     dbo.collection(globalShop).update({"variants.id": 12765315366985.0 }, { $push:{"variants.$.bids":req.body.bid}}, function (err, obj) {
+            //         if (err) throw err;
+            //         console.log("product updated Vid: " + obj);
+            //         console.log("product updated Bid: " + req.body.bid);
+            //         console.log("product updated Vid: " + v);
+            //         console.log("product updated Vid: " + req.body.vid.length);
+            //     });
+            // }
+
         });
 
 
@@ -1761,7 +1888,6 @@ exports.publishBadges = (req, res) => {
 
 
     });
-
 };
 
 // exports.publishBadges2 = (req, res) => {

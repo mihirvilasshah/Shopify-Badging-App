@@ -89,5 +89,6 @@ module.exports = (app) => {
    
     app.get('/tags', controller.tags);
     app.get('/currency', controller.currency);
+    app.post('/getbadges', controller.getbadges);
 
 }
