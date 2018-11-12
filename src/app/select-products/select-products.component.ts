@@ -28,7 +28,7 @@ export class SelectProductsComponent implements OnInit {
     dateFormat: 'yyyy-mm-dd',
     width: '60%'
   };
-  public model1: any ;
+  public model1: any;
   public model2: any; // = { date: { year: 2018, month: 12, day: 31 } }
 
   price1;
@@ -45,8 +45,9 @@ export class SelectProductsComponent implements OnInit {
   wb = "no";
   wob = "no";
   tag;
-
+  variantsId;
   selectedEntry;
+  variants;
   titles;
   pids;
   isApplied;
@@ -57,7 +58,9 @@ export class SelectProductsComponent implements OnInit {
   thumbnail;
   src = [];
   badges;
+  selectedFilter;
   selectedids = [];
+  selectedVids = [];
   selectedAll;
   prodData;
   cities2 = [
@@ -103,7 +106,6 @@ export class SelectProductsComponent implements OnInit {
   tagArray;
   split = [];
   currency;
-
   BadgeWidth;
   BadgeHeight;
   BorderRadius;
@@ -116,17 +118,18 @@ export class SelectProductsComponent implements OnInit {
     //     this.selected_image_src = params["picName"];
     //   if (params["badgeCss"])
     //     this.badgeCss = params["badgeCss"];
-    this.endOffset = badge.getCoor();
+    // if(this.position== "drag")
+    this.endOffset = badge.getCoorFinal();
     this.opvalue = badge.getOpval();
     this.selected_image_src = badge.getBadgePic();
+
+    this.BadgeWidth = badge.getBadgeWidth();
+    this.BadgeHeight = badge.getBadgeHeight();
+    this.BorderRadius = badge.getBorderRadius();
     // this.badgeCss=badge.getBadgeCss();
-    console.log("select products badge name" + this.selected_image_src);
+    console.log("select products badge name" + this.selected_image_src.thumbnailSource);
     console.log("select products x " + this.endOffset.x + " and y value " + this.endOffset.y);
     console.log("select products opval" + this.opvalue);
-
-    this.BadgeWidth=badge.getBadgeWidth();
-    this.BadgeHeight=badge.getBadgeHeight();
-    this.BorderRadius=badge.getBorderRadius();
     // let cur = this.http.get("http://172.16.18.189:3000/shopdet")
     // cur.subscribe(data => {
     //   console.log("here is the response", data);
@@ -173,6 +176,30 @@ export class SelectProductsComponent implements OnInit {
   ngOnInit() {
 
   }
+  onSelect() {
+
+    this.router.navigate(["/badge"]);
+    this.badge.sendMessage(false);
+    console.log("working");
+    
+
+  }
+  onSelect1() {
+
+    // this.router.navigate(["/products"]);
+    if (this.selectedFilter == 'Price') {
+      this.getPriceProd();
+    } else if (this.selectedFilter == 'Created Date') {
+      this.getDateProd();
+    } else if (this.selectedFilter == 'Title') {
+      this.getTitleProd();
+    } else if (this.selectedFilter == 'Tag') {
+      this.getTagProd();
+    }
+
+    console.log("working");
+
+  }
 
   withbadgeFn(flag) {
     if (flag) {
@@ -192,7 +219,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
-          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
           console.log(this.showTitle);
         }
       }
@@ -202,7 +229,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -236,7 +263,7 @@ export class SelectProductsComponent implements OnInit {
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "yes") {
 
-          this.showTitle.push({name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i]});
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -246,7 +273,7 @@ export class SelectProductsComponent implements OnInit {
       this.showTitle = [];
       for (var i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied == "no") {
-          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i] });
+          this.showTitle.push({ name: this.titles[i], selected: false, badges: this.badges[i], pids: this.pids[i], tags: this.tags[i], created_at: this.created_At[i], isApplied: this.isApplied[i], src: this.src[i], variants: this.variants[i] });
 
         }
       }
@@ -285,6 +312,8 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        this.variants = items[7];
+        this.variantsId = items[8];
         this.src = items[6];
         console.log("multiple badges", this.badges);
 
@@ -296,10 +325,11 @@ export class SelectProductsComponent implements OnInit {
 
           var a = {
 
-            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i]
+            name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
           }
           this.structuredTitle.push(a);
-          console.log("src:"+items[6][i]);
+          console.log("src:" + items[6][i]);
+          console.log("vids:" + this.variantsId);
         }
 
 
@@ -362,6 +392,10 @@ export class SelectProductsComponent implements OnInit {
         this.created_At = items[4];
         this.isApplied = items[5];
         this.src = items[6];
+
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
+        }
 
 
         this.structuredTitle = [];
@@ -435,7 +469,39 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
+        var uSrc = [];
         this.src = items[6];
+
+        // var temp = [];
+
+        // temp = this.src[0].split(',');
+        // console.log(temp);
+        // for (var j = 0; j < temp.length; j++) {
+        //   if (temp[j] != "")
+        //     this.split.push(temp[j]);
+
+        // }
+        // temp = [];
+
+
+        console.log("this.src", this.split);
+        // for(var i=0;i<this.src.length;i++){
+        //   if(!uSrc.includes(this.src[i])){
+        //     uSrc.push(this.src[i]);
+
+        //   }
+        //   console.log("unique src",uSrc);
+        // }
+        // this.src = uSrc;
+        console.log("unique b src", this.src[0].length);
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
+        }
+
+        // let uSrc = new Set(this.src);
+        // let uASrc  = Array.from(uSrc);
+        // this.src = uASrc;
+        // console.log("unique src",this.src);
 
 
         this.structuredTitle = [];
@@ -506,6 +572,10 @@ export class SelectProductsComponent implements OnInit {
         this.isApplied = items[5];
         this.src = items[6];
 
+        for (var i = 0; i < this.src[0].length; i++) {
+          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) == i);
+        }
+
 
         this.structuredTitle = [];
         self["items"] = items;
@@ -553,22 +623,27 @@ export class SelectProductsComponent implements OnInit {
   }
 
   giveid(flag, value) {
-
     if (this.selectedAll) {
       for (var i = 0; i < this.showTitle.length; i++) {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.counter = this.showTitle.length;
-      var index = this.selectedids.indexOf(value);
-      // console.log("value if: " + value);
+      // var index = this.selectedids.indexOf(value1);
+      // var index2 = this.selectedVids.indexOf(value2);
+      // console.log("value1 if: " + value1);
       this.selectedids = [];
+      this.selectedVids = [];
       for (var i = 0; i < this.pids.length; i++) {
         this.selectedids.push(this.pids[i]);
       }
+      for (var i = 0; i < this.variantsId.length; i++) {
+        this.selectedVids.push(this.variantsId[i]);
+      }
       // this.selectedids.splice(index, 1);
       console.log("selectedIDS(selected all): " + this.selectedids);
-      console.log("selectedAll value: " + this.selectedAll);
-      // console.log("pid value if: " + this.pids);
+      console.log("selectedVIDS(selected all): " + this.selectedVids);
+      console.log("selectedAll value1: " + this.selectedAll);
+      // console.log("pid value1 if: " + this.pids);
 
 
     }
@@ -577,31 +652,42 @@ export class SelectProductsComponent implements OnInit {
         this.showTitle[i].selected = this.selectedAll;
       }
       this.selectedids = [];
+      this.selectedVids = [];
       this.counter = 0;
       console.log("selectedIDS (deselected all): " + this.selectedids);
 
     }
     else if (flag) {
+      console.log("VAL:", value);
+      var x = value.split(",");
+      var value1 = x[0];
+      var value2 = x[1];
       this.counter = this.counter + 1;
 
-      // this.selectedids.push(value);
-      // var index = this.selectedids.indexOf(value);
-      this.selectedids.push(value);
+      // this.selectedids.push(value1);
+      // var index = this.selectedids.indexOf(value1);
+      this.selectedids.push(value1);
+      this.selectedVids.push(value2);
       console.log("flag true:" + this.selectedids);
-      // console.log("pid value esle if: " + this.pids);
+      console.log("flag trueV:" + this.selectedVids);
+      // console.log("pid value1 esle if: " + this.pids);
     }
     if (flag == false) {
       this.counter = this.counter - 1;
 
-      var index = this.selectedids.indexOf(this.pids[value]);
-      // this.selectedids.splice(value, 1);
+      var index = this.selectedids.indexOf(this.pids[value1]);
+      console.log("index", index);
+      var index2 = this.selectedVids.indexOf(this.pids[value2]);
+      // this.selectedids.splice(value1, 1);
       console.log("spliced: " + this.selectedids.splice(index, 1));
+      console.log("spliced: " + this.selectedVids.splice(index2, 1));
       console.log("if flag false:" + this.selectedids);
-      // console.log("pid value else: " + this.pids);
+      console.log("if flag falseV:" + this.selectedVids);
+      // console.log("pid value1 else: " + this.pids);
     }
 
     console.log("flag: " + flag);
-    console.log("value: " + value);
+    console.log("value1: " + value1);
 
     console.log("COUNTER:" + this.counter)
     if (this.counter == this.showTitle.length)
@@ -614,19 +700,22 @@ export class SelectProductsComponent implements OnInit {
     var id = this.selected_image_src._id;
     console.log(id);
     console.log(this.selectedids);
+    console.log(this.selected_image_src.thumbnailSource);
 
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue,"width":this.BadgeWidth,"height":this.BadgeHeight,"borderRadius":this.BorderRadius, "pid": this.selectedids, "default":this.selected_image_src.default});
+      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "width": this.BadgeWidth, "height": this.BadgeHeight, "borderRadius": this.BorderRadius, "pid": this.selectedids, "vid": this.selectedVids, "filter": this.selectedFilter, "default": this.selected_image_src.default, "thumbnailSource": this.selected_image_src.thumbnailSource });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
           this.publishedNo = data['pid'].length;
           console.log("publish", this.publishedNo);
+          console.log("publish2", this.selectedVids);
         };
 
-      })
+      });
+
       console.log("done");
 
 

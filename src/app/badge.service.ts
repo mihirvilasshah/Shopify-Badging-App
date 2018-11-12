@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 // import { HttpClient } from '../../node_modules/@types/selenium-webdriver/http';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 
 
@@ -12,15 +12,21 @@ export class BadgeService {
 
   // private badgePic = new BehaviorSubject('http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png');
   // currentpic = this.badgePic.asObservable();
-  private badgePic="http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
-  private badgeCss="top-left";
-  private coord={ x: 0, y: 0 };
-  private coord2={ x: 0, y: 0 };
-  private coordFinal={ x: 0, y: 0 };
-  private opval=1;
-  private BadgeWidth=15;
-  private BadgeHeight=15;
-  private BorderRadius=0;
+  private badgePic = "http://www.livingmagazine.fr/components/com_easyblog/themes/wireframe/images/placeholder-image.png";
+  private badgeCss = "top-left";
+  private coord = { x: 0, y: 0 };
+  private coord2 = { x: 0, y: 0 };
+  private coordFinal = { x: 0, y: 0 };
+  private opval = 1;
+  private BadgeWidth = 15;
+  private BadgeHeight = 15;
+  private BorderRadius = 0;
+
+  private _message = new Subject<boolean>();
+  badgemessage$ = this._message.asObservable();
+  sendMessage(message: boolean) {
+    this._message.next(message);
+  }
 
 
   constructor(private http: HttpClient) { }
@@ -38,90 +44,96 @@ export class BadgeService {
   }
 
   changeBadge(message: string) {
-    this.badgePic=message;
+    this.badgePic = message;
   }
 
-  getBadgePic(): string{
+  getBadgePic(): string {
     return this.badgePic;
   }
 
   changeBadgeCss(message: string) {
-    this.badgeCss=message;
+    this.badgeCss = message;
   }
 
-  getBadgeCss(): string{
+  getBadgeCss(): string {
     return this.badgeCss;
   }
 
-  setCoor(x,y){
-    this.coord.x=x;
-    this.coord.y=y;
+  setCoorx(x) {
+    this.coord.x = x;
+   
+  }
+  setCoory(y) {
+    this.coord.y = y;
+   
+  }
+  getCoorx() {
+    return this.coord.x;
+  }
+  getCoory() {
+    return this.coord.y;
   }
 
-  getCoor(){
-    return this.coord;
+  setCoor2(x, y) {
+    this.coord2.x = x;
+    this.coord2.y = y;
   }
 
-  setCoor2(x,y){
-    this.coord2.x=x;
-    this.coord2.y=y;
-  }
-
-  getCoor2(){
+  getCoor2() {
     return this.coord2;
   }
 
-  setCoorFinal(x,y){
-    this.coordFinal.x=x;
-    this.coordFinal.y=y;
+  setCoorFinal(x, y) {
+    this.coordFinal.x = x;
+    this.coordFinal.y = y;
   }
 
-  getCoorFinal(){
+  getCoorFinal() {
     return this.coordFinal;
   }
 
-  getOpval(){
+  getOpval() {
     return this.opval;
   }
 
-  setOpval(val){
-    this.opval=val;
+  setOpval(val) {
+    this.opval = val;
   }
 
-  getBadgeWidth(){
+  getBadgeWidth() {
     return this.BadgeWidth;
   }
 
-  setBadgeWidth(W){
-    this.BadgeWidth=W;
+  setBadgeWidth(W) {
+    this.BadgeWidth = W;
   }
 
-  getBadgeHeight(){
+  getBadgeHeight() {
     return this.BadgeHeight;
   }
 
-  setBadgeHeight(H){
-    this.BadgeHeight=H;
+  setBadgeHeight(H) {
+    this.BadgeHeight = H;
   }
 
-  getBorderRadius(){
+  getBorderRadius() {
     return this.BorderRadius;
   }
 
-  setBorderRadius(R){
-    this.BorderRadius=R;
+  setBorderRadius(R) {
+    this.BorderRadius = R;
   }
 
   showBadges() {
-   
+
     // const shopRequestHeaders = {
     //   'X-Shopify-Access-Token': "e5bbb8c0d78b3b130da13e0a7e8b3e30",
     //   'Access-Control-Allow-Origin': '*',
     //   'Content-Type': 'application/json'
     // };
-    
+
     // let obs = this.http.get("https://a230f3ec.ngrok.io/picture/5b9faee2e1439e16241352df")
-    
+
     // obs.subscribe(data => {
     //   console.log(typeof(data));
     //   var x = <HTMLImageElement>document.getElementById("mybadge")
@@ -130,16 +142,16 @@ export class BadgeService {
 
     // return this.http.get("https://a230f3ec.ngrok.io/picture/5b9faee2e1439e16241352df");
 
-  //   let obs = this.http.get("https://a230f3ec.ngrok.io/getIDS")
-  //   return obs;
-  //   obs.subscribe(ids => {
-  //     console.log("here are the ids", ids);
-  //     console.log(typeof(ids));
-  //     return ids;
-  //   })
-  // }
+    //   let obs = this.http.get("https://a230f3ec.ngrok.io/getIDS")
+    //   return obs;
+    //   obs.subscribe(ids => {
+    //     console.log("here are the ids", ids);
+    //     console.log(typeof(ids));
+    //     return ids;
+    //   })
+    // }
 
-  return this.http.get("http://172.16.18.189:3000/getIDS");
-}
+    return this.http.get("http://172.16.18.189:3000/getIDS");
+  }
 
 }

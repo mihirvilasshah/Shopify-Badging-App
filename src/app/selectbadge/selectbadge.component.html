@@ -24,7 +24,7 @@
   <mat-tab label="My Badges" >
       <div id="UserImageContainer"  >
           <label *ngFor="let pic of UserPictures; let i= index" class="img-wrap" style="margin:10px">
-              <input id="pic" type="radio" class="UserRadio" name="user" (click)="selectedPic(i,1)" >
+              <input id="pic" type="radio" class="UserRadio" name="user" (click)="selectedPic(i,1)"  >
               <img src={{pic.imageSource}} height="200px" width="200px" alt="Badges" [ngClass]="selectedindex==i&&!lib ? 'active' : 'not-active'">
               <span class="close" (click)="deleteBadge(i)">&times;</span>
               
@@ -69,7 +69,7 @@
 
 <ngx-smart-modal #myModal identifier="myModal">
     <h4>Select an image</h4>
-    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" id="pic_name" [(ngModel)]="pic_name" style="margin-left:20px;" />
+    <input type="file" name="photo" ng2FileSelect [uploader]="uploader" id="pic_name"  style="margin-left:20px;" />
     <button type="button" class="btn btn-success btn-s" (click)="uploader.uploadAll();ngxSmartModalService.getModal('myModal').close()" [disabled]="!uploader.getNotUploadedItems().length">
       Upload
     </button>

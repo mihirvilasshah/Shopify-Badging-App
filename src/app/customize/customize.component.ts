@@ -26,13 +26,17 @@ export class CustomizeComponent {
   selected_image_src = "";
   pic_name = "";
   badge_css = "top-left";
-  top = '200px';
-  left = '0px';
+  top = 200;
+  finalx;
+  finaly;
+  left = 0;
   css = "top-left";
+  dragevent;
   top1 = true;
   pos = false; // [disabled]="!pos" for NEXT
   selected = 'top-left';
-  opvalue;
+  opvalue = 0;
+  sliderval;
   inBounds = true;
   edge = {
     top: true,
@@ -40,7 +44,7 @@ export class CustomizeComponent {
     left: true,
     right: true
   };
-  endOffset;
+  endOffset = {x:0,y:0};
   img1 = { x: 0, y: 0 };
   img1x = 0;
   img1y = 0;
@@ -59,16 +63,23 @@ export class CustomizeComponent {
     // this.badge.getProduct();
     this.selected_image_src = badge.getBadgePic();
 
-    this.endOffset = badge.getCoor();
-    this.img1 = badge.getCoor2();
+    this.endOffset.x = badge.getCoorx();
+    this.endOffset.y = badge.getCoory();
+    console.log("constructor-endoffset", this.endOffset)
 
-    
+
+    //this.endOffset = badge.getCoor2();
+
+
 
     this.top = this.endOffset.x;
     this.left = this.endOffset.y;
     this.opvalue = badge.getOpval();
+    this.sliderval = this.opvalue * 100;
     this.BadgeWidth = badge.getBadgeWidth();
+
     this.BadgeHeight = badge.getBadgeHeight();
+
     this.BorderRadius = badge.getBorderRadius();
 
 
@@ -96,30 +107,23 @@ export class CustomizeComponent {
 
   }
 
-  drag() {
-    this.endOffset.x = 0;
-    this.endOffset.y = 0;
-  }
-
-  input() {
-    this.img1.x = 0;
-    this.img1.y = 0;
-  }
+  
 
   leftpx() {
-    var x = this.img1.x;
+    var x = this.endOffset.x;
     // this.endOffset.x = this.img1x;
     console.log(x);
-    document.getElementById("image1").style.left = x + 'px';
-    this.badge.setCoor2(this.img1.x, this.img1.y);
+    //this.finalx = (this.endOffset.x-this.BadgeWidth*4.10)/100;
+    //document.getElementById("image1").style.left = x + 'px';
+    this.badge.setCoorx(this.endOffset.x);
 
   }
   toppx() {
-    var y = this.img1.y;
+    var y = this.endOffset.y;
     // this.endOffset.y = this.img1y;
     console.log(y);
-    document.getElementById("image1").style.top = y + 'px';
-    this.badge.setCoor2(this.img1.x, this.img1.y);
+    //document.getElementById("image1").style.top = y + 'px';
+    this.badge.setCoory(this.endOffset.y);
 
   }
 
@@ -134,21 +138,21 @@ export class CustomizeComponent {
   //   document.getElementById("img1").style.height=h+'%';
 
   // }
-  BorderRadius1(R) {
-    this.BorderRadius = R;
-    document.getElementById("image1").style['border-radius'] = this.BorderRadius + '%';
+  BorderRadius1() {
+    //this.BorderRadius = R;
+    //.getElementById("image1").style['border-radius'] = this.BorderRadius + '%';
     this.badge.setBorderRadius(this.BorderRadius);
   }
 
-  BadgeWidth1(W) {
-    this.BadgeWidth = W;
-    document.getElementById("image1").style.width = this.BadgeWidth + '%';
+  BadgeWidth1() {
+    //this.BadgeWidth = W;
+    //document.getElementById("image1").style.width = this.BadgeWidth + '%';
     this.badge.setBadgeWidth(this.BadgeWidth);
   }
 
-  BadgeHeight1(H) {
-    this.BadgeHeight = H;
-    document.getElementById("image1").style.height = this.BadgeHeight + '%';
+  BadgeHeight1() {
+    //this.BadgeHeight = H;
+    //document.getElementById("image1").style.height = this.BadgeHeight + '%';
     this.badge.setBadgeHeight(this.BadgeHeight);
   }
   onStart(event) {
@@ -164,9 +168,15 @@ export class CustomizeComponent {
 
 
   onMoveEnd(event) {
+    this.dragevent = event;
+    console.log("event", event);
+    
     this.endOffset.x = event.x;
+
     this.endOffset.y = event.y;
-    this.badge.setCoor(this.endOffset.x, this.endOffset.y);
+    this.badge.setCoorx(this.endOffset.x);
+    this.badge.setCoory(this.endOffset.y);
+
   }
 
 
@@ -205,13 +215,13 @@ export class CustomizeComponent {
       //   }
       // };
       // this.router.navigate(["/products"], navigationExtras);
+      
 
-      if(this.position=='drag'){
-        this.badge.setCoorFinal(this.endOffset.x,this.endOffset.y);
-      }
-      else{
-        this.badge.setCoorFinal(this.img1.x,this.img1.y);
-      }
+       this.finalx = (this.endOffset.x-this.BadgeWidth*4.10)/100;
+     
+        this.badge.setCoorFinal(this.endOffset.x, this.endOffset.y);
+      
+      
 
       this.router.navigate(["/products"]);
       this.spinner.hide();
@@ -221,9 +231,10 @@ export class CustomizeComponent {
   }
 
   slidervalue(value) {
+    this.sliderval = value;
     this.opvalue = value / 100;
 
-    document.getElementById("image1").style.opacity = this.opvalue;
+    //document.getElementById("image1").style.opacity = this.opvalue;
 
     this.badge.setOpval(this.opvalue);
     console.log("in slidervalue" + this.opvalue);
@@ -234,8 +245,8 @@ export class CustomizeComponent {
 
   onloadFun() {
     console.log("onload");
-    document.getElementById("image12").style.top = this.top;
-    document.getElementById("image12").style.left = this.left;
+    document.getElementById("image12").style.top = this.top+'px';
+    document.getElementById("image12").style.left = this.left+'px';
   }
 
 

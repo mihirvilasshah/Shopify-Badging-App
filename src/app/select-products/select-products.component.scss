@@ -29,7 +29,11 @@ span{
   background-color:green;
   color: white;
 }
-
+.text-center {
+  text-align: left !important;
+  padding-left: 37px
+  
+}
 // table {
 //   font-family: arial, sans-serif;
 //   border-collapse: collapse;
@@ -65,10 +69,6 @@ td,th{
 
 /deep/ .mdl-data-table th,td{
   text-align: left !important;
-
-}
-
-/deep/ .mdl-data-table td{
   padding-left: 37px !important;
 }
 

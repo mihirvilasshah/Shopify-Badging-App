@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material.module';
 import { MatSelectModule} from '@angular/material/select';
-import {MatRadioModule} from '@angular/material/radio';
 import { HttpClientModule }    from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,6 +23,7 @@ import { ImageUploadModule } from "angular2-image-upload";
 import { AngularDraggableModule } from 'angular2-draggable';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { MyDatePickerModule } from 'mydatepicker';
+import {MatRadioModule} from '@angular/material/radio';
 // import { MultiSelectComponent } from '@syncfusion/ej2-ng-dropdowns';
 
 
@@ -48,7 +48,6 @@ import { MyDatePickerModule } from 'mydatepicker';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatRadioModule,
     HttpClientModule,
     NgxSpinnerModule,
     NgxPaginationModule,
@@ -56,7 +55,8 @@ import { MyDatePickerModule } from 'mydatepicker';
     ImageUploadModule.forRoot(),
     AngularDraggableModule,
     NgSelectModule,
-    MyDatePickerModule
+    MyDatePickerModule,
+    MatRadioModule
 
     // HttpClientInMemoryWebApiModule.forRoot(
     //   InMemoryDataService, { dataEncapsulation: false }
