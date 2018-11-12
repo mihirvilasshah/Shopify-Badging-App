@@ -15,7 +15,9 @@ module.exports = (app) => {
 
     // Copy Shopify DB to our DB
     app.get('/copyDB', controller.copyDB);
+    
     app.get('/shopdet', controller.shopdet);
+    app.get('/getcollections', controller.getcollections);
 
     // Create Webhooks
     app.get('/createWebhooks', controller.createWebhooks);
@@ -30,7 +32,7 @@ module.exports = (app) => {
     // Create product in our DB when triggered by webhook
     app.post('/createProduct/:shopname', controller.createProduct);
      app.get('/creatscript', controller.creatscript);
-     app.get('/gettheme', controller.gettheme);
+     app.post('/gettheme', controller.gettheme);
 
 
     //Read product in our DB
@@ -67,6 +69,7 @@ module.exports = (app) => {
 
     app.get('/selectedBadgeID/:id', controller.selectedBadgeID);
     app.get('/getSrc/:pid', controller.getSrc);
+    app.post('/getbadges', controller.getbadges);
 
     app.get('/getProductPriceRange/:p1/:p2/:pr', controller.getProductPriceRange);
     // app.get('/getProductPriceRange/:query', controller.getProductPriceRange);
@@ -75,6 +78,7 @@ module.exports = (app) => {
     app.get('/getProductTitle/:t1/:tr', controller.getProductTitle);
     app.get('/getProductTag/:tg1/:tr', controller.getProductTag);
     app.post('/publishBadges', controller.publishBadges);
+    // app.post('/publishBadges2', controller.publishBadges2);
     app.post('/unpublishBadges', controller.unpublishBadges);
 
     // upload pic using uploader
@@ -85,5 +89,6 @@ module.exports = (app) => {
    
     app.get('/tags', controller.tags);
     app.get('/currency', controller.currency);
+    app.post('/getbadges', controller.getbadges);
 
 }
