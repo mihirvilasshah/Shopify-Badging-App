@@ -1,0 +1,2 @@
+To modify, authorise, validate the request and response. All the request to the api are passed through the middleware function first.
+Need to call next in the middleware.
