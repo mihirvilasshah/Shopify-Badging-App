@@ -135,7 +135,7 @@ export class SelectProductsComponent implements OnInit {
     //   console.log("here is the response", data);
     //   var currency = data;
     // });
-    let tag = this.http.get("http://localhost:3000/tags")
+    let tag = this.http.get("http://172.16.18.189:3000/tags")
     tag.subscribe(data => {
       console.log("here is the response", data);
       this.tagArray = data;
@@ -159,7 +159,7 @@ export class SelectProductsComponent implements OnInit {
 
     });
 
-    let cur = this.http.get("http://localhost:3000/currency")
+    let cur = this.http.get("http://172.16.18.189:3000/currency")
     cur.subscribe(dat => {
       console.log("here is the response", dat);
       this.currency = dat[0].currency;
