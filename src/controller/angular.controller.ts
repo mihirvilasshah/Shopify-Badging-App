@@ -1,6 +1,10 @@
 import { Request, Response } from 'express';
 import { Db, MongoClient } from 'mongodb';
 
+// import AWS object without services
+import aWS = require('aws-sdk');
+// import individual service
+
 const compressImages = require('compress-images');
 const crypto = require('crypto');
 const fse = require('fs-extra');
@@ -38,11 +42,19 @@ export function getMyLibrary(req: Request, res: Response): any {
     if (err) throw err;
     const db = mongoDB.getDB();
     const dbo = db.db('TriconBadgeApp');
-    dbo
-      .collection('BadgeLibrary')
-      .find({}, { projection: { imageSource: 1, thumbnailSource: 1 } })
-      .toArray((error, results) => {
-        // res.setHeader('content-type', results.contentType);
+    const docClient = new aWS.DynamoDB.DocumentClient();
+    const params = {
+      TableName: "Badgelibrary",
+      ProjectionExpression: "imageSource,thumbnailSource",
+
+    };
+    docClient.scan(params, onScan);
+    function onScan(err, results) {
+      if (err) {
+        console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+      } else {
+        // print all the badges
+        console.log("Scan succeeded.");
         const obj = [];
         for (let i = 0; i < results.length; i++) {
           obj[i] = {
@@ -52,138 +64,298 @@ export function getMyLibrary(req: Request, res: Response): any {
             default: true
           };
         }
-        res.send(obj);
-        console.log(obj);
-      });
+        if (typeof results.LastEvaluatedKey == "undefined") {
+          res.send(obj);
+          console.log(obj);
+        }
+
+        // continue scanning if we have more badges, because
+        // scan can retrieve a maximum of 1MB of data
+        if (typeof results.LastEvaluatedKey != "undefined") {
+          console.log("Scanning for more...");
+          params.ExclusiveStartKey = results.LastEvaluatedKey;
+          docClient.scan(params, onScan);
+        }
+      }
+    }
+    // dbo
+    //   .collection('BadgeLibrary')
+    //   .find({}, { projection: { imageSource: 1, thumbnailSource: 1 } })
+    //   .toArray((error, results) => {
+    //     // res.setHeader('content-type', results.contentType);
+    //     const obj = [];
+    //     for (let i = 0; i < results.length; i++) {
+    //       obj[i] = {
+    //         _id: results[i]._id,
+    //         imageSource: results[i].imageSource,
+    //         thumbnailSource: results[i].thumbnailSource,
+    //         default: true
+    //       };
+    //     }
+    //     res.send(obj);
+    //     console.log(obj);
+    //   });
   });
 }
 export function getPicture(req: Request, res: Response): any {
   const filename = req.params.picture;
-  mongoDB.connectDB(async err => {
-    const db = mongoDB.getDB();
-    if (err) throw err;
-    const dbname = req.params.shopname;
-    const dbo = db.db(dbname);
-    dbo
-      .collection('badges')
-      // perform a mongodb search and return only one result.
-      // convert the letiable called filename into a valid objectId.
-      .findOne({ _id: ObjectId(filename) }, (error, results) => {
-        if (error) throw error;
-        // set the http response header so the browser knows this
-        // is an 'image/jpeg' or 'image/png'
-        res.setHeader('content-type', results.contentType);
-        // send only the base64 string stored in the img object
-        // buffer element
-        res.send(results.imageSource);
-      });
+  const docClient = new aWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: "badges",
+    Key: {
+      "_id": filename,
+
+    }
+  };
+  docClient.get(params, function (err, results) {
+    if (err) {
+      console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      console.log("GetItem succeeded:", JSON.stringify(results, null, 2));
+      // set the http response header so the browser knows this
+      // is an 'image/jpeg' or 'image/png'
+      res.setHeader('content-type', results.contentType);
+      // send only the base64 string stored in the img object
+      // buffer element
+      res.send(results.imageSource);
+    }
   });
+
+
+  // mongoDB.connectDB(async err => {
+  //   const db = mongoDB.getDB();
+  //   if (err) throw err;
+  //   const dbname = req.params.shopname;
+  //   const dbo = db.db(dbname);
+  //   dbo
+  //     .collection('badges')
+  //     // perform a mongodb search and return only one result.
+  //     // convert the letiable called filename into a valid objectId.
+  //     .findOne({ _id: ObjectId(filename) }, (error, results) => {
+  //       if (error) throw error;
+  //       // set the http response header so the browser knows this
+  //       // is an 'image/jpeg' or 'image/png'
+  //       res.setHeader('content-type', results.contentType);
+  //       // send only the base64 string stored in the img object
+  //       // buffer element
+  //       res.send(results.imageSource);
+  //     });
+  // });
 }
 export function getProduct(req: Request, res: Response): any {
-  mongoDB.connectDB(async err => {
-    const db = mongoDB.getDB();
-    if (err) throw err;
-    const dbo = db.db(badgeDB);
+  var docClient = new aWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: shop,
+    Key: {
+      "id": parseInt(req.params.id)
+    }
+  };
 
-    console.log('inside getProd');
-    // let myquery = { _id: ObjectId(req.params.id) };
-    const myquery = { id: parseInt(req.params.id) };
-    // let myquery = { id: 1466289291362 };
-    console.log('id: ' + req.params.id);
-    dbo.collection(shop).findOne(myquery, (error, obj) => {
-      if (error) throw error;
-      console.log('product found: ' + obj);
-      res.send(obj);
-    });
-    // res.send({ message: 'Found product' });
-    db.close();
+  docClient.get(params, function (err, data) {
+    if (err) {
+      console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+      res.send(data);
+    }
   });
+
+  //   mongoDB.connectDB(async err => {
+  //     const db = mongoDB.getDB();
+  //     if (err) throw err;
+  //     const dbo = db.db(badgeDB);
+
+  //     console.log('inside getProd');
+  //     // let myquery = { _id: ObjectId(req.params.id) };
+  //     const myquery = { id: parseInt(req.params.id) };
+  //     // let myquery = { id: 1466289291362 };
+  //     console.log('id: ' + req.params.id);
+  //     dbo.collection(shop).findOne(myquery, (error, obj) => {
+  //       if (error) throw error;
+  //       console.log('product found: ' + obj);
+  //       res.send(obj);
+  //     });
+  //     // res.send({ message: 'Found product' });
+  //     db.close();
+  //   });
 }
 
 export function getIDS(req: Request, res: Response): any {
   console.log('inside get IDS');
-  MongoClient.connect(
-    url,
-    { useNewUrlParser: true },
-    (err, db) => {
-      if (err) throw err;
-      badgeDB = req.params.shopname;
-      const dbo = db.db(badgeDB);
-      dbo
-        .collection('badges')
-        .find({ default: true }, { projection: { _id: 1 } })
-        .toArray((error, result) => {
-          if (error) throw error;
-          let images: any;
+  const docClient = new aWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: "badges",
+    ProjectionExpression: "_id",
+    filterexpression: "default = :name",
+    expressionattributevalues: '{":name":{"S":"True"}}'
+  };
+  docClient.scan(params, onScan);
+  function onScan(err, results) {
+    if (err) {
+      console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      // print all the badges
+      console.log("Scan succeeded.");
+      let images: any;
 
-          images = result;
-          //  let ids = result[0];
-          const ids = [];
-          for (let i = 0; i < images.length; i++) {
-            ids[i] = images[i]._id;
-          }
+      images = results;
+      //  let ids = result[0];
+      const ids = [];
+      for (let i = 0; i < images.length; i++) {
+        ids[i] = images[i]._id;
+      }
+      if (typeof results.LastEvaluatedKey == "undefined") {
+        console.log(ids);
+        res.send(ids);
+      }
 
-          //    console.log(images[0]._id);
-          console.log(ids);
-          res.send(ids);
-          // return ids;
-        });
+      // continue scanning if we have more badges, because
+      // scan can retrieve a maximum of 1MB of data
+      if (typeof results.LastEvaluatedKey != "undefined") {
+        console.log("Scanning for more...");
+        params.ExclusiveStartKey = results.LastEvaluatedKey;
+        docClient.scan(params, onScan);
+      }
     }
-  );
+  }
+  // MongoClient.connect(
+  //   url,
+  //   { useNewUrlParser: true },
+  //   (err, db) => {
+  //     if (err) throw err;
+  //     badgeDB = req.params.shopname;
+  //     const dbo = db.db(badgeDB);
+  //     dbo
+  //       .collection('badges')
+  //       .find({ default: true }, { projection: { _id: 1 } })
+  //       .toArray((error, result) => {
+  //         if (error) throw error;
+  //         let images: any;
+
+  //         images = result;
+  //         //  let ids = result[0];
+  //         const ids = [];
+  //         for (let i = 0; i < images.length; i++) {
+  //           ids[i] = images[i]._id;
+  //         }
+
+  //         //    console.log(images[0]._id);
+  //         console.log(ids);
+  //         res.send(ids);
+  //         // return ids;
+  //       });
+  //   }
+  // );
 }
 
 export function getUserIDS(req: Request, res: Response): any {
   console.log('inside get User IDS');
-  MongoClient.connect(
-    url,
-    { useNewUrlParser: true },
-    (err, db) => {
-      if (err) throw err;
-      badgeDB = req.params.shopname;
-      const dbo = db.db(badgeDB);
-      dbo
-        .collection('badges')
-        .find({ default: false }, { projection: { _id: 1 } })
-        .toArray((error, result) => {
-          if (error) throw error;
-          let images: any;
-          images = result;
-          //  let ids = result[0];
-          const ids = [];
-          for (let i = 0; i < images.length; i++) {
-            ids[i] = images[i]._id;
-          }
+  const docClient = new aWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: "badges",
+    ProjectionExpression: "_id",
+    filterexpression: "default = :name",
+    expressionattributevalues: '{":name":{"S":"false"}}'
+  };
+  docClient.scan(params, onScan);
+  function onScan(err, results) {
+    if (err) {
+      console.error("Unable to scan the table. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      // print all the badges
+      console.log("Scan succeeded.");
+      let images: any;
 
-          //    console.log(images[0]._id);
-          console.log(ids);
-          res.send(ids);
-          // return ids;
-        });
+      images = results;
+      //  let ids = result[0];
+      const ids = [];
+      for (let i = 0; i < images.length; i++) {
+        ids[i] = images[i]._id;
+      }
+      if (typeof results.LastEvaluatedKey == "undefined") {
+        console.log(ids);
+        res.send(ids);
+      }
+
+      // continue scanning if we have more badges, because
+      // scan can retrieve a maximum of 1MB of data
+      if (typeof results.LastEvaluatedKey != "undefined") {
+        console.log("Scanning for more...");
+        params.ExclusiveStartKey = results.LastEvaluatedKey;
+        docClient.scan(params, onScan);
+      }
     }
-  );
+  }
+  // MongoClient.connect(
+  //   url,
+  //   { useNewUrlParser: true },
+  //   (err, db) => {
+  //     if (err) throw err;
+  //     badgeDB = req.params.shopname;
+  //     const dbo = db.db(badgeDB);
+  //     dbo
+  //       .collection('badges')
+  //       .find({ default: false }, { projection: { _id: 1 } })
+  //       .toArray((error, result) => {
+  //         if (error) throw error;
+  //         let images: any;
+  //         images = result;
+  //         //  let ids = result[0];
+  //         const ids = [];
+  //         for (let i = 0; i < images.length; i++) {
+  //           ids[i] = images[i]._id;
+  //         }
+
+  //         //    console.log(images[0]._id);
+  //         console.log(ids);
+  //         res.send(ids);
+  //         // return ids;
+  //       });
+  //   }
+  // );
 }
 export function getSrc(req: Request, res: Response): any {
-  MongoClient.connect(
-    url,
-    { useNewUrlParser: true },
-    (err, db) => {
-      if (err) throw err;
-      console.log('check', db);
-      const dbo = db.db(badgeDB);
-      const myquery = { id: parseInt(req.params.pid) };
-      console.log('id: ' + req.params.pid);
-      dbo.collection(shop).findOne(myquery, (error, obj) => {
-        if (error) throw error;
-        let aid;
-        aid = obj;
-        //  res.send(obj.ABid);
-        //  console.log('product found: ' + Aid);
-        if (aid) {
-          res.send(aid);
-        }
-      });
+  var docClient = new aWS.DynamoDB.DocumentClient();
+  const params = {
+    TableName: shop,
+    Key: {
+      "id": parseInt(req.params.id)
     }
-  );
+  };
+
+  docClient.get(params, function (err, data) {
+    if (err) {
+      console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+    } else {
+      console.log("GetItem succeeded:", JSON.stringify(data, null, 2));
+      let aid;
+      aid = data;
+      if (aid) {
+        res.send(aid);
+      }
+    }
+  });
+  // MongoClient.connect(
+  //   url,
+  //   { useNewUrlParser: true },
+  //   (err, db) => {
+  //     if (err) throw err;
+  //     console.log('check', db);
+  //     const dbo = db.db(badgeDB);
+  //     const myquery = { id: parseInt(req.params.pid) };
+  //     console.log('id: ' + req.params.pid);
+  //     dbo.collection(shop).findOne(myquery, (error, obj) => {
+  //       if (error) throw error;
+  //       let aid;
+  //       aid = obj;
+  //       //  res.send(obj.ABid);
+  //       //  console.log('product found: ' + Aid);
+  //       if (aid) {
+  //         res.send(aid);
+  //       }
+  //     });
+  //   }
+  // );
 }
 export function getbadges(req: Request, res: Response): any {
   console.log('body: ', req.body.src);
@@ -218,6 +390,7 @@ export function getbadges(req: Request, res: Response): any {
   }
   function findProd(myquery) {
     return new Promise((resolve, reject) => {
+
       MongoClient.connect(
         url,
         { useNewUrlParser: true },
@@ -1196,7 +1369,7 @@ export function upload(req: Request, res: Response): any {
               command: ['-f', '80', '-mixed', '-q', '30', '-m', '2']
             }
           },
-          () => {} // gif -> webp
+          () => { } // gif -> webp
         );
         // encode the file as a base64 string.
         const encImg = newImg.toString('base64');
