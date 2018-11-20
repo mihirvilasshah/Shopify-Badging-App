@@ -1,0 +1,102 @@
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-atom">
+ <p style="font-size: 20px; color: white">Loading...</p>
+</ngx-spinner>
+
+
+<div class="flex-container">
+  <div>
+    <!-- <li id="first"> -->
+      <a routerLink="badge" [routerLinkActive]="['activated']" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-icons">card_membership</i>Select Badge
+      </a>
+    <!-- </li> -->
+  </div>
+  <div class="arrow">-></div>
+  <div>
+    <!-- <li > -->
+      <div *ngIf = !selected style = "opacity: 0.3">
+          <a>
+            <i class="material-icons">edit</i>Customize
+          </a>
+          </div>
+    <div *ngIf = selected>
+    <a  routerLink="customize" [routerLinkActive]="['activated']" >
+      <i class="material-icons">edit</i>Customize
+    </a>
+    </div>
+  <!-- </li> -->
+  </div>
+  <div class="arrow">-></div>
+  <div>
+    <!-- <li> -->
+      <div *ngIf = !selected style = "opacity: 0.3">
+      <a>
+        <i class="material-icons">add_shopping_cart</i>Select Products
+      </a>
+      </div>
+      <div *ngIf = selected>
+      <a routerLink="products" [routerLinkActive]="['activated']">
+          <i class="material-icons">add_shopping_cart</i>Select Products
+        </a>
+      </div>
+    <!-- </li> -->
+  </div>  
+  <!-- <div>
+    <li>
+      <a routerLink="remove" [routerLinkActive]="['activated']">
+        <i class="material-icons">remove_circle_outline</i><div>Remove Badges</div>
+      </a>
+    </li>
+  </div> -->
+  
+</div>
+
+<!--
+<nav >
+  <ul>
+    <li id="first">
+      <a routerLink="badge" [routerLinkActive]="['activated']" [routerLinkActiveOptions]="{exact: true}">
+        <i class="material-icons">card_membership</i><div>Select Badge</div>
+      </a>
+    </li>
+    <li >
+        <div *ngIf = !selected style = "opacity: 0.3">
+            <a>
+              <i class="material-icons">edit</i><div>Customize</div>
+            </a>
+            </div>
+      <div *ngIf = selected>
+      <a  routerLink="customize" [routerLinkActive]="['activated']" >
+        <i class="material-icons">edit</i><div>Customize</div>
+      </a>
+      </div>
+    </li>
+    <li>
+      <div *ngIf = !selected style = "opacity: 0.3">
+      <a>
+        <i class="material-icons">add_shopping_cart</i><div>Select Products</div>
+      </a>
+      </div>
+      <div *ngIf = selected>
+      <a routerLink="products" [routerLinkActive]="['activated']">
+          <i class="material-icons">add_shopping_cart</i><div>Select Products</div>
+        </a>
+      </div>
+    </li>
+    <br>
+    <br>
+    <br>
+    <br>
+    <li>
+      <a routerLink="remove" [routerLinkActive]="['activated']">
+        <i class="material-icons">remove_circle_outline</i><div>Remove Badges</div>
+      </a>
+    </li>
+  </ul>
+</nav>
+
+-->
