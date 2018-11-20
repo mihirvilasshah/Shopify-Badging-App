@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const app_config_1 = require("../../config/app_config");
+const app_config_1 = require("../config/app_config");
 const requestp = require('request-promise');
 const http = require('http');
 const querystring = require('querystring');
@@ -592,4 +592,4 @@ function getTheme(req, res) {
     });
 }
 exports.getTheme = getTheme;
-//# sourceMappingURL=../../../src/dist/app/controller/shop.controller.js.map
+//# sourceMappingURL=../../src/dist/controller/shop.controller.js.map

@@ -3,8 +3,8 @@ import * as cors from 'cors';
 import * as express from 'express';
 import * as path from 'path';
 import * as APP_CONFIG from './config/app_config';
-import angularRoute from './app/routes/angular.route';
-import shopRoute from './app/routes/shop.route';
+import angularRoute from './routes/angular.route';
+import shopRoute from './routes/shop.route';
 
 const winston = require('winston');
 const morgan = require('morgan');

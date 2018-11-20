@@ -10,8 +10,8 @@ const nonce = require('nonce')();
 import path = require('path');
 const querystring = require('querystring');
 const reqPromise = require('request-promise');
-const mongoDB = require('../modules/mongo.connect');
-const dbmethods = require('../modules/dbMethods');
+const mongoDB = require('../DAO/mongo.connect');
+const dbmethods = require('../DAO/services/dbMethods');
 
 // const forwardingAddress = 'https://dc7a4f9d.ngrok.io';
 const url = 'mongodb://localhost:27017/';
@@ -29,6 +29,7 @@ export function getMybadges(req: Request, res: Response): any {
     const dbo = db.db(badgeDB);
     const badges = dbo.collection('badges');
     const badgeresult = await dbmethods.getbadges(badges);
+    console.log(badgeresult);
     res.send(badgeresult);
   });
 }

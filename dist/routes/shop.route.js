@@ -38,4 +38,4 @@ router.post('/deleteProduct/:shopname', (request, response) => {
 //   shopController.getTheme(request, response);
 // });
 exports.default = router;
-//# sourceMappingURL=../../../src/dist/app/routes/shop.route.js.map
+//# sourceMappingURL=../../src/dist/routes/shop.route.js.map

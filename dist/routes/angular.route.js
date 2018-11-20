@@ -73,4 +73,4 @@ router.get('/currency/:shopname', (request, response) => {
     angularController.currency(request, response);
 });
 exports.default = router;
-//# sourceMappingURL=../../../src/dist/app/routes/angular.route.js.map
+//# sourceMappingURL=../../src/dist/routes/angular.route.js.map

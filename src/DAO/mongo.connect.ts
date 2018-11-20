@@ -11,8 +11,8 @@ const connectDB = async callback => {
         return callback(err);
       }
     );
-  } catch (e) {
-    throw e;
+  } catch (err) {
+    throw err;
   }
 };
 

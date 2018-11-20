@@ -16,11 +16,11 @@ const connectDB = (callback) => __awaiter(this, void 0, void 0, function* () {
             return callback(err);
         });
     }
-    catch (e) {
-        throw e;
+    catch (err) {
+        throw err;
     }
 });
 const getDB = () => _db;
 const disconnectDB = () => _db.close();
 module.exports = { connectDB, getDB, disconnectDB };
-//# sourceMappingURL=../../../src/dist/app/modules/mongo.connect.js.map
+//# sourceMappingURL=../../src/dist/DAO/mongo.connect.js.map

@@ -3,7 +3,7 @@ import { doesNotReject } from 'assert';
 import { Request, Response } from 'express';
 import { Db, MongoClient } from 'mongodb';
 import path = require('path');
-import APP_CONFIG from '../../config/app_config';
+import APP_CONFIG from '../config/app_config';
 
 const requestp = require('request-promise');
 

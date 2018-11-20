@@ -17,8 +17,8 @@ const ObjectId = require('mongodb').ObjectId;
 const nonce = require('nonce')();
 const querystring = require('querystring');
 const reqPromise = require('request-promise');
-const mongoDB = require('../modules/mongo.connect');
-const dbmethods = require('../modules/dbMethods');
+const mongoDB = require('../DAO/mongo.connect');
+const dbmethods = require('../DAO/services/dbMethods');
 // const forwardingAddress = 'https://dc7a4f9d.ngrok.io';
 const url = 'mongodb://localhost:27017/';
 let badgeDB = 'tricon-jewel-store';
@@ -34,28 +34,16 @@ function getMybadges(req, res) {
         const dbo = db.db(badgeDB);
         const badges = dbo.collection('badges');
         const badgeresult = yield dbmethods.getbadges(badges);
-        //   .find({}, { projection: { imageSource: 1, thumbnailSource: 1 } })
-        //   .toArray((error, results) => {
-        //     if (error) throw error;
-        //     // res.setHeader('content-type', results.contentType);
-        //     const obj = [];
-        //     for (let i = 0; i < results.length; i++) {
-        //       obj[i] = {
-        //         _id: results[i]._id,
-        //         imageSource: results[i].imageSource,
-        //         thumbnailSource: results[i].thumbnailSource,
-        //         default: false
-        //       };
-        //     }
-        //     res.send(obj);
-        //     console.log(obj);
-        //   });
+        console.log(badgeresult);
         res.send(badgeresult);
     }));
 }
 exports.getMybadges = getMybadges;
 function getMyLibrary(req, res) {
-    mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    mongoDB.connectDB((err) => __awaiter(this, void 0, void 0, function* () {
+        if (err)
+            throw err;
+        const db = mongoDB.getDB();
         const dbo = db.db('TriconBadgeApp');
         dbo
             .collection('BadgeLibrary')
@@ -74,12 +62,13 @@ function getMyLibrary(req, res) {
             res.send(obj);
             console.log(obj);
         });
-    });
+    }));
 }
 exports.getMyLibrary = getMyLibrary;
 function getPicture(req, res) {
     const filename = req.params.picture;
-    mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    mongoDB.connectDB((err) => __awaiter(this, void 0, void 0, function* () {
+        const db = mongoDB.getDB();
         if (err)
             throw err;
         const dbname = req.params.shopname;
@@ -98,11 +87,12 @@ function getPicture(req, res) {
             // buffer element
             res.send(results.imageSource);
         });
-    });
+    }));
 }
 exports.getPicture = getPicture;
 function getProduct(req, res) {
-    mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
+    mongoDB.connectDB((err) => __awaiter(this, void 0, void 0, function* () {
+        const db = mongoDB.getDB();
         if (err)
             throw err;
         const dbo = db.db(badgeDB);
@@ -119,7 +109,7 @@ function getProduct(req, res) {
         });
         // res.send({ message: 'Found product' });
         db.close();
-    });
+    }));
 }
 exports.getProduct = getProduct;
 function getIDS(req, res) {
@@ -1229,4 +1219,4 @@ function currency(req, res) {
     });
 }
 exports.currency = currency;
-//# sourceMappingURL=../../../src/dist/app/controller/angular.controller.js.map
+//# sourceMappingURL=../../src/dist/controller/angular.controller.js.map

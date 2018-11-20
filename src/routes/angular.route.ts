@@ -1,6 +1,6 @@
 // import * as express from 'express';
 import { Request, Response, Router } from 'express';
-import { ApplicationConfig as APP_CONFIG } from '../../config/app_config';
+import { ApplicationConfig as APP_CONFIG } from '../config/app_config';
 import * as angularController from '../controller/angular.controller';
 // const log = require('../util/winston').getLogger(APP_CONFIG.LOG_ENABLE_CONSOLE_LOG).logs;
 
