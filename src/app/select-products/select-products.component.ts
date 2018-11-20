@@ -298,7 +298,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.get("http://localhost:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
+      let obs = this.http.get("http://172.16.18.189:3000/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -374,7 +374,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/all")
+      let obs = this.http.get("http://172.16.18.189:3000/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/all")
       obs.subscribe(data => {
         console.log("here is the response", data);
         // console.log("date", this.date1);
@@ -454,7 +454,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductTitle/" + this.title1 + "/all");
+      let obs = this.http.get("http://172.16.18.189:3000/getProductTitle/" + this.title1 + "/all");
       obs.subscribe(data => {
 
 
@@ -555,7 +555,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:3000/getProductTag/" + this.tag + "/all");
+      let obs = this.http.get("http://172.16.18.189:3000/getProductTag/" + this.tag + "/all");
       obs.subscribe(data => {
         console.log("here is the response", data);
         console.log(this.pr);
@@ -705,7 +705,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post("http://localhost:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "width": this.BadgeWidth, "height": this.BadgeHeight, "borderRadius": this.BorderRadius, "pid": this.selectedids, "vid": this.selectedVids, "filter": this.selectedFilter, "default": this.selected_image_src.default, "thumbnailSource": this.selected_image_src.thumbnailSource });
+      let obs = this.http.post("http://172.16.18.189:3000/publishBadges", { "bid": id, "xvalue": this.endOffset.x, "yvalue": this.endOffset.y, "opval": this.opvalue, "width": this.BadgeWidth, "height": this.BadgeHeight, "borderRadius": this.BorderRadius, "pid": this.selectedids, "vid": this.selectedVids, "filter": this.selectedFilter, "default": this.selected_image_src.default, "thumbnailSource": this.selected_image_src.thumbnailSource });
 
       obs.subscribe(data => {
         if (data.hasOwnProperty('pid')) {
