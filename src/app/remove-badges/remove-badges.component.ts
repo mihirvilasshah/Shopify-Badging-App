@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BadgeService } from '../badge.service';
-import { ActivatedRoute, Router, NavigationExtras } from "@angular/router";
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgxSmartModalService } from 'ngx-smart-modal';
 import { IMyDpOptions } from 'mydatepicker';
@@ -20,7 +20,7 @@ export interface filter {
 
 export class RemoveBadgesComponent implements OnInit {
 
-  // filters = ["Price","Date","Title"];
+  // filters = ['Price','Date','Title'];
   public myDatePickerOptions: IMyDpOptions = {
     // other options...
     dateFormat: 'yyyy-mm-dd',
@@ -48,7 +48,7 @@ export class RemoveBadgesComponent implements OnInit {
   titles;
   pids;
   badges = [];
-  badge_selected = "true";
+  badge_selected = 'true';
   selectedids = [];
   selectedbids = [];
   selectedAll;
@@ -58,8 +58,8 @@ export class RemoveBadgesComponent implements OnInit {
 
   selectedProducts = [];
 
-  selected_image_src = "";
-  badgeCss = "";
+  selected_image_src = '';
+  badgeCss = '';
 
   structuredTitle = [];
   showTitle = [];
@@ -74,7 +74,7 @@ export class RemoveBadgesComponent implements OnInit {
   countPrice = 0;
   applyDate = false;
   countDate = 0;
-  msg = "";
+  msg = '';
   show = false;
   wb;
   wob;
@@ -99,24 +99,26 @@ export class RemoveBadgesComponent implements OnInit {
   ];
 
 
-  constructor(private badge: BadgeService, private route: ActivatedRoute, private spinner: NgxSpinnerService, private router: Router, private http: HttpClient, public ngxSmartModalService: NgxSmartModalService) {
+  constructor(private badge: BadgeService, private route: ActivatedRoute,
+    private spinner: NgxSpinnerService, private router: Router,
+    private http: HttpClient, public ngxSmartModalService: NgxSmartModalService) {
     // this.badge.getProduct();
     this.route.queryParams.subscribe(params => {
-      if (params["picName"])
-        this.selected_image_src = params["picName"];
-      if (params["badgeCss"])
-        this.badgeCss = params["badgeCss"];
+      if (params['picName'])
+        this.selected_image_src = params['picName'];
+      if (params['badgeCss'])
+        this.badgeCss = params['badgeCss'];
 
       console.log(this.selected_image_src);
       console.log(this.badgeCss);
-      let cur = this.http.get("http://localhost:4567/angular/currency")
+      let cur = this.http.get('http://localhost:4567/angular/currency/tricon-jewel-store')
       cur.subscribe(dat => {
-        console.log("here is the response", dat);
+        console.log('here is the response', dat);
         this.currency = dat[0].currency;
       });
-      let tag = this.http.get("http://localhost:4567/angular/tags")
+      let tag = this.http.get('http://localhost:4567/angular/tags/tricon-jewel-store')
       tag.subscribe(data => {
-        console.log("here is the response", data);
+        console.log('here is the response', data);
         this.tagArray = data;
         console.log(this.tagArray);
         var temp = [];
@@ -124,7 +126,7 @@ export class RemoveBadgesComponent implements OnInit {
           temp = this.tagArray[i].split(',');
           console.log(temp);
           for (var j = 0; j < temp.length; j++) {
-            if (temp[j] != "")
+            if (temp[j] != '')
               this.split.push(temp[j]);
 
           }
@@ -147,23 +149,100 @@ export class RemoveBadgesComponent implements OnInit {
   ngOnInit() {
 
   }
+  // getDiscountProd() {
 
+  //   console.log(this.price1);
+  //   // var result  =this.http.get('http://localhost:4567/angular/getProductPriceRange/'+this.price1+'/'+this.price2);
+
+  //   this.spinner.show();
+  //   setTimeout(() => {
+
+  //     let obs = this.http.get('http://localhost:4567/angular/getProductPriceRange/tricon-jewel-store/' + this.discount + '/withBadges')
+  //     obs.subscribe(data => {
+  //       console.log('here is the response', data);
+  //       console.log(this.pr);
+
+  //       var items = Object.values(data);
+  //       console.log('items:', items)
+  //       this.titles = items[0];
+  //       var temp_badges = items[2];
+  //       this.src = items[6];
+  //       console.log(temp_badges);
+  //       for (var i = 0; i < temp_badges.length; i++) {
+  //         var temparray = temp_badges[i];
+  //         var tempsrc = this.src[i];
+  //         var a1 = [];
+  //         for (var j = 0; j < temparray.length; j++) {
+
+  //           a1.push({ 'badg': temparray[j], 'selected': false, 'src': tempsrc[j] });
+
+  //         }
+
+  //         this.badges.push(a1);
+  //       }
+  //       console.log('this.badges');
+  //       console.log(this.badges);
+
+  //       this.pids = items[1];
+  //       this.tags = items[3];
+  //       this.created_At = items[4];
+  //       this.isApplied = items[5];
+  //       this.variants = items[7];
+  //       this.variantsId = items[8];
+
+
+  //       this.structuredTitle = [];
+  //       self['items'] = items;
+  //       var x;
+  //       for (var i = 0; i < +this.titles.length; i++) {
+  //         if (this.src[i][0] != '-') {
+  //           var a = {
+  //             name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i], created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i], src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
+  //           }
+  //           this.structuredTitle.push(a);
+  //         }
+  //       }
+
+
+  //       this.showTitle = this.structuredTitle;
+
+  //       if (this.pids.length == 0) {
+  //         this.msg = 'No matches found.'
+  //         this.show = false;
+  //       }
+  //       if (this.pids.length > 0) {
+  //         this.msg = ''
+  //         this.show = true;
+  //       }
+  //       // var pids = data[pids];
+  //       this.applyTitle = true;
+
+  //       console.log('titles:', this.titles);
+  //       console.log('structuredTitle:', this.structuredTitle);
+
+
+  //     })
+
+  //     this.spinner.hide();
+  //   }, 4000);
+  // }
 
   getPriceProd() {
 
     console.log(this.price1);
-    // var result  =this.http.get("http://localhost:4567/angular/getProductPriceRange/"+this.price1+"/"+this.price2);
+    // var result  =this.http.get('http://localhost:4567/angular/getProductPriceRange/'+this.price1+'/'+this.price2);
 
     this.spinner.show();
     setTimeout(() => {
-
-      let obs = this.http.get("http://localhost:4567/angular/getProductPriceRange/" + this.price1 + "/" + this.price2 + "/withBadges")
+let obs = this.http.get('http://localhost:4567/angular/getProductPriceRange/tricon-jewel-store/'
+ + this.price1 + '/' 
+ + this.price2 + '/withBadges')
       obs.subscribe(data => {
-        console.log("here is the response", data);
+        console.log('here is the response', data);
         console.log(this.pr);
 
         var items = Object.values(data);
-        console.log("items:", items)
+        console.log('items:', items)
         this.titles = items[0];
         var temp_badges = items[2];
         this.src = items[6];
@@ -174,13 +253,13 @@ export class RemoveBadgesComponent implements OnInit {
           var a1 = [];
           for (var j = 0; j < temparray.length; j++) {
 
-            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] });
+            a1.push({ 'badg': temparray[j], 'selected': false, 'src': tempsrc[j] });
 
           }
 
           this.badges.push(a1);
         }
-        console.log("this.badges");
+        console.log('this.badges');
         console.log(this.badges);
 
         this.pids = items[1];
@@ -192,7 +271,7 @@ export class RemoveBadgesComponent implements OnInit {
 
 
         this.structuredTitle = [];
-        self["items"] = items;
+        self['items'] = items;
         var x;
         for (var i = 0; i < +this.titles.length; i++) {
           if (this.src[i][0] != '-') {
@@ -207,18 +286,18 @@ export class RemoveBadgesComponent implements OnInit {
         this.showTitle = this.structuredTitle;
 
         if (this.pids.length == 0) {
-          this.msg = "No matches found."
+          this.msg = 'No matches found.'
           this.show = false;
         }
         if (this.pids.length > 0) {
-          this.msg = ""
+          this.msg = ''
           this.show = true;
         }
         // var pids = data[pids];
         this.applyTitle = true;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
+        console.log('titles:', this.titles);
+        console.log('structuredTitle:', this.structuredTitle);
 
 
       })
@@ -233,7 +312,7 @@ export class RemoveBadgesComponent implements OnInit {
       this.applyPrice = false;  //!(this.applyPrice);
     }
     this.countPrice = 1;
-    console.log("count: " + this.countPrice);
+    console.log('count: ' + this.countPrice);
 
     if (this.price1 == 0) {
       this.price1 = 0.01;
@@ -245,13 +324,13 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:4567/angular/getProductDateRange/" + this.model1.formatted + "/" + this.model2.formatted + "/withBadges")
+      let obs = this.http.get('http://localhost:4567/angular/getProductDateRange/tricon-jewel-store/' + this.model1.formatted + '/' + this.model2.formatted + '/withBadges')
       obs.subscribe(data => {
-        console.log("here is the response", data);
+        console.log('here is the response', data);
         console.log(this.pr);
 
         var items = Object.values(data);
-        console.log("items:", items)
+        console.log('items:', items)
         this.titles = items[0];
         var temp_badges = items[2];
         this.src = items[6];
@@ -262,7 +341,7 @@ export class RemoveBadgesComponent implements OnInit {
           var a1 = [];
           for (var j = 0; j < temparray.length; j++) {
 
-            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] });
+            a1.push({ 'badg': temparray[j], 'selected': false, 'src': tempsrc[j] });
 
           }
 
@@ -276,7 +355,7 @@ export class RemoveBadgesComponent implements OnInit {
 
 
         this.structuredTitle = [];
-        self["items"] = items;
+        self['items'] = items;
         var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
@@ -290,18 +369,18 @@ export class RemoveBadgesComponent implements OnInit {
         this.showTitle = this.structuredTitle;
 
         if (this.pids.length == 0) {
-          this.msg = "No matches found."
+          this.msg = 'No matches found.'
           this.show = false;
         }
         if (this.pids.length > 0) {
-          this.msg = ""
+          this.msg = ''
           this.show = true;
         }
         // var pids = data[pids];
         this.applyTitle = true;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
+        console.log('titles:', this.titles);
+        console.log('structuredTitle:', this.structuredTitle);
 
 
       })
@@ -316,7 +395,7 @@ export class RemoveBadgesComponent implements OnInit {
       this.applyDate = false;  //!(this.applyDate);
     }
     this.countDate = 1;
-    console.log("count: " + this.countDate);
+    console.log('count: ' + this.countDate);
 
   }
 
@@ -331,14 +410,14 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:4567/angular/getProductTitle/" + this.title1 + "/withBadges");
+      let obs = this.http.get('http://localhost:4567/angular/getProductTitle/tricon-jewel-store/' + this.title1 + '/withBadges');
       obs.subscribe(data => {
 
 
         var items = Object.values(data);
 
         var self = this;
-        console.log("items:", items)
+        console.log('items:', items)
         this.titles = items[0];
         var temp_badges = items[2];
         // var temp_abid = items[7];
@@ -351,7 +430,7 @@ export class RemoveBadgesComponent implements OnInit {
           var a1 = [];
           for (var j = 0; j < temparray.length; j++) {
 
-            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] }); //,  "abid": temparray2[j]
+            a1.push({ 'badg': temparray[j], 'selected': false, 'src': tempsrc[j] }); //,  'abid': temparray2[j]
 
           }
 
@@ -371,7 +450,7 @@ export class RemoveBadgesComponent implements OnInit {
 
 
         this.structuredTitle = [];
-        self["items"] = items;
+        self['items'] = items;
         var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
@@ -385,18 +464,18 @@ export class RemoveBadgesComponent implements OnInit {
         this.showTitle = this.structuredTitle;
 
         if (this.pids.length == 0) {
-          this.msg = "No matches found."
+          this.msg = 'No matches found.'
           this.show = false;
         }
         if (this.pids.length > 0) {
-          this.msg = ""
+          this.msg = ''
           this.show = true;
         }
         // var pids = data[pids];
         this.applyTitle = true;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
+        console.log('titles:', this.titles);
+        console.log('structuredTitle:', this.structuredTitle);
 
 
       })
@@ -412,7 +491,7 @@ export class RemoveBadgesComponent implements OnInit {
       this.applyTitle = false;  //!(this.applyTitle);
     }
     this.countTitle = 1;
-    console.log("count: " + this.countTitle);
+    console.log('count: ' + this.countTitle);
 
   }
 
@@ -421,14 +500,14 @@ export class RemoveBadgesComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get("http://localhost:4567/angular/getProductTag/" + this.tag + "/withBadges");
+      let obs = this.http.get('http://localhost:4567/angular/getProductTag/tricon-jewel-store/' + this.tag + '/withBadges');
       obs.subscribe(data => {
-        console.log("here is the response", data);
+        console.log('here is the response', data);
         console.log(this.pr);
 
         var items = Object.values(data);
-        console.log("items:", items)
-        console.log("items:", items)
+        console.log('items:', items)
+        console.log('items:', items)
         this.titles = items[0];
         var temp_badges = items[2];
         this.src = items[6];
@@ -439,7 +518,7 @@ export class RemoveBadgesComponent implements OnInit {
           var a1 = [];
           for (var j = 0; j < temparray.length; j++) {
 
-            a1.push({ "badg": temparray[j], "selected": false, "src": tempsrc[j] });
+            a1.push({ 'badg': temparray[j], 'selected': false, 'src': tempsrc[j] });
 
           }
 
@@ -453,7 +532,7 @@ export class RemoveBadgesComponent implements OnInit {
 
 
         this.structuredTitle = [];
-        self["items"] = items;
+        self['items'] = items;
         var x;
         for (var i = 0; i < +this.titles.length; i++) {
 
@@ -467,18 +546,18 @@ export class RemoveBadgesComponent implements OnInit {
         this.showTitle = this.structuredTitle;
 
         if (this.pids.length == 0) {
-          this.msg = "No matches found."
+          this.msg = 'No matches found.'
           this.show = false;
         }
         if (this.pids.length > 0) {
-          this.msg = ""
+          this.msg = ''
           this.show = true;
         }
         // var pids = data[pids];
         this.applyTitle = true;
 
-        console.log("titles:", this.titles);
-        console.log("structuredTitle:", this.structuredTitle);
+        console.log('titles:', this.titles);
+        console.log('structuredTitle:', this.structuredTitle);
 
 
       })
@@ -493,13 +572,13 @@ export class RemoveBadgesComponent implements OnInit {
       this.applyTag = false;  //!(this.applyTitle);
     }
     this.countTag = 1;
-    console.log("count: " + this.countTag);
+    console.log('count: ' + this.countTag);
 
   }
   givebid(flag, value) {
 
-    console.log("givebid" + value + flag);
-    var x = value.split(",");
+    console.log('givebid' + value + flag);
+    var x = value.split(',');
     var value1 = x[0];
     var index = this.selectedids.findIndex(x => x.prodid == value1);
     console.log(index);
@@ -533,27 +612,31 @@ export class RemoveBadgesComponent implements OnInit {
     if (this.selectedAll) {
       for (var i = 0; i < this.showTitle.length; i++) {
         this.showTitle[i].selected = this.selectedAll;
+        for (var j = 0; j < this.showTitle[i].badges.length; j++) {
+          this.showTitle[i].badges[j].selected = this.selectedAll;
+
+        }
       }
 
       this.counter = this.showTitle.length;
       var index = this.selectedids.indexOf(value1);
       var index2 = this.selectedVids.indexOf(value2);
-      console.log("value if: " + value);
+      console.log('value if: ' + value);
       this.selectedids = [];
       this.selectedVids = [];
       for (var i = 0; i < this.pids.length; i++) {
-        //var x = this.badges[i].split("picture/"); 
-        console.log("x", this.badges[i]);
-        this.selectedids.push({ "prodid": this.pids[i], "bid": this.badges[i].badg, "abid": this.badges[i].abid, "vid": this.variantsId[i] });
+        //var x = this.badges[i].split('picture/'); 
+        console.log('x', this.badges[i]);
+        this.selectedids.push({ 'prodid': this.pids[i], 'bid': this.badges[i].badg, 'abid': this.badges[i].abid, 'vid': this.variantsId[i] });
         this.badges[i].selected = true;
       }
 
       // this.selectedids.splice(index, 1);
-      console.log("selectedIDS(selected all): ")
+      console.log('selectedIDS(selected all): ')
       console.log(this.selectedids);
 
-      console.log("selectedAll value: " + this.selectedAll);
-      // console.log("pid value if: " + this.pids);
+      console.log('selectedAll value: ' + this.selectedAll);
+      // console.log('pid value if: ' + this.pids);
 
 
     }
@@ -561,15 +644,19 @@ export class RemoveBadgesComponent implements OnInit {
     if (!this.selectedAll && this.counter == this.showTitle.length) {
       for (var i = 0; i < this.showTitle.length; i++) {
         this.showTitle[i].selected = this.selectedAll;
+        for (var j = 0; j < this.showTitle[i].badges.length; j++) {
+          this.showTitle[i].badges[j].selected = this.selectedAll;
+
+        }
       }
       this.selectedids = [];
 
       this.counter = 0;
-      console.log("selectedIDS (deselected all): " + this.selectedids);
+      console.log('selectedIDS (deselected all): ' + this.selectedids);
 
     }
     else if (flag) {
-      var x = value.split(",");
+      var x = value.split(',');
       var value1 = x[0];
       var value2 = x[1];
 
@@ -578,13 +665,13 @@ export class RemoveBadgesComponent implements OnInit {
       // this.selectedids.push(value);
       // var index = this.selectedids.indexOf(value);
 
-      console.log("flag true:" + this.selectedids);
+      console.log('flag true:' + this.selectedids);
 
       this.prodsel = false;
 
       // var index = this.showTitle.findIndex(x => x.pids == value1);
-      console.log("filter:", this.selectedFilter);
-      console.log("value1:", value1);
+      console.log('filter:', this.selectedFilter);
+      console.log('value1:', value1);
 
       if (this.selectedFilter == 'Price') {
         var index = this.showTitle.findIndex(x => x.variantsId == value2);
@@ -605,24 +692,24 @@ export class RemoveBadgesComponent implements OnInit {
       }
 
 
-      this.selectedids.push({ "prodid": value1, "bid": b, "abid": ab, "vid": value2 });
+      this.selectedids.push({ 'prodid': value1, 'bid': b, 'abid': ab, 'vid': value2 });
 
-      console.log("badges values")
+      console.log('badges values')
       console.log(b);
       console.log(this.selectedids);
 
 
 
-      // console.log("pid value esle if: " + this.pids);
+      // console.log('pid value esle if: ' + this.pids);
     }
     if (flag == false) {
-      var x = value.split(",");
+      var x = value.split(',');
       var value1 = x[0];
       var value2 = x[1];
       this.counter = this.counter - 1;
       // var index1 = this.showTitle.findIndex(x => x.pids == value1);
       var index1 = this.showTitle.findIndex(x => x.variantsId == value2);
-      console.log("INDEX1", index1);
+      console.log('INDEX1', index1);
       // var index2 = this.showTitle.findIndex(x => x.variantsId == value2);
 
       this.prodsel = true;
@@ -636,23 +723,23 @@ export class RemoveBadgesComponent implements OnInit {
 
       var index = this.selectedids.findIndex(x => x.prodid == value1);
 
-      console.log("index " + index);
+      console.log('index ' + index);
 
       // this.selectedids.splice(value, 1);
-      console.log("spliced: " + this.selectedids.splice(index, 1));
+      console.log('spliced: ' + this.selectedids.splice(index, 1));
 
-      console.log("after removing");
+      console.log('after removing');
 
       console.log(this.selectedids);
       //console.log(this.selectedids[0].prodid);
-      // console.log("pid value else: " + this.pids);
+      // console.log('pid value else: ' + this.pids);
     }
 
-    console.log("flag: " + flag);
-    console.log("value: " + value1);
-    console.log("value: " + value2);
+    console.log('flag: ' + flag);
+    console.log('value: ' + value1);
+    console.log('value: ' + value2);
 
-    console.log("COUNTER:" + this.counter)
+    console.log('COUNTER:' + this.counter)
     if (this.counter == this.showTitle.length)
       this.selectedAll = true;
     else
@@ -663,16 +750,16 @@ export class RemoveBadgesComponent implements OnInit {
 
   //   // if (this.selectedAll) {
   //   //   this.selectedids = this.pids;
-  //   //   console.log("selectedids if (All):" + this.selectedids);
+  //   //   console.log('selectedids if (All):' + this.selectedids);
 
   //   // }
   //   // else {
   //   //   // var len = this.selectedids.length;
-  //   //   // console.log("length: "+len);
+  //   //   // console.log('length: '+len);
   //   //   // this.selectedids.splice(0, len);
   //   //   this.selectedids = [];
-  //   //   console.log("selectedids else (Deselect all):" + this.selectedids);
-  //   //   console.log("pid value else(Deselect all): " + this.pids);
+  //   //   console.log('selectedids else (Deselect all):' + this.selectedids);
+  //   //   console.log('pid value else(Deselect all): ' + this.pids);
   //   // }
 
   //   // if(this.oneDeselect){
@@ -699,7 +786,7 @@ export class RemoveBadgesComponent implements OnInit {
   //     if(this.structuredTitle[i].selected==true){
   //       this.counter=this.counter+1;}
   //   }
-  //   console.log("COUNTER:"+this.counter)
+  //   console.log('COUNTER:'+this.counter)
   //   if(this.counter==this.structuredTitle.length)
   //   this.selectedAll=true;
   //   else
@@ -709,12 +796,12 @@ export class RemoveBadgesComponent implements OnInit {
   // selectAll() {
   //   for (var i = 0; i < this.titles.length; i++) {
   //     this.titles[i].selected = this.selectedAll;
-  //     console.log("h");
+  //     console.log('h');
   //   }
   // }
 
   unpublish() {
-    var id = this.selected_image_src.split("picture/");
+    var id = this.selected_image_src.split('picture/');
     console.log(id);
     console.log(this.selectedids);
 
@@ -725,15 +812,16 @@ export class RemoveBadgesComponent implements OnInit {
     //   })
     // };
 
-    let obs = this.http.post("http://localhost:4567/angular/unpublishBadges", { "pid": this.selectedids, "filter": this.selectedFilter });
+    let obs = this.http.post('http://localhost:4567/badging/unpublishBadges/tricon-jewel-store',
+     { 'pid': this.selectedids, 'filter': this.selectedFilter });
     obs.subscribe(data => {
       if (data.hasOwnProperty('pid')) {
-        console.log("in unpublish");
+        console.log('in unpublish');
         this.unpublishedNo = data['pid'].length;
       }
     })
 
-    console.log("publish", this.unpublishedNo);
+    console.log('publish', this.unpublishedNo);
   }
 };
 
@@ -754,7 +842,7 @@ export class RemoveBadgesComponent implements OnInit {
   // getAllSelectedProducts() {
   //   var selectedProducts = [];
 
-  //   var selectedCheckboxes = document.querySelectorAll('input[name="products"]:checked');
+  //   var selectedCheckboxes = document.querySelectorAll('input[name='products']:checked');
   //   console.log(selectedCheckboxes);
   //   var selectedProductscount = selectedCheckboxes.length;
   //   console.log(selectedProductscount);

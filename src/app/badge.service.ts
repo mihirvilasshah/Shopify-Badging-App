@@ -18,8 +18,7 @@ export class BadgeService {
   private coord2 = { x: 0, y: 0 };
   private coordFinal = { x: 0, y: 0 };
   private opval = 1;
-  private BadgeWidth = 15;
-  private BadgeHeight = 15;
+  private BadgeSize = 15;
   private BorderRadius = 0;
 
   private _message = new Subject<boolean>();
@@ -100,21 +99,14 @@ export class BadgeService {
     this.opval = val;
   }
 
-  getBadgeWidth() {
-    return this.BadgeWidth;
+  getBadgeSize() {
+    return this.BadgeSize;
   }
 
-  setBadgeWidth(W) {
-    this.BadgeWidth = W;
+  setBadgeSize(W) {
+    this.BadgeSize = W;
   }
-
-  getBadgeHeight() {
-    return this.BadgeHeight;
-  }
-
-  setBadgeHeight(H) {
-    this.BadgeHeight = H;
-  }
+  
 
   getBorderRadius() {
     return this.BorderRadius;

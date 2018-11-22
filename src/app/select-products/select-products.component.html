@@ -43,6 +43,18 @@
 
         </form>
     </div>
+    <div *ngIf="selectedFilter=='Discount'">
+        <form>
+            <input type="number" name="discount" id="disc" [(ngModel)]="discount" (input)="applydiscountFn()" placeholder="Discount">
+          
+
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getDiscountProd()"
+                 style="width:180px">Apply</button>
+
+        </form>
+    </div>
     <div *ngIf="selectedFilter=='Created Date'">
         <form>
             <div class="mdl-textfield mdl-js-textfield">

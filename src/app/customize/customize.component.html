@@ -25,9 +25,8 @@
       Size:
     </h4><br>
     <div>
-      Width:<input type="number" max="50" min="10" id="imgW" [(ngModel)]="BadgeWidth" (input)="BadgeWidth1()" style="width:60%;">%
-      <br><br> Height
-      <input type="number" max="50" min="10" id="imgH" [(ngModel)]="BadgeHeight" (input)="BadgeHeight1()" style="width:60%">%
+      Size:<input type="number" max="50" min="10" id="imgW" [(ngModel)]="BadgeSize" (input)="BadgeSizer()" style="width:60%;">%
+      <br><br> 
     </div>
 
 
@@ -71,8 +70,8 @@
         </h4>
 
         <div class="drag-boundary" #myBounds style="background-image: url('https://cdn.shopify.com/s/files/1/0035/6886/1273/products/man-adjusts-blue-tuxedo-bowtie_925x_bca94da6-e411-475d-af95-9a40bffd217e_1024x1024@2x.jpg'); width: 410px;height: 285px; background-size:cover ">
-          <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" [style.opacity]="opvalue" [style.width]="BadgeWidth + '%'" 
-            [style.height]="BadgeHeight + '%'" [style.border-radius]="BorderRadius+'%'" [preventDefaultEvent]="true" [position]="endOffset"
+          <img ngDraggable class="drag-block" (started)="onStart($event)" (stopped)="onStop($event)" [style.opacity]="opvalue" [style.width]="BadgeSize + '%'" 
+            [style.height]="BadgeSize + '%'" [style.border-radius]="BorderRadius+'%'" [preventDefaultEvent]="true" [position]="endOffset"
             (endOffset)="onMoveEnd($event)" [bounds]="myBounds" [inBounds]="inBounds" #panel id="image1" src={{selected_image_src.imageSource}}
             alt="Cinque Terre" width="15%" height="15%" />
 
@@ -104,7 +103,8 @@
 
 
           <img id="image1" style="position: absolute" #panel src={{selected_image_src.imageSource}} alt="Cinque Terre" width="15%" [style.left] = "endOffset.x+'px'"  [style.top] = "endOffset.y+'px'"
-            height="15%">
+            height="15%" [style.opacity]="opvalue" [style.width]="BadgeSize + '%'" 
+            [style.height]="BadgeSize + '%'" [style.border-radius]="BorderRadius+'%'">
 
 
         </div>
