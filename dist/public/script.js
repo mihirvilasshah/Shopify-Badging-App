@@ -2,7 +2,7 @@
 aren’t available to the outside world. */
 
 (function() {
-  const forwardingAddress = 'https://f9626007.ngrok.io'; // we use this to call apis from this url
+  const forwardingAddress = 'https://7a663a1e.ngrok.io'; // we use this to call apis from this url
   // function to load the jquery script to the page and calls one callback fuction in which we write our logic
   //-------------------------------------------------------------------------------------------------------------------
   var loadScript = function(url, callback) {
@@ -55,7 +55,7 @@ aren’t available to the outside world. */
       var productId = id; // we get the value of id from the script file loaded in snippets of shopify
       $.ajax({
         //ajax call to get the product details based on product id
-        url: forwardingAddress + '/angular/getSrc/' + productId,
+        url: forwardingAddress + '/addBadge/getSrc/' + productId,
         type: 'GET',
         success: function(data) {
           if (data) {
@@ -232,7 +232,7 @@ aren’t available to the outside world. */
       data.src = pageimages;
       $.ajax({
         //ajax call to get the product details based on product id
-        url: forwardingAddress + '/angular/getbadges',
+        url: forwardingAddress + '/addBadge/getbadges',
         type: 'POST',
         data: JSON.stringify(data),
         contentType: 'application/json',

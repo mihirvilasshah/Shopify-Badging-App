@@ -6,6 +6,7 @@ const express = require("express");
 const path = require("path");
 const angular_route_1 = require("./routes/angular.route");
 const shop_route_1 = require("./routes/shop.route");
+const addBadge_route_1 = require("./routes/addBadge.route");
 const winston = require('winston');
 const morgan = require('morgan');
 const fs = require('fs');
@@ -45,6 +46,8 @@ app.get('/', (req, res) => {
 });
 app.use('/tricon', shop_route_1.default);
 app.use('/angular', angular_route_1.default);
+app.use('/addBadge', addBadge_route_1.default);
+app.use('/badging', addBadge_route_1.default);
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'index.html'));
 // });

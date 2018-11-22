@@ -19,7 +19,7 @@ const crypto = require('crypto');
 const apiKey = app_config_1.default.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 const scopes = 'read_products,read_script_tags,write_script_tags,read_themes,write_themes';
-const forwardingAddress = 'https://f9626007.ngrok.io';
+const forwardingAddress = 'https://684d13b4.ngrok.io';
 const serverUrl = 'mongodb://localhost:27017';
 const badgeDB = 'TriconBadgeApp';
 const mongoClient = require('mongodb').MongoClient;
@@ -133,8 +133,8 @@ function generateStoreAccessToken(request, response, shop, code) {
                     if (!shopInfo) {
                         console.log('go to store method');
                         storeShopDetails(request, response);
-                        createWebhooks(request, response);
-                        getTheme(request, response);
+                        // createWebhooks(request, response);
+                        // getTheme(request, response);
                         response.redirect('/static/welcome.html');
                     }
                     else {
@@ -209,9 +209,7 @@ function storeShopProductDetails(request, response, shop, id) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log('inside store shop products data');
         const shopProductsRequestUrl = 'https://' + storeName + '/admin/products.json';
-        const shopProductsRequestHeaders = {
-            'X-Shopify-Access-Token': storeToken
-        };
+        const shopProductsRequestHeaders = { 'X-Shopify-Access-Token': storeToken };
         const shopProductsReqOptions = {
             method: 'GET',
             uri: shopProductsRequestUrl,
@@ -219,19 +217,41 @@ function storeShopProductDetails(request, response, shop, id) {
             json: true
         };
         const shopProductsResponseData = yield reqPromise(shopProductsReqOptions);
-        const copyToDB = yield copyDB(shopProductsResponseData, shop);
-        console.log('Copy to DB' + copyToDB);
+        const prodlist = shopProductsResponseData.products;
+        for (const product of prodlist) {
+            const res = yield insertprod(product, shop);
+        }
+        // const flag = await copyDB(shopProductsResponseData, shop);
+        // console.log('Copy to DB' + copyToDB);
         const toFloat = yield convertToFloat();
         console.log('Converted to float' + toFloat);
         // requestp.post(forwardingAddress + '/getTheme');
     });
 }
 exports.storeShopProductDetails = storeShopProductDetails;
+function insertprod(product, shop) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            mongoClient.connect(serverUrl, (err, client) => {
+                const dbobj = client.db(shop);
+                dbobj
+                    .collection('Products')
+                    .insert(product, (error, result) => {
+                    if (error)
+                        throw error;
+                    console.log('Number of documents inserted: ' + result.insertedCount);
+                });
+                resolve(1);
+            });
+        });
+    });
+}
+exports.insertprod = insertprod;
 function copyDB(shopProductsResponseData, shop) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
             mongoClient.connect(serverUrl, (err, client) => {
-                const dbobj = client.db(shop + '_');
+                const dbobj = client.db(shop);
                 shopProductsResponseData.products.map(product => {
                     dbobj
                         .collection('Products')
@@ -240,8 +260,8 @@ function copyDB(shopProductsResponseData, shop) {
                             throw error;
                         console.log('Number of documents inserted: ' + result.insertedCount);
                     });
+                    resolve(1);
                 });
-                resolve('done');
             });
         });
     });
@@ -252,7 +272,7 @@ function convertToFloat() {
         return new Promise((resolve, reject) => {
             mongoClient.connect(serverUrl, (err, client) => {
                 const shop = storeName.split('.');
-                const dbobj = client.db(shop[0] + '_');
+                const dbobj = client.db(shop[0]);
                 dbobj
                     .collection('Products')
                     .find({
@@ -261,6 +281,10 @@ function convertToFloat() {
                     .forEach(doc => {
                     doc.variants.map(variant => {
                         variant.price = parseFloat(variant.price);
+                        variant.compare_at_price = parseFloat(variant.price);
+                        variant.discount =
+                            ((variant.compare_at_price - variant.price) * 100) /
+                                variant.compare_at_price;
                         console.log(variant);
                     });
                     dbobj.collection('Products').save(doc);
@@ -353,7 +377,7 @@ function deleteProduct(req, res) {
         if (err)
             throw err;
         const shop = storeName.split('.');
-        const dbo = db.db(shop[0] + '_');
+        const dbo = db.db(shop[0]);
         console.log('inside deleteProd');
         const prodId = parseInt(req.body.id);
         // var myquery = { _id: ObjectId(req.params.id) };
@@ -376,7 +400,7 @@ function updateProduct(req, res) {
         console.log('inside updateProd');
         const shopname = req.params.shopname;
         const shop = shopname.split('.');
-        const dbo = db.db(shop[0] + '_');
+        const dbo = db.db(shop[0]);
         console.log('---SHOPNAME---');
         console.log(req.params.shopname);
         console.log('---PARAMS----');
@@ -418,7 +442,7 @@ function updateProduct(req, res) {
                 // console.log("push: " + doc.published_at);
                 // console.log(bulkUpdateOps);
                 // if (bulkUpdateOps.length == 1000) {
-                dbo.collection(shop[0] + '_').updateOne(q, n, (er, obj) => {
+                dbo.collection(shop[0]).updateOne(q, n, (er, obj) => {
                     if (er)
                         throw er;
                     console.log('set newPrice done : ' + obj);
@@ -440,12 +464,12 @@ function createProduct(req, res) {
         if (err)
             throw err;
         const shop = storeName.split('.');
-        const dbo = db.db(shop[0] + '_');
+        const dbo = db.db(shop[0]);
         console.log('inside createProd');
         const shopname = req.params.shopname;
         const myquery = req.body;
         console.log(shopname);
-        dbo.collection(shop[0] + '_').insertOne(myquery, (erro, obj) => {
+        dbo.collection(shop[0]).insertOne(myquery, (erro, obj) => {
             if (erro)
                 throw erro;
             console.log('product created/added: ' + obj.insertedCount);

@@ -1,5 +1,4 @@
 // const request = require('request');
-
 // describe('GET /test', () => {
 //   const data = {};
 //   beforeAll(done => {
@@ -16,3 +15,4 @@
 //     expect(data.body.message).toBe('This is an error response');
 //   });
 // });
+//# sourceMappingURL=../../src/dist/spec/app.js.map

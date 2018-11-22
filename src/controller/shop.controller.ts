@@ -18,7 +18,7 @@ const apiKey = APP_CONFIG.SHOPIFY_API_KEY;
 const apiSecret = process.env.SHOPIFY_API_SECRET;
 const scopes =
   'read_products,read_script_tags,write_script_tags,read_themes,write_themes';
-const forwardingAddress = 'https://f9626007.ngrok.io';
+const forwardingAddress = 'https://684d13b4.ngrok.io';
 const serverUrl = 'mongodb://localhost:27017';
 const badgeDB = 'TriconBadgeApp';
 
@@ -155,8 +155,8 @@ export async function generateStoreAccessToken(
             if (!shopInfo) {
               console.log('go to store method');
               storeShopDetails(request, response);
-              createWebhooks(request, response);
-              getTheme(request, response);
+              // createWebhooks(request, response);
+              // getTheme(request, response);
               response.redirect('/static/welcome.html');
             } else {
               response.redirect('/static/welcome.html');
@@ -249,9 +249,7 @@ export async function storeShopProductDetails(
   console.log('inside store shop products data');
   const shopProductsRequestUrl =
     'https://' + storeName + '/admin/products.json';
-  const shopProductsRequestHeaders = {
-    'X-Shopify-Access-Token': storeToken
-  };
+  const shopProductsRequestHeaders = { 'X-Shopify-Access-Token': storeToken };
 
   const shopProductsReqOptions = {
     method: 'GET',
@@ -261,22 +259,43 @@ export async function storeShopProductDetails(
   };
 
   const shopProductsResponseData = await reqPromise(shopProductsReqOptions);
+  const prodlist = shopProductsResponseData.products;
+  for (const product of prodlist) {
+    const res = await insertprod(product, shop);
+  }
 
-  const copyToDB = await copyDB(shopProductsResponseData, shop);
-  console.log('Copy to DB' + copyToDB);
-
+  // const flag = await copyDB(shopProductsResponseData, shop);
+  // console.log('Copy to DB' + copyToDB);
   const toFloat = await convertToFloat();
   console.log('Converted to float' + toFloat);
-
   // requestp.post(forwardingAddress + '/getTheme');
 }
+export async function insertprod(product, shop) {
+  return new Promise((resolve, reject) => {
+    mongoClient.connect(
+      serverUrl,
+      (err: string, client: any) => {
+        const dbobj = client.db(shop);
 
+        dbobj
+          .collection('Products')
+          .insert(product, (error: any, result: any) => {
+            if (error) throw error;
+            console.log(
+              'Number of documents inserted: ' + result.insertedCount
+            );
+          });
+        resolve(1);
+      }
+    );
+  });
+}
 export async function copyDB(shopProductsResponseData, shop) {
   return new Promise((resolve, reject) => {
     mongoClient.connect(
       serverUrl,
       (err: string, client: any) => {
-        const dbobj = client.db(shop + '_');
+        const dbobj = client.db(shop);
         shopProductsResponseData.products.map(product => {
           dbobj
             .collection('Products')
@@ -286,8 +305,8 @@ export async function copyDB(shopProductsResponseData, shop) {
                 'Number of documents inserted: ' + result.insertedCount
               );
             });
+          resolve(1);
         });
-        resolve('done');
       }
     );
   });
@@ -299,7 +318,7 @@ export async function convertToFloat() {
       serverUrl,
       (err: string, client: any) => {
         const shop = storeName.split('.');
-        const dbobj = client.db(shop[0] + '_');
+        const dbobj = client.db(shop[0]);
         dbobj
           .collection('Products')
           .find({
@@ -308,6 +327,10 @@ export async function convertToFloat() {
           .forEach(doc => {
             doc.variants.map(variant => {
               variant.price = parseFloat(variant.price);
+              variant.compare_at_price = parseFloat(variant.price);
+              variant.discount =
+                ((variant.compare_at_price - variant.price) * 100) /
+                variant.compare_at_price;
               console.log(variant);
             });
             dbobj.collection('Products').save(doc);
@@ -405,7 +428,7 @@ export function deleteProduct(req, res) {
       if (err) throw err;
 
       const shop = storeName.split('.');
-      const dbo = db.db(shop[0] + '_');
+      const dbo = db.db(shop[0]);
 
       console.log('inside deleteProd');
       const prodId = parseInt(req.body.id);
@@ -433,7 +456,7 @@ export function updateProduct(req, res) {
       console.log('inside updateProd');
       const shopname = req.params.shopname;
       const shop = shopname.split('.');
-      const dbo = db.db(shop[0] + '_');
+      const dbo = db.db(shop[0]);
       console.log('---SHOPNAME---');
       console.log(req.params.shopname);
       console.log('---PARAMS----');
@@ -483,7 +506,7 @@ export function updateProduct(req, res) {
           // console.log(bulkUpdateOps);
 
           // if (bulkUpdateOps.length == 1000) {
-          dbo.collection(shop[0] + '_').updateOne(q, n, (er, obj) => {
+          dbo.collection(shop[0]).updateOne(q, n, (er, obj) => {
             if (er) throw er;
             console.log('set newPrice done : ' + obj);
             // console.log(obj);
@@ -508,13 +531,13 @@ export function createProduct(req, res) {
       if (err) throw err;
 
       const shop = storeName.split('.');
-      const dbo = db.db(shop[0] + '_');
+      const dbo = db.db(shop[0]);
 
       console.log('inside createProd');
       const shopname = req.params.shopname;
       const myquery = req.body;
       console.log(shopname);
-      dbo.collection(shop[0] + '_').insertOne(myquery, (erro, obj) => {
+      dbo.collection(shop[0]).insertOne(myquery, (erro, obj) => {
         if (erro) throw erro;
         console.log('product created/added: ' + obj.insertedCount);
       });

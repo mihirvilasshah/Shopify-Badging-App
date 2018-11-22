@@ -168,72 +168,139 @@ function getUserIDS(req, res) {
     });
 }
 exports.getUserIDS = getUserIDS;
-function getSrc(req, res) {
+function getProductDiscountRange(req, res) {
+    let myquery;
+    const titles = [];
+    const variants = [];
+    const variants1 = [];
+    const variants2 = [];
+    const variants3 = [];
+    const variantsId = [];
+    const abids = [];
+    const srcs = [];
+    const pids = [];
+    const tags1 = [];
+    const price = [];
+    const createdat = [];
+    const isApplied = [];
+    console.log('Inside Discount');
+    const d1 = req.params.d1;
+    const d2 = req.params.d2;
+    console.log('d1: ' + d1);
+    const pr = req.params.pr;
+    console.log('pr: ' + pr);
+    // let myquery=req.params.query;
+    if (pr === 'all') {
+        myquery = { 'variants.discount': parseInt(d1) };
+        // 'variants': { price: { '$gte': p1, '$lte': p2 } }
+    }
+    else if (pr === 'withBadges') {
+        myquery = {
+            'variants.discount': parseInt(d1),
+            badge: { $exists: true, $ne: [] }
+        };
+    }
+    else if (pr === 'withoutBadges') {
+        myquery = { 'variants.discount': parseInt(d1), badge: { $size: 0 } };
+    }
+    console.log(myquery);
     mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
         if (err)
             throw err;
-        console.log('check', db);
+        badgeDB = req.params.shopname;
         const dbo = db.db(badgeDB);
-        const myquery = { id: parseInt(req.params.pid) };
-        console.log('id: ' + req.params.pid);
-        dbo.collection(shop).findOne(myquery, (error, obj) => {
+        dbo
+            .collection(shop)
+            .aggregate([
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    created_at: 1,
+                    tags: 1,
+                    badge: 1,
+                    variants: 1
+                }
+            },
+            { $unwind: '$variants' },
+            { $match: myquery }
+        ])
+            .toArray((error, obj) => {
             if (error)
                 throw error;
-            let aid;
-            aid = obj;
-            //  res.send(obj.ABid);
-            //  console.log('product found: ' + Aid);
-            if (aid) {
-                res.send(aid);
+            const products = obj;
+            console.log(products);
+            //  let ids = result[0];
+            for (let i = 0; i < products.length; i++) {
+                const ab = [];
+                const src = [];
+                titles[i] = products[i].title;
+                variants1[i] = products[i].variants.option1;
+                if (variants1[i] === undefined) {
+                    variants1[i] = '-';
+                }
+                variants2[i] = products[i].variants.option2;
+                if (variants2[i] === undefined) {
+                    variants2[i] = '-';
+                }
+                variants3[i] = products[i].variants.option3;
+                if (variants3[i] === undefined) {
+                    variants3[i] = '-';
+                }
+                variants[i] =
+                    variants1[i] + ',' + variants2[i] + ',' + variants3[i];
+                variantsId[i] = products[i].variants.id;
+                // console.log(products[i].variants.length);
+                console.log(variants[i]);
+                pids[i] = products[i]._id;
+                const x = products[i].created_at.split('T');
+                createdat[i] = x[0];
+                tags1[i] = products[i].tags;
+                if (products[i].variants.badge &&
+                    products[i].variants.badge.length > 0) {
+                    let j = 0;
+                    while (products[i].variants.badge[j]) {
+                        ab[j] = products[i].variants.badge[j].abid;
+                        src[j] = products[i].variants.badge[j].thumbnailSource;
+                        console.log('ab', ab[j]);
+                        console.log('src', src[j]);
+                        j++;
+                    }
+                    abids[i] = ab;
+                    srcs[i] = src;
+                    console.log('abids', abids[i]);
+                    isApplied[i] = 'yes';
+                }
+                else {
+                    isApplied[i] = 'no';
+                    let j = 0;
+                    ab[j] = '-';
+                    src[j] = '-';
+                    console.log('ab', ab[j]);
+                    j++;
+                    abids[i] = ab;
+                    srcs[i] = src;
+                }
+                console.log('abids', abids[i]);
+                console.log('src', srcs[i]);
             }
+            console.log('abids', abids);
+            console.log('SRC--', srcs);
+            res.send({
+                items: titles,
+                pids,
+                badge: abids,
+                tags: tags1,
+                created_at: createdat,
+                isApplied,
+                src: srcs,
+                variants,
+                variantsId
+            });
         });
     });
 }
-exports.getSrc = getSrc;
-function getbadges(req, res) {
-    console.log('body: ', req.body.src);
-    const pagesrc = req.body.src;
-    let flag;
-    function srcs(pagesrcs) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const prod = [];
-            for (let i = 0; i < pagesrcs.length; i++) {
-                const s = pagesrcs[i].split('=');
-                const src = 'https:' + s[0] + s[1];
-                // console.log(src);
-                const myquery = {
-                    'image.src': new RegExp(s[1], 'i')
-                };
-                prod[i] = yield findProd(myquery);
-                console.log('1st');
-                console.log(prod);
-            }
-            flag = yield loopdone();
-            res.send(prod);
-        });
-    }
-    function loopdone() {
-        return new Promise((resolve, reject) => {
-            resolve('done');
-        });
-    }
-    function findProd(myquery) {
-        return new Promise((resolve, reject) => {
-            mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-                if (err)
-                    throw err;
-                const dbo = db.db(badgeDB);
-                dbo.collection(shop).findOne(myquery, (error, obj) => {
-                    if (error)
-                        throw error;
-                    resolve(obj);
-                });
-            });
-        });
-    }
-    srcs(pagesrc);
-}
-exports.getbadges = getbadges;
+exports.getProductDiscountRange = getProductDiscountRange;
 function getProductPriceRange(req, res) {
     let myquery;
     const titles = [];
@@ -704,321 +771,6 @@ function getProductTag(req, res) {
     });
 }
 exports.getProductTag = getProductTag;
-function publishBadges(req, res) {
-    const map = 0;
-    console.log('body: ' + JSON.stringify(req.body));
-    console.log(req.body.bid);
-    res.send(req.body);
-    mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-        if (err)
-            throw err;
-        badgeDB = req.params.shopname;
-        const dbo = db.db(badgeDB);
-        let collection = '';
-        collection = req.body.default ? 'Library_Badges_Default' : 'badges';
-        const query = {
-            _id: ObjectId(req.body.bid)
-        };
-        console.log(query);
-        let imgsrc;
-        let thumbnailSrc;
-        dbo.collection(collection).findOne(query, (error, obj) => {
-            if (error)
-                throw error;
-            console.log('published: ');
-            console.log(obj);
-            imgsrc = obj.imageSource;
-            thumbnailSrc = obj.thumbnailSource;
-            const newoid = ObjectId();
-            const newvalues = {
-                $push: {
-                    badge: {
-                        abid: newoid,
-                        Bid: req.body.bid,
-                        left: req.body.xvalue,
-                        top: req.body.yvalue,
-                        opvalue: req.body.opval,
-                        width: req.body.width,
-                        height: req.body.height,
-                        borderRadius: req.body.borderRadius,
-                        imageSource: imgsrc,
-                        thumbnailSource: thumbnailSrc
-                    }
-                }
-            };
-            for (let i = 0; i < req.body.pid.length; i++) {
-                const myquery = {
-                    _id: ObjectId(req.body.pid[i])
-                };
-                console.log('pids: ' + req.body.pid[i]);
-                if (i === 0 ||
-                    req.body.pid[i] !== req.body.pid[i - 1] ||
-                    req.body.filter !== 'Price') {
-                    dbo
-                        .collection(shop)
-                        .updateOne(myquery, newvalues, (errors, objct) => {
-                        if (errors)
-                            throw errors;
-                        console.log('product updated abid: ' + objct);
-                    });
-                }
-                if (req.body.filter === 'Price') {
-                    const v = parseFloat(req.body.vid[i]);
-                    const v1 = req.body.vid[i];
-                    const myquery1 = {
-                        _id: ObjectId(req.body.pid[i]),
-                        'variants.id': v
-                    };
-                    const newvalues1 = { $push: { 'variants.$.bids': newoid } };
-                    console.log('vids: ' + req.body.vid[i]);
-                    console.log('v: ' + v);
-                    dbo.collection(shop).updateOne(myquery1, {
-                        $push: {
-                            'variants.$.badge': {
-                                abid: newoid,
-                                thumbnailSource: req.body.thumbnailSource
-                            }
-                        }
-                    }, (errors, object) => {
-                        if (errors)
-                            throw errors;
-                        console.log('product updated Vid: ' + object);
-                        console.log('product updated abid: ' + req.body.bid);
-                        console.log('product updated Vid: ' + v);
-                        console.log('product updated Vid: ' + req.body.vid.length);
-                    });
-                }
-                else {
-                    for (const pd of req.body.pid) {
-                        const myquerys = {
-                            _id: ObjectId(pd)
-                        };
-                        console.log(myquerys);
-                        dbo.collection(shop).findOne(myquerys, {
-                            projection: {
-                                'variants.id': 1
-                            }
-                        }, (dberror, object) => {
-                            if (dberror)
-                                throw dberror;
-                            console.log('letID');
-                            console.log(object);
-                            for (const ob of object.variants) {
-                                const myquery1 = {
-                                    'variants.id': ob
-                                };
-                                const newvalues1 = {
-                                    $push: {
-                                        'variants.$.bids': req.body.bid
-                                    }
-                                };
-                                dbo.collection(shop).updateOne(myquery1, {
-                                    $push: {
-                                        'variants.$.badge': {
-                                            abid: newoid,
-                                            thumbnailSource: req.body.thumbnailSource
-                                        }
-                                    }
-                                }, (updateError, response) => {
-                                    if (updateError)
-                                        throw updateError;
-                                    console.log('product updated Vid: ' + response);
-                                    console.log('product updated abid:' + req.body.bid);
-                                });
-                            }
-                        });
-                    }
-                }
-            }
-        });
-    });
-}
-exports.publishBadges = publishBadges;
-function unpublishBadges(req, res) {
-    mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
-        if (err)
-            throw err;
-        badgeDB = req.params.shopname;
-        const dbo = db.db(badgeDB);
-        console.log('response result');
-        console.log(req.body.pid);
-        getIds();
-        function getIds() {
-            return __awaiter(this, void 0, void 0, function* () {
-                for (let i = 0; i < req.body.pid.length; i++) {
-                    // let newvalues = { $pull: { 'badge': { Bid: req.body.pid[i].bid[j] } } };
-                    // bugs possible
-                    for (let j = 0; j < req.body.pid[i].bid.length; j++) {
-                        console.log(req.body.pid[i].bid[j]);
-                        console.log('i' + i);
-                        if (req.body.filter === 'Price') {
-                            const rem = yield dbRemove(i, j, shop, dbo);
-                            console.log('rem', rem);
-                            const myquery = {
-                                _id: ObjectId(req.body.pid[i].prodid)
-                            };
-                            let object;
-                            object = yield checkAllvariants(ObjectId(req.body.pid[i].bid[j]), myquery, dbo);
-                            console.log('deleteBadge', object);
-                            const remP = yield removeProdLevel(object, i, j, dbo);
-                            console.log('remP', remP);
-                        }
-                        else {
-                            const others = yield other(i, j, dbo);
-                            console.log('others', others);
-                        }
-                    }
-                }
-            });
-        }
-    });
-    function other(i, j, dbo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const myquery = {
-                    _id: ObjectId(req.body.pid[i].prodid)
-                };
-                const newvalues = {
-                    $pull: { badge: { abid: ObjectId(req.body.pid[i].bid[j]) } }
-                };
-                console.log(req.body.pid[i].abid[j]);
-                dbo.collection(shop).updateOne(myquery, newvalues, (err, obj) => {
-                    if (err)
-                        throw err;
-                    console.log('removed badge from product: ' + obj);
-                });
-                console.log(myquery);
-                dbo.collection(shop).findOne(myquery, {
-                    projection: {
-                        'variants.id': 1
-                    }
-                }, (err, obj) => {
-                    if (err)
-                        throw err;
-                    console.log('letID');
-                    console.log(obj);
-                    console.log('i3' + i);
-                    for (let k = 0; k < obj.variants.length; k++) {
-                        const myquery2 = {
-                            'variants.id': obj.variants[k].id
-                        };
-                        console.log(myquery2);
-                        console.log(j);
-                        console.log(i);
-                        console.log(k);
-                        console.log(shop);
-                        console.log(obj.variants.length);
-                        dbo.collection(shop).updateOne(myquery2, {
-                            $pull: {
-                                'variants.$.badge': {
-                                    abid: ObjectId(req.body.pid[i].bid[j])
-                                }
-                            }
-                        }, console.log(myquery2), (error, response) => {
-                            if (error)
-                                throw error;
-                            console.log('product updated Vid: ' + response);
-                            console.log('product updated Vid: ' + k);
-                            console.log(myquery2);
-                        });
-                    }
-                });
-                resolve('done others');
-            });
-        });
-    }
-    function dbRemove(i, j, globalShop, dbo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const myquery3 = {
-                    'variants.id': parseFloat(req.body.pid[i].vid)
-                };
-                // let badges = [];
-                dbo.collection(globalShop).updateOne(myquery3, {
-                    $pull: {
-                        'variants.$.badge': {
-                            abid: ObjectId(req.body.pid[i].bid[j])
-                        }
-                    }
-                }, console.log(myquery3), (error, resp) => {
-                    if (error)
-                        throw error;
-                    console.log('product updated Vid: ' + resp);
-                    console.log(myquery3);
-                    // console.log('product updated Bid: ' + req.body.bid);
-                    resolve('done removing from letiant');
-                });
-            });
-        });
-    }
-    function checkAllvariants(abid, myquery, dbo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                dbo.collection(shop).findOne(myquery, {
-                    projection: {
-                        'variants.id': 1
-                    }
-                }, (err, obj) => {
-                    if (err)
-                        throw err;
-                    console.log('letID');
-                    console.log(obj);
-                    resolve(obj);
-                });
-            });
-        });
-    }
-    function check(object, abid, k, dbo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const myquery2 = {
-                    'variants.id': object.variants[k].id,
-                    'variants.badge.abid': abid // abid - ObjectId('5be0490449f28420b8730375')
-                };
-                dbo.collection(shop).findOne(myquery2, (error, response) => {
-                    if (error)
-                        throw error;
-                    console.log('product check Vid: ' + response);
-                    let deleteBadg = true;
-                    // console.log(res);
-                    if (response !== undefined) {
-                        deleteBadg = false;
-                        console.log('DBL:' + deleteBadg);
-                        // break;
-                    }
-                    resolve(deleteBadg);
-                });
-            });
-        });
-    }
-    function removeProdLevel(deleteBadges, i, j, dbo) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                if (deleteBadges) {
-                    const myquery = {
-                        _id: ObjectId(req.body.pid[i].prodid)
-                    };
-                    const newvalues = {
-                        $pull: {
-                            badge: {
-                                abid: ObjectId(req.body.pid[i].bid[j])
-                            }
-                        }
-                    };
-                    dbo.collection(shop).updateOne(myquery, newvalues, (err, obj) => {
-                        if (err)
-                            throw err;
-                        console.log(shop);
-                        console.log('removed badge from product: ' + obj);
-                    });
-                    console.log(myquery);
-                }
-                resolve('done');
-            });
-        });
-    }
-}
-exports.unpublishBadges = unpublishBadges;
 exports.getIDS = (req, res) => {
     console.log('inside get IDS');
     mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
@@ -1169,6 +921,7 @@ function deleteBadge(req, res) {
 }
 exports.deleteBadge = deleteBadge;
 function tags(req, res) {
+    console.log('asf');
     mongodb_1.MongoClient.connect(url, { useNewUrlParser: true }, (err, db) => {
         if (err)
             throw err;

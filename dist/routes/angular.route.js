@@ -36,14 +36,17 @@ router.get('/getIDS/:shopname', (request, response) => {
 router.get('/getUserIDS', (request, response) => {
     angularController.getUserIDS(request, response);
 });
-router.get('/getSrc/:pid', (request, response) => {
-    angularController.getSrc(request, response);
-});
-router.post('/getbadges', (request, response) => {
-    angularController.getbadges(request, response);
-});
+// router.get('/getSrc/:pid', (request: Request, response: Response) => {
+//   angularController.getSrc(request, response);
+// });
+// router.post('/getbadges', (request: Request, response: Response) => {
+//   angularController.getbadges(request, response);
+// });
 router.get('/getProductPriceRange/:shopname/:p1/:p2/:pr', (request, response) => {
     angularController.getProductPriceRange(request, response);
+});
+router.get('/getProductDiscountRange/:shopname/:d1/:pr', (request, response) => {
+    angularController.getProductDiscountRange(request, response);
 });
 router.get('/getProductDateRange/:shopname/:d1/:d2/:dr', (request, response) => {
     angularController.getProductDateRange(request, response);
@@ -54,19 +57,13 @@ router.get('/getProductTitle/:shopname/:t1/:tr', (request, response) => {
 router.get('/getProductTag/:shopname/:tg1/:tr', (request, response) => {
     angularController.getProductTag(request, response);
 });
-router.post('/publishBadges/:shopname', (request, response) => {
-    angularController.publishBadges(request, response);
-});
 router.post('/deleteUserBadge/:shopname', (request, response) => {
     angularController.deleteBadge(request, response);
-});
-router.post('/unpublishBadges/:shopname', (request, response) => {
-    angularController.unpublishBadges(request, response);
 });
 router.post('/api/upload/:shopname', upload.single('photo'), (request, response) => {
     angularController.upload(request, response);
 });
-router.get('tags/:shopname', (request, response) => {
+router.get('/tags/:shopname', (request, response) => {
     angularController.tags(request, response);
 });
 router.get('/currency/:shopname', (request, response) => {
