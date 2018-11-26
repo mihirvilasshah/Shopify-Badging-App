@@ -6,6 +6,7 @@ import * as APP_CONFIG from './config/app_config';
 import angularRoute from './routes/angular.route';
 import shopRoute from './routes/shop.route';
 import addBadgeRoute from './routes/addBadge.route';
+import getprodutsRoute from './routes/getproducts.route';
 import publishBadgeRoute from './routes/publish.route';
 const winston = require('winston');
 const morgan = require('morgan');
@@ -52,6 +53,7 @@ app.use('/tricon', shopRoute);
 app.use('/angular', angularRoute);
 app.use('/addBadge', addBadgeRoute);
 app.use('/badging', addBadgeRoute);
+app.use('/getproducts', getprodutsRoute);
 // app.get('*', (req, res) => {
 //   res.sendFile(path.join(__dirname, 'index.html'));
 // });
