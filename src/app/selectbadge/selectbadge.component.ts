@@ -25,7 +25,7 @@ export class SelectBadgeComponent implements OnInit {
   selectedindex = -1;
   lib = true;
   sel = false;
-  count1: number = 0;
+  count1 = 0;
   pic_name = '';
 
   public uploader: FileUploader =
@@ -33,6 +33,7 @@ export class SelectBadgeComponent implements OnInit {
 
   constructor(private badge: BadgeService, private http: HttpClient, private router: Router,
      private spinner: NgxSpinnerService, public ngxSmartModalService: NgxSmartModalService) {
+       // this.sel = badge.sendMessage();
   }
 
   private fileList: any = [];
@@ -55,16 +56,16 @@ export class SelectBadgeComponent implements OnInit {
         alert('Error uploading a file');
       }
     };
-    var count = 0;
-    var ids = this.http.get('http://localhost:4567/angular/getMyLibrary/tricon-jewel-store');
+    const count = 0;
+    const ids = this.http.get('http://localhost:4567/angular/getMyLibrary/tricon-jewel-store');
     ids.subscribe(val => {
-      var temp = Object.values(val);
+      const temp = Object.values(val);
       temp.forEach(pic => {
         this.LibPictures.push(pic);
-      })
+      });
 
       console.log(this.LibPictures);
-    })
+    });
     this.loadBadges();
     console.log('select badge' + this.badge.getBadgePic);
 
@@ -83,17 +84,17 @@ export class SelectBadgeComponent implements OnInit {
     //   })
     // })
 
-    var ids = this.http.get('http://localhost:4567/angular/getMyBadges/tricon-jewel-store');
+    const ids = this.http.get('http://localhost:4567/angular/getMyBadges/tricon-jewel-store');
     console.log(ids);
     ids.subscribe(val => {
-      var temp = Object.values(val);
+      const temp = Object.values(val);
       temp.forEach(pic => {
         this.UserPictures.push(pic);
-      })
+      });
 
       console.log(this.UserPictures);
-    })
-  };
+    });
+  }
 
 
 
@@ -103,40 +104,20 @@ export class SelectBadgeComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
       this.count1 = this.count1 + 1;
-
-      // console.log('pic name' + this.pic_name);
-      // // console.log('ids'+this.ids);
-      // let navigationExtras: NavigationExtras = {
-      //   queryParams: {
-      //     picName: this.pic_name
-
-      //   }
-      // };
-      // this.router.navigate(['/customize'], navigationExtras);
-      // this.spinner.hide();
       this.router.navigate(['/customize']);
       this.spinner.hide();
     }, 1000);
-  };
+  }
 
-
-  // public onTap() {
-  //   console.log('inside on tap');
-  //   var cursor = this.http.get('http://localhost:4567/angular/picture/');
-  //   console.log(cursor);
-
-  // };
 
   selectedPic(index: number, from: number): void {
-    // debugger;
-    if (!from) {
+        if (!from) {
       this.pic_name = this.LibPictures[index];
       this.lib = true;
       console.log(this.pic_name);
       this.badge.changeBadge(this.pic_name);
 
-    }
-    else {
+    }    else {
       this.pic_name = this.UserPictures[index];
       this.lib = false;
       console.log(this.pic_name);
@@ -148,26 +129,19 @@ export class SelectBadgeComponent implements OnInit {
     console.log('selected' + this.selectedindex);
     // debugger;
     this.sel = true;
-    this.badge.sendMessage(this.sel)
-   
+    this.badge.sendMessage(this.sel);
 
   }
 
-  // checkSelected(index: number): string {
-  //   // debugger;
 
-  //   if (index == this.selectedindex)
-  //     return 'green';
-  //   else return 'black';
-  // }
 
   deleteBadge(index: number): void {
     if (confirm('Are You sure you want to delete?')) {
       console.log('deletebadge front end');
-      var x = this.UserPictures[index].imageSource.split('/image/');
+      const x = this.UserPictures[index].imageSource.split('/image/');
       console.log(this.UserPictures[index].imageSource);
-      console.log('x',x);
-      var deleted = this.http.post('http://localhost:4567/angular/deleteUserBadge/tricon-jewel-store', { 'name': x[1] });
+      console.log('x', x);
+      const deleted = this.http.post('http://localhost:4567/angular/deleteUserBadge/tricon-jewel-store', { 'name': x[1] });
       // var deleted = this.http.post('http://localhost:4567/angular/deleteUserBadge/',{'id':'5ba4c859767a3337741a66e8'});
 
       deleted.subscribe(val => {
@@ -191,11 +165,11 @@ export class SelectBadgeComponent implements OnInit {
 
   up() {
     console.log(this.fileList);
-    let obs = this.http.post('http://localhost:4567/angular/api/upload/tricon-jewel-store', { 'file': this.fileList });
+    const obs = this.http.post('http://localhost:4567/angular/api/upload/tricon-jewel-store', { 'file': this.fileList });
     obs.subscribe(data => {
       console.log('here is the response', data);
 
-    })
+    });
   }
 
 

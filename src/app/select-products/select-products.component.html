@@ -24,13 +24,24 @@
     <div>
         <mat-form-field>
             <mat-select placeholder="Filters" [(ngModel)]="selectedFilter">
-                <mat-option *ngFor="let filter of filters" [value]="filter.name">
+                <mat-option *ngFor="let filter of filters"  [value]="filter.name" (click) = filtereName(filter.name)>
                     {{filter.name}}
                 </mat-option>
             </mat-select>
         </mat-form-field>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" 
+        (click)="ngxSmartModalService.getModal('myModal1').open();" style="height:60px; width:200px; background-color:green">Choose Custom Filters</button>
     </div>
 
+   
+    <ngx-smart-modal #myModal1 identifier="myModal1"> 
+        <div *ngFor="let k of keyArray">
+        <input type="checkbox" name="key" #key  
+        [value] = "[k]" (click)="givekey($event.target.checked, key.value)"> {{k}}    
+
+        </div>
+        <button (click)="myModal1.close();" style="height:33px;text-align: center;float:right">OK</button>
+    </ngx-smart-modal>
     <div *ngIf="selectedFilter=='Price'">
         <form>
             <input type="number" name="price1" id="p1" [(ngModel)]="price1" (input)="applyPriceFn()" placeholder="Starting price">{{currency}}
@@ -126,6 +137,34 @@
         </form>
     </div>
 
+    <div *ngIf="selectedFilter=='color'">
+        <form>
+            <div class="mdl-textfield mdl-js-textfield">
+                <!-- <ng-select [items]="NSarray" bindLabel="name" bindValue="id" [multiple]="false" placeholder="Select namespace"
+                    [(ngModel)]="namespace" name="namespace" id="ns" (click)="applyspFn(namespace)">
+                </ng-select> -->
+                <br>
+                <!-- <ng-select [items]="keyArray" bindLabel="name1" bindValue="id1" [multiple]="false" placeholder="Select Key"
+                    [(ngModel)]="Keys" name="Keys" id="key" (click)="applykeyFn()">
+                </ng-select>
+                <br> -->
+                <ng-select [items]="tempvalues" bindLabel="name2" bindValue="id2" [multiple]="false" placeholder="Select value"
+                    [(ngModel)]="values" name="values" id="value" (click)="applyvalueFn()">
+                </ng-select>
+
+                <!-- <label class="mdl-textfield__label" for="sample1">Text...</label> -->
+            </div>
+            <!-- <input type="text" name="title" id="t1" [(ngModel)]="title1" (input)="applyTitleFn()" placeholder="Search by title"> -->
+            <!-- (keyup.enter)="getTitleProd()" -->
+
+            <br>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" type="reset">Reset</button>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored" (click)="getMetaFieldsProd()"
+                [disabled]="((values)&&applyNs)||((!(values))&&!applyNs)" style="width:180px;">Apply</button>
+            <!-- A XOR B = !A.B + A.!B ; A = (!(title1&&tr)), B = applyTitle -->
+
+        </form>
+    </div>
     <span>
         <h2>{{msg}}</h2>
     </span>

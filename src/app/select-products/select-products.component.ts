@@ -9,7 +9,7 @@ import { NgSelectModule, NgOption } from '@ng-select/ng-select';
 import { IMyDpOptions } from 'mydatepicker';
 // import { MultiSelectComponent, CheckBoxSelectionService } from '@syncfusion/ej2-ng-dropdowns';
 
-export interface filter {
+export interface Filter {
   name: string;
 }
 
@@ -36,15 +36,22 @@ export class SelectProductsComponent implements OnInit {
   date1: string;
   date2: string;
   title1: string;
-  counter: number = 0;
-  publishedNo: number = 0;
+  counter = 0;
+  publishedNo = 0;
   tr;
   dr;
+  tempvalues = [];
   pr;
   pr1;
   wb = 'no';
   wob = 'no';
   tag;
+  namespace;
+  NSarray = [];
+  keyArray = [];
+  filtername;
+  valueArray = [];
+  value;
   variantsId;
   selectedEntry;
   variants;
@@ -52,6 +59,7 @@ export class SelectProductsComponent implements OnInit {
   pids;
   isApplied;
   tags;
+  MF;
   abid;
   price;
   created_At;
@@ -76,26 +84,31 @@ export class SelectProductsComponent implements OnInit {
   applyTitle = false;
   countTitle = 0;
   applyTag = false;
+  applyNs = false;
+  applykey = false;
+  applyvalue = false;
   countTag = 0;
+  countns = 0;
   applyPrice = false;
   countPrice = 0;
   applyDate = false;
   applyDisc = false;
   countDate = 0;
+  keysSelected = [];
   countDisc = 0;
   msg = '';
   show = false;
   head = ['Title', 'ID', 'Badge Applied'];
 
-  p: number = 1;
+  p = 1;
 
   filterControl = new FormControl('', [Validators.required]);
-  filters: filter[] = [
+  filters: Filter[] = [
     { name: 'Price' },
     { name: 'Created Date' },
     { name: 'Title' },
     { name: 'Tag' },
-    {name : 'Discount'},
+    {name : 'MetaFields'},
   ];
   opvalue;
   endOffset;
@@ -128,11 +141,11 @@ export class SelectProductsComponent implements OnInit {
     tag.subscribe(data => {
       console.log('here is the response', data);
       this.tagArray = data;
-      console.log(this.tagArray);
+      // console.log(this.tagArray);
       let  temp = [];
       for (let i = 0; i < this.tagArray.length; i++) {
         temp = this.tagArray[i].split(',');
-        console.log(temp);
+        // console.log(temp);
         for (let j = 0; j < temp.length; j++) {
           if (temp[j] !== '') {
             this.split.push(temp[j]);
@@ -140,26 +153,34 @@ export class SelectProductsComponent implements OnInit {
         }
         temp = [];
       }
-      let x = (tags) => this.split.filter((v, i) => this.split.indexOf(v) === i)
+      const x = (tags) => this.split.filter((v, i) => this.split.indexOf(v) === i);
       x(this.split);
       this.split = x(this.split);
-      console.log(this.split);
-      console.log(x(this.split));
+      // console.log(this.split);
+      // console.log(x(this.split));
 
     });
 
-    let cur = this.http.get('http://localhost:4567/angular/currency/tricon-jewel-store');
+    const cur = this.http.get('http://localhost:4567/angular/currency/tricon-jewel-store');
     cur.subscribe(dat => {
       console.log('here is the response', dat);
       this.currency = dat[0].currency;
     });
-
-    // console.log('select products badge css'+ this.badgeCss);
-
-    // });
-
-
-
+    const metaFields = this.http.get('http://localhost:4567/angular/metafields/tricon-jewel-store');
+    metaFields.subscribe(dat => {
+      console.log('here is the response', dat);
+       this.MF = dat;
+       console.log(this.MF);
+       for (const m of this.MF) {
+ // this.NSarray.push(m.namespace);
+ this.keyArray.push(m.key);
+ this.valueArray.push(m.value);
+       }
+      //  console.log(this.NSarray);
+      //  const x = (ns) => this.NSarray.filter((v, i) => this.NSarray.indexOf(v) === i);
+      //  x(this.NSarray);
+      //  this.NSarray = x(this.NSarray);
+    });
   }
 
   ngOnInit() {
@@ -176,20 +197,37 @@ export class SelectProductsComponent implements OnInit {
     // this.router.navigate(['/products']);
     if (this.selectedFilter === 'Price') {
       this.getPriceProd();
- }    else if (this.selectedFilter === 'Discount') {
-      this. getDiscountProd();
-    } else if (this.selectedFilter === 'Created Date') {
+ }
+    // else if (this.selectedFilter === 'Discount') {
+    //   this. getDiscountProd();
+    // }
+    else if (this.selectedFilter === 'Created Date') {
       this.getDateProd();
     } else if (this.selectedFilter === 'Title') {
       this.getTitleProd();
     } else if (this.selectedFilter === 'Tag') {
       this.getTagProd();
+    } else if (this.selectedFilter === 'meatafield') {
+      // this.getmetaFields();
     }
 
     console.log('working');
 
   }
+  givekey(flag, value) {
+    console.log(value);
+    if (flag) {
+  this.keysSelected.push(value);
+  this.filters.push({name: value});
+} else {
+  const index = this.keysSelected.indexOf(value);
+  const index1 = this.filters.indexOf({name: value});
+this.keysSelected.splice(index, 1);
+this.filters.splice(index1, 1);
 
+}
+console.log(this.keysSelected);
+}
   withbadgeFn(flag) {
     if (flag) {
       this.wb = 'yes';
@@ -236,12 +274,22 @@ export class SelectProductsComponent implements OnInit {
 
 
   }
+  filtereName(filter) {
+    for (let i = 0; i < this.keyArray.length; i++) {
+if (this.keyArray[i] === filter) {
+  // const index = this.MF.indexof(filter);
+this.tempvalues.push(this.valueArray[i]);
+}
+    }
+this.filtername = filter;
+
+console.log(filter);
+  }
   withoutbadgeFn(flag) {
     if (flag) {
       this.wob = 'yes';
 
-    }
-    else {
+    }    else {
       this.wob = 'no';
     }
     console.log('wob:  ' + this.wob);
@@ -252,7 +300,7 @@ export class SelectProductsComponent implements OnInit {
     }
     if (this.wb === 'yes' && this.wob === 'no') {
       this.showTitle = [];
-      for (var i = 0; i < +this.structuredTitle.length; i++) {
+      for (let i = 0; i < +this.structuredTitle.length; i++) {
         if (this.structuredTitle[i].isApplied === 'yes') {
 
           this.showTitle.push({ name: this.titles[i], selected: false,
@@ -289,13 +337,13 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.get('http://localhost:4567/angular/getProductDiscountRange/tricon-jewel-store/' + this.discount + '/all');
+      const obs = this.http.get('http://localhost:4567/getproducts/getProductDiscountRange/tricon-jewel-store/' + this.discount + '/all');
       obs.subscribe(data => {
         console.log('here is the response', data);
         console.log(this.pr);
 
-        var items = Object.values(data);
-        console.log('items:', items)
+        const items = Object.values(data);
+        console.log('items:', items);
         this.titles = items[0];
         this.badges = items[2];
 
@@ -311,7 +359,7 @@ export class SelectProductsComponent implements OnInit {
 
         this.structuredTitle = [];
         self['items'] = items;
-        const x;
+
         for (let i = 0; i < +this.titles.length; i++) {
 
           const a = {
@@ -356,15 +404,15 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs =
-       this.http.get('http://localhost:4567/angular/getProductPriceRange/tricon-jewel-store/'
+      const obs =
+       this.http.get('http://localhost:4567/getproducts/getProductPriceRange/tricon-jewel-store/'
        + this.price1 + '/' + this.price2 + '/all');
       obs.subscribe(data => {
         console.log('here is the response', data);
         console.log(this.pr);
 
         const items = Object.values(data);
-        console.log('items:', items)
+        console.log('items:', items);
         this.titles = items[0];
         this.badges = items[2];
 
@@ -388,7 +436,7 @@ export class SelectProductsComponent implements OnInit {
             name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i],
             created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i],
              src: this.src[i], variants: this.variants[i], variantsId: this.variantsId[i]
-          }
+          };
           this.structuredTitle.push(a);
           console.log('src:' + items[6][i]);
           console.log('vids:' + this.variantsId);
@@ -412,7 +460,7 @@ export class SelectProductsComponent implements OnInit {
         console.log('structuredTitle:', this.structuredTitle);
 
 
-      })
+      });
 
       this.spinner.hide();
     }, 4000);
@@ -421,7 +469,7 @@ export class SelectProductsComponent implements OnInit {
   applyPriceFn() {
 
     if (this.countPrice === 1) {
-      this.applyPrice = false;  
+      this.applyPrice = false;
     }
     this.countPrice = 1;
     console.log('count: ' + this.countPrice);
@@ -436,7 +484,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.date1);
     this.spinner.show();
     setTimeout(() => {
-      let obs = this.http.get('http://localhost:4567/angular/getProductDateRange/tricon-jewel-store/' +
+      const obs = this.http.get('http://localhost:4567/getproducts/getProductDateRange/tricon-jewel-store/' +
        this.model1.formatted + '/' +
         this.model2.formatted + '/all');
       obs.subscribe(data => {
@@ -446,8 +494,8 @@ export class SelectProductsComponent implements OnInit {
         console.log('dateModel2', this.model2.formatted);
         console.log(this.pr);
 
-        var items = Object.values(data);
-        console.log('items:', items)
+        const items = Object.values(data);
+        console.log('items:', items);
         this.titles = items[0];
         this.badges = items[2];
 
@@ -470,7 +518,7 @@ export class SelectProductsComponent implements OnInit {
             name: items[0][i], selected: false, pids: items[1][i], tags: items[3][i],
              created_at: items[4][i], isApplied: items[5][i], badges: this.badges[i],
               src: this.src[i]
-          }
+          };
           this.structuredTitle.push(a);
         }
 
@@ -517,10 +565,10 @@ export class SelectProductsComponent implements OnInit {
 
   }
 
-  public mode: string;
-  public selectAllText: string;
-  public fields: Object = { text: 'title', value: 'pid' };
-  public placeholder: string = 'Select products';
+  // public mode: string;
+  // public selectAllText: string;
+  // public fields: Object = { text: 'title', value: 'pid' };
+  // public placeholder: string = 'Select products';
 
   getTitleProd() {
 
@@ -528,14 +576,14 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      const obs = this.http.get('http://localhost:4567/angular/getProductTitle/tricon-jewel-store/' + this.title1 + '/all');
+      const obs = this.http.get('http://localhost:4567/getproducts/getProductTitle/tricon-jewel-store/' + this.title1 + '/all');
       obs.subscribe(data => {
 
 
-        var items = Object.values(data);
+        const items = Object.values(data);
 
-        var self = this;
-        console.log('items:', items)
+        const self = this;
+        console.log('items:', items);
         this.titles = items[0];
         this.badges = items[2];
 
@@ -543,23 +591,16 @@ export class SelectProductsComponent implements OnInit {
         this.tags = items[3];
         this.created_At = items[4];
         this.isApplied = items[5];
-        var uSrc = [];
+        const uSrc = [];
         this.src = items[6];
 
 
 
         console.log('this.src', this.split);
-     
         console.log('unique b src', this.src[0].length);
         for (let i = 0; i < this.src[0].length; i++) {
-          this.src[0] = this.src[0].filter((v, i, a) => a.indexOf(v) === i);
+          this.src[0] = this.src[0].filter((v, i , a) => a.indexOf(v) === i);
         }
-
-        // let uSrc = new Set(this.src);
-        // let uASrc  = Array.from(uSrc);
-        // this.src = uASrc;
-        // console.log('unique src',this.src);
-
 
         this.structuredTitle = [];
         self['items'] = items;
@@ -600,7 +641,7 @@ export class SelectProductsComponent implements OnInit {
   applyTitleFn() {
 
     if (this.countTitle === 1) {
-      this.applyTitle = false;  //!(this.applyTitle);
+      this.applyTitle = false;  // !(this.applyTitle);
     }
     this.countTitle = 1;
     console.log('count: ' + this.countTitle);
@@ -612,7 +653,7 @@ export class SelectProductsComponent implements OnInit {
     console.log(this.title1);
     this.spinner.show();
     setTimeout(() => {
-      const obs = this.http.get('http://localhost:4567/angular/getProductTag/tricon-jewel-store/' + this.tag + '/all');
+      const obs = this.http.get('http://localhost:4567/getproducts/getProductTag/tricon-jewel-store/' + this.tag + '/all');
       obs.subscribe(data => {
         console.log('here is the response', data);
         console.log(this.pr);
@@ -642,7 +683,7 @@ export class SelectProductsComponent implements OnInit {
             name: items[0][i], selected: false, pids: items[1][i],
              tags: items[3][i], created_at: items[4][i], isApplied: items[5][i],
               badges: this.badges[i], src: this.src[i]
-          }
+          };
           this.structuredTitle.push(a);
         }
 
@@ -664,7 +705,7 @@ export class SelectProductsComponent implements OnInit {
         console.log('structuredTitle:', this.structuredTitle);
 
 
-      })
+      });
 
       this.spinner.hide();
     }, 1000);
@@ -673,10 +714,47 @@ export class SelectProductsComponent implements OnInit {
   applyTagFn() {
 
     if (this.countTag === 1) {
-      this.applyTag = false; 
+      this.applyTag = false;
     }
     this.countTag = 1;
     console.log('count: ' + this.countTag);
+
+  }
+//   applyspFn(namespace) {
+
+//      this.keyArray = [];
+//     if (this.countns === 1) {
+//       this.applyNs = false;
+//     }
+//     for (let i = 0 ; i < this.MF.length; i++ ) {
+// if (this.MF[i].namespace === namespace) {
+//  this.keyArray = this.MF[i].key;
+// console.log('true');
+// }
+//     }
+//     this.countns = 1;
+//     console.log('count: ' + this.countns);
+//     console.log(namespace);
+
+
+//   }
+  // applykeyFn() {
+
+  //   if (this.countns === 1) {
+  //     this.applykey = false;
+  //   }
+  //   this.countns = 1;
+  //   console.log('count: ' + this.countns);
+
+  // }
+
+  applyvalueFn() {
+
+    if (this.countns === 1) {
+      this.applyvalue = false;
+    }
+    this.countns = 1;
+    console.log('count: ' + this.countns);
 
   }
 
@@ -713,14 +791,12 @@ export class SelectProductsComponent implements OnInit {
       this.selectedVids = [];
       this.counter = 0;
       console.log('selectedIDS (deselected all): ' + this.selectedids);
-
-    }
-    else if (flag) {
+    }    else if (flag) {
+      const x = value.split(',');
+      const value1 = x[0];
+      const value2 = x[1];
       console.log('VAL:', value);
-      var x = value.split(',');
-      var value1 = x[0];
-      var value2 = x[1];
-      this.counter = this.counter + 1;
+        this.counter = this.counter + 1;
 
       // this.selectedids.push(value1);
       // var index = this.selectedids.indexOf(value1);
@@ -731,11 +807,15 @@ export class SelectProductsComponent implements OnInit {
       // console.log('pid value1 esle if: ' + this.pids);
     }
     if (flag === false) {
+      const x = value.split(',');
+      const value1 = x[0];
+      const value2 = x[1];
+
       this.counter = this.counter - 1;
 
-      var index = this.selectedids.indexOf(this.pids[value1]);
+      const index = this.selectedids.indexOf(this.pids[value1]);
       console.log('index', index);
-      var index2 = this.selectedVids.indexOf(this.pids[value2]);
+      const index2 = this.selectedVids.indexOf(this.pids[value2]);
       // this.selectedids.splice(value1, 1);
       console.log('spliced: ' + this.selectedids.splice(index, 1));
       console.log('spliced: ' + this.selectedVids.splice(index2, 1));
@@ -745,17 +825,15 @@ export class SelectProductsComponent implements OnInit {
     }
 
     console.log('flag: ' + flag);
-    console.log('value1: ' + value1);
 
     console.log('COUNTER:' + this.counter);
-    if (this.counter === this.showTitle.length)
+    if (this.counter === this.showTitle.length) {
       this.selectedAll = true;
-    else
-      this.selectedAll = false;
-  }
+    }    else {
+      this.selectedAll = false;    }  }
 
   publish() {
-    var id = this.selected_image_src._id;
+    const id = this.selected_image_src._id;
     console.log(id);
     console.log(this.selectedids);
     console.log(this.selected_image_src.thumbnailSource);
@@ -763,7 +841,7 @@ export class SelectProductsComponent implements OnInit {
     this.spinner.show();
     setTimeout(() => {
 
-      let obs = this.http.post('http://localhost:4567/badging/publishBadges/tricon-jewel-store',
+      const obs = this.http.post('http://localhost:4567/badging/publishBadges/tricon-jewel-store',
       { 'bid': id, 'xvalue': this.endOffset.x, 'yvalue': this.endOffset.y, 'opval': this.opvalue,
        'size': this.BadgeSize, 'borderRadius': this.BorderRadius, 'pid': this.selectedids,
        'vid': this.selectedVids, 'filter': this.selectedFilter, 'default': this.selected_image_src.default,

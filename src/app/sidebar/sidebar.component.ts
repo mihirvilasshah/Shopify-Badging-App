@@ -11,31 +11,18 @@ export class SidebarComponent implements  OnInit {
 
 
   selected = false;
-  constructor(private badge: BadgeService) { 
-  
+  constructor(private badge: BadgeService) {
 
-   
   }
 
   ngOnInit() {
 
     this.badge.badgemessage$.subscribe(
-      message=>{
-        this.selected= message;
+      message => {
+        this.selected = message;
 
 
       }
     );
- 
   }
-  ngOnChanges(changes: SimpleChanges) {
-
-    console.log("asdf",changes);
-
-  }
-  
-  
-    
-  
-
 }

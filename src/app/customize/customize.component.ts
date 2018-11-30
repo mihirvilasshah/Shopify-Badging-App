@@ -4,7 +4,7 @@ import { BadgeService } from '../badge.service';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 
-export interface position {
+export interface Position {
   name: string;
 }
 
@@ -77,23 +77,6 @@ export class CustomizeComponent {
     this.sliderval = this.opvalue * 100;
     this.BadgeSize = badge.getBadgeSize();
     this.BorderRadius = badge.getBorderRadius();
-
-
-
-
-    // document.getElementById('image12').style.top='200px';
-    // var c = document.getElementById('image12').childNodes.length;
-    // console.log(c);
-    // document.getElementsByName('badge').style.top=this.top;
-    // document.getElementsByName('badge').style.left=this.left;
-    // this.badge_css=badge.getBadgeCss();
-    // console.log('inside constructor:'+this.selected_image_src);
-    // this.route.queryParams.subscribe(params => {
-    //   if( params['picName'])
-    //   this.selected_image_src = params['picName'];
-
-    //   console.log(this.selected_image_src);
-    // });
     console.log('customize badge pic ' + this.selected_image_src);
     console.log('customize x and y value' + this.endOffset.x + ' ' + this.endOffset.y);
     console.log('customize opval ' + this.opvalue);
@@ -114,14 +97,11 @@ export class CustomizeComponent {
     console.log(y);
   }
   BorderRadius1() {
-    // this.BorderRadius = R;
-    // .getElementById('image1').style['border-radius'] = this.BorderRadius + '%';
     this.badge.setBorderRadius(this.BorderRadius);
   }
 
   BadgeSizer() {
-    // this.BadgeWidth = W;
-    // document.getElementById('image1').style.width = this.BadgeWidth + '%';
+
     this.badge.setBadgeSize(this.BadgeSize);
   }
   onStart(event) {
@@ -158,7 +138,6 @@ export class CustomizeComponent {
     console.log('inside selectProducts');
     this.spinner.show();
     setTimeout(() => {
-       this.finalx = (this.endOffset.x - this.BadgeWidth * 4.10)/ 100;
         this.badge.setCoorFinal(this.endOffset.x, this.endOffset.y);
       this.router.navigate(['/products']);
       this.spinner.hide();
